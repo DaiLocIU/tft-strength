@@ -1,0 +1,35 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id Int @id @default(autoincrement())
+}
+
+model Match {
+  id        Int      @id @default(autoincrement())
+  placement Int // 1-8 rank in that game
+  playedAt  DateTime @default(now()) // date/time of the match
+  comp      String? // optional label for team comp (e.g., "Reroll Kayle")
+  rounds    Round[] // Relation: Match has many Rounds
+}
+
+model Round {
+  id          Int   @id @default(autoincrement())
+  matchId     Int // foreign key pointing to Match
+  stage       Int // e.g., 3
+  roundNumber Int // e.g., 5
+  gold        Int // gold at that round
+  hp          Int // health at that round
+  level       Int // board level
+  streak      Int // win/loss streak count
+  // Relation: Round belongs to Match
+  match       Match @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  // Uncomment when you create the RoundChampion model:
+  // roundChampions RoundChampion[]
+}
