@@ -51,13 +51,16 @@ export class RoundsService {
   async create(
     matchId: number,
     createRoundDto: CreateRoundDto,
+    userId: number,
   ): Promise<RoundModel> {
-    const match = await this.prisma.match.findUnique({
-      where: { id: matchId },
+    const match = await this.prisma.match.findFirst({
+      where: { id: matchId, userId },
     });
 
     if (!match) {
-      throw new NotFoundException(`Match with ID #${matchId} not found`);
+      throw new NotFoundException(
+        `Match with ID #${matchId} not found or access denied`,
+      );
     }
 
     const existingRound = await this.prisma.round.findFirst({
@@ -87,13 +90,15 @@ export class RoundsService {
     });
   }
 
-  async findAll(matchId: number): Promise<RoundModel[]> {
-    const match = await this.prisma.match.findUnique({
-      where: { id: matchId },
+  async findAll(matchId: number, userId: number): Promise<RoundModel[]> {
+    const match = await this.prisma.match.findFirst({
+      where: { id: matchId, userId },
     });
 
     if (!match) {
-      throw new NotFoundException(`Match with ID #${matchId} not found`);
+      throw new NotFoundException(
+        `Match with ID #${matchId} not found or access denied`,
+      );
     }
 
     return await this.prisma.round.findMany({
@@ -105,7 +110,18 @@ export class RoundsService {
   async findOne(
     matchId: number,
     roundId: string | number,
+    userId: number,
   ): Promise<RoundModel> {
+    const match = await this.prisma.match.findFirst({
+      where: { id: matchId, userId },
+    });
+
+    if (!match) {
+      throw new NotFoundException(
+        `Match with ID #${matchId} not found or access denied`,
+      );
+    }
+
     const parsed = this.parseRoundIdentifier(roundId);
 
     const round = await this.prisma.round.findFirst({
@@ -127,8 +143,9 @@ export class RoundsService {
     matchId: number,
     roundId: string | number,
     updateRoundDto: UpdateRoundDto,
+    userId: number,
   ): Promise<RoundModel> {
-    const existing = await this.findOne(matchId, roundId);
+    const existing = await this.findOne(matchId, roundId, userId);
 
     if (
       (updateRoundDto.stage !== undefined &&
@@ -169,8 +186,12 @@ export class RoundsService {
     });
   }
 
-  async remove(matchId: number, roundId: string | number): Promise<RoundModel> {
-    const existing = await this.findOne(matchId, roundId);
+  async remove(
+    matchId: number,
+    roundId: string | number,
+    userId: number,
+  ): Promise<RoundModel> {
+    const existing = await this.findOne(matchId, roundId, userId);
 
     return await this.prisma.round.delete({
       where: { id: existing.id },

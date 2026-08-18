@@ -17,14 +17,17 @@ model User {
   hashedRefreshToken String?
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
+  matches            Match[]
 }
 
 model Match {
   id        Int      @id @default(autoincrement())
+  userId    Int?
   placement Int // 1-8 rank in that game
   playedAt  DateTime @default(now()) // date/time of the match
   comp      String? // optional label for team comp (e.g., "Reroll Kayle")
   version   String? // game patch version (e.g., "18.1", "18.2")
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   rounds    Round[] // Relation: Match has many Rounds
 }
 

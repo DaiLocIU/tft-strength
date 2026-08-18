@@ -18,9 +18,13 @@ import { UpdateMatchDto } from './dto/update-match.dto';
 export class MatchesService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(createMatchDto: CreateMatchDto): Promise<MatchModel> {
+  async create(
+    createMatchDto: CreateMatchDto,
+    userId: number,
+  ): Promise<MatchModel> {
     return await this.prisma.match.create({
       data: {
+        userId,
         placement: createMatchDto.placement,
         playedAt: createMatchDto.playedAt
           ? new Date(createMatchDto.playedAt)
@@ -31,13 +35,16 @@ export class MatchesService {
     });
   }
 
-  async findAll(): Promise<MatchModel[]> {
-    return await this.prisma.match.findMany();
+  async findAll(userId: number): Promise<MatchModel[]> {
+    return await this.prisma.match.findMany({
+      where: { userId },
+      orderBy: { playedAt: 'desc' },
+    });
   }
 
-  async findOne(id: number): Promise<MatchModel> {
-    const match = await this.prisma.match.findUnique({
-      where: { id },
+  async findOne(id: number, userId?: number): Promise<MatchModel> {
+    const match = await this.prisma.match.findFirst({
+      where: { id, ...(userId ? { userId } : {}) },
     });
 
     if (!match) {
@@ -50,8 +57,9 @@ export class MatchesService {
   async update(
     id: number,
     updateMatchDto: UpdateMatchDto,
+    userId?: number,
   ): Promise<MatchModel> {
-    await this.findOne(id);
+    await this.findOne(id, userId);
 
     return await this.prisma.match.update({
       where: { id },
@@ -66,8 +74,8 @@ export class MatchesService {
     });
   }
 
-  async remove(id: number): Promise<MatchModel> {
-    await this.findOne(id);
+  async remove(id: number, userId?: number): Promise<MatchModel> {
+    await this.findOne(id, userId);
 
     return await this.prisma.match.delete({
       where: { id },
