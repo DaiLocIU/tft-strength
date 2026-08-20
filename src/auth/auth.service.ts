@@ -63,6 +63,8 @@ export class AuthService {
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(refreshToken, salt);
 
+    console.log('\x1b[33m🔒 [Bcrypt Hash Stored]:\x1b[0m', hash);
+
     await this.prisma.user.update({
       where: { id: userId },
       data: { hashedRefreshToken: hash },
@@ -72,11 +74,18 @@ export class AuthService {
   async validateGoogleUser(
     payload: GoogleUserPayload,
   ): Promise<{ user: UserModel; accessToken: string; refreshToken: string }> {
+    console.log('\x1b[36m🔍 [Google Profile]:\x1b[0m', {
+      id: payload.googleId,
+      name: payload.name,
+      email: payload.email,
+    });
+
     let user = await this.prisma.user.findUnique({
       where: { email: payload.email },
     });
 
     if (!user) {
+      console.log('\x1b[32m✨ [AuthService] Creating new user in PostgreSQL...\x1b[0m');
       user = await this.prisma.user.create({
         data: {
           email: payload.email,
@@ -86,6 +95,7 @@ export class AuthService {
         },
       });
     } else if (!user.googleId) {
+      console.log('\x1b[34m🔄 [AuthService] Linking Google account to existing user in PostgreSQL...\x1b[0m');
       user = await this.prisma.user.update({
         where: { id: user.id },
         data: {
@@ -93,6 +103,8 @@ export class AuthService {
           avatar: payload.avatar ?? user.avatar,
         },
       });
+    } else {
+      console.log('\x1b[32m⚡ [AuthService] Existing user authenticated from PostgreSQL.\x1b[0m');
     }
 
     const tokens = await this.generateTokens(user.id, user.email);

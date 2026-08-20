@@ -8,10 +8,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import type { Request } from 'express';
+import type { Request, Response } from 'express';
 import { AuthService, GoogleUserPayload } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { JwtRefreshAuthGuard } from './guards/jwt-refresh-auth.guard';
+import { Res } from '@nestjs/common';
 
 @Controller('auth')
 export class AuthController {
@@ -25,8 +26,25 @@ export class AuthController {
 
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
-  async googleAuthRedirect(@Req() req: Request) {
+  async googleAuthRedirect(@Req() req: Request, @Res() res: Response) {
     const googleUser = req.user as GoogleUserPayload;
+    const authData = await this.authService.validateGoogleUser(googleUser);
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    return res.redirect(
+      `${frontendUrl}?accessToken=${authData.accessToken}&refreshToken=${authData.refreshToken}&user=${encodeURIComponent(JSON.stringify(authData.user))}`,
+    );
+  }
+
+  @Post('google-dev')
+  @HttpCode(HttpStatus.OK)
+  async googleDevAuth(@Req() req: Request) {
+    const body = (req.body as Partial<GoogleUserPayload>) || {};
+    const googleUser: GoogleUserPayload = {
+      googleId: body.googleId || '',
+      email: body.email || '',
+      name: body.name || '',
+      avatar: body.avatar || '',
+    };
     return this.authService.validateGoogleUser(googleUser);
   }
 
