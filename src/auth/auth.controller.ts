@@ -5,18 +5,22 @@ import {
   HttpStatus,
   Post,
   Req,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import type { Request, Response } from 'express';
 import { AuthService, GoogleUserPayload } from './auth.service';
+import { AuthConfigService } from './config/auth-config.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { JwtRefreshAuthGuard } from './guards/jwt-refresh-auth.guard';
-import { Res } from '@nestjs/common';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly authConfig: AuthConfigService,
+  ) {}
 
   @Get('google')
   @UseGuards(AuthGuard('google'))
@@ -29,7 +33,7 @@ export class AuthController {
   async googleAuthRedirect(@Req() req: Request, @Res() res: Response) {
     const googleUser = req.user as GoogleUserPayload;
     const authData = await this.authService.validateGoogleUser(googleUser);
-    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    const frontendUrl = this.authConfig.frontendUrl;
     return res.redirect(
       `${frontendUrl}?accessToken=${authData.accessToken}&refreshToken=${authData.refreshToken}&user=${encodeURIComponent(JSON.stringify(authData.user))}`,
     );

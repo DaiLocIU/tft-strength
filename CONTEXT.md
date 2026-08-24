@@ -19,3 +19,11 @@ _Avoid_: RoundName, TurnIndex
 **Match Timeline Store**:
 The persistence seam decoupling match and round state operations from the database engine, with production Postgres and test in-memory adapters.
 _Avoid_: DatabaseService, MatchDao, PrismaWrapper
+
+**Auth Configuration**:
+The centralized configuration for authentication parameters (secrets, token expiration durations, OAuth client identifiers) with environment-aware fail-fast validation on startup.
+_Avoid_: EnvService, ConfigMap, AuthOptions
+
+**User Store**:
+The persistence seam decoupling user identity and session token operations from the database engine, with production Postgres and test in-memory adapters.
+_Avoid_: UserRepository, UserDao, PrismaUserWrapper

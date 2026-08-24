@@ -1,18 +1,17 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-redundant-type-constituents */
-
-// The rules above are disabled because PrismaClient (from generated/prisma/client.ts)
-// uses // @ts-nocheck internally (Prisma v7 generated code), causing ESLint's
-// type checker to evaluate Prisma types as `any`. These operations are safe at runtime.
-
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Inject,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UserModel } from '../../generated/prisma/models/User';
-import { PrismaService } from '../prisma/prisma.service';
+import { AuthConfigService } from './config/auth-config.service';
+import {
+  USER_STORE,
+  type UserStore,
+} from './stores/user.store.interface';
 
 export interface GoogleUserPayload {
   googleId: string;
@@ -28,9 +27,13 @@ export interface TokensResponse {
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
-    private readonly prisma: PrismaService,
+    @Inject(USER_STORE)
+    private readonly userStore: UserStore,
     private readonly jwtService: JwtService,
+    private readonly authConfig: AuthConfigService,
   ) {}
 
   async generateTokens(userId: number, email: string): Promise<TokensResponse> {
@@ -38,16 +41,12 @@ export class AuthService {
 
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload, {
-        secret: process.env.JWT_SECRET || 'defaultJwtSecretKey',
-        expiresIn:
-          (process.env.JWT_EXPIRES_IN as
-            `${number}m` | `${number}s` | `${number}h` | `${number}d`) || '5m',
+        secret: this.authConfig.jwtSecret,
+        expiresIn: this.authConfig.jwtExpiresIn,
       }),
       this.jwtService.signAsync(payload, {
-        secret: process.env.JWT_REFRESH_SECRET || 'defaultRefreshSecretKey',
-        expiresIn:
-          (process.env.JWT_REFRESH_EXPIRES_IN as
-            `${number}m` | `${number}s` | `${number}h` | `${number}d`) || '7d',
+        secret: this.authConfig.jwtRefreshSecret,
+        expiresIn: this.authConfig.jwtRefreshExpiresIn,
       }),
     ]);
 
@@ -63,9 +62,9 @@ export class AuthService {
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(refreshToken, salt);
 
-    console.log('\x1b[33m🔒 [Bcrypt Hash Stored]:\x1b[0m', hash);
+    this.logger.debug(`Stored hashed refresh token for user #${userId}`);
 
-    await this.prisma.user.update({
+    await this.userStore.update({
       where: { id: userId },
       data: { hashedRefreshToken: hash },
     });
@@ -74,19 +73,15 @@ export class AuthService {
   async validateGoogleUser(
     payload: GoogleUserPayload,
   ): Promise<{ user: UserModel; accessToken: string; refreshToken: string }> {
-    console.log('\x1b[36m🔍 [Google Profile]:\x1b[0m', {
-      id: payload.googleId,
-      name: payload.name,
-      email: payload.email,
-    });
+    this.logger.log(`Validating Google user profile for email: ${payload.email}`);
 
-    let user = await this.prisma.user.findUnique({
+    let user = await this.userStore.findUnique({
       where: { email: payload.email },
     });
 
     if (!user) {
-      console.log('\x1b[32m✨ [AuthService] Creating new user in PostgreSQL...\x1b[0m');
-      user = await this.prisma.user.create({
+      this.logger.log(`Creating new user account for ${payload.email}`);
+      user = await this.userStore.create({
         data: {
           email: payload.email,
           name: payload.name,
@@ -95,8 +90,8 @@ export class AuthService {
         },
       });
     } else if (!user.googleId) {
-      console.log('\x1b[34m🔄 [AuthService] Linking Google account to existing user in PostgreSQL...\x1b[0m');
-      user = await this.prisma.user.update({
+      this.logger.log(`Linking Google account to existing user #${user.id}`);
+      user = await this.userStore.update({
         where: { id: user.id },
         data: {
           googleId: payload.googleId,
@@ -104,7 +99,7 @@ export class AuthService {
         },
       });
     } else {
-      console.log('\x1b[32m⚡ [AuthService] Existing user authenticated from PostgreSQL.\x1b[0m');
+      this.logger.debug(`Existing user #${user.id} authenticated.`);
     }
 
     const tokens = await this.generateTokens(user.id, user.email);
@@ -120,7 +115,7 @@ export class AuthService {
     userId: number,
     refreshToken: string,
   ): Promise<TokensResponse> {
-    const user = await this.prisma.user.findUnique({
+    const user = await this.userStore.findUnique({
       where: { id: userId },
     });
 
@@ -138,7 +133,7 @@ export class AuthService {
   }
 
   async logout(userId: number): Promise<{ message: string }> {
-    await this.prisma.user.updateMany({
+    await this.userStore.updateMany({
       where: { id: userId, hashedRefreshToken: { not: null } },
       data: { hashedRefreshToken: null },
     });
