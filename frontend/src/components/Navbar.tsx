@@ -1,24 +1,29 @@
 import React, { useState } from 'react';
-import { Swords, LogOut, ChevronDown, Shield } from 'lucide-react';
+import { Swords, LogOut, ChevronDown, Shield, Sparkles } from 'lucide-react';
 import { User } from '../types';
 
 interface NavbarProps {
   user: User | null;
+  activeTab: string;
+  onSelectTab: (tab: string) => void;
   onGoogleLogin: () => void;
   onLogout: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
   user,
+  activeTab,
+  onSelectTab,
   onGoogleLogin,
   onLogout,
 }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const isStudioAdmin = user?.email === 'loc.ldl.itou@gmail.com';
 
   return (
     <header className="navbar-container">
       <div className="navbar-left">
-        <div className="logo-badge">
+        <div className="logo-badge" onClick={() => onSelectTab('matches')} style={{ cursor: 'pointer' }}>
           <div className="logo-icon-wrap">
             <Swords size={22} className="logo-icon text-cyan" />
           </div>
@@ -29,7 +34,25 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
 
         <nav className="nav-links">
-          <a href="#matches" className="nav-link active">Match History</a>
+          <button
+            onClick={() => onSelectTab('matches')}
+            className={`nav-link ${activeTab === 'matches' ? 'active' : ''}`}
+          >
+            Match History
+          </button>
+
+          {/* Admin only Vision Icon Studio */}
+          {isStudioAdmin && (
+            <button
+              onClick={() => onSelectTab('studio')}
+              className={`nav-link studio-nav-link ${activeTab === 'studio' ? 'active' : ''}`}
+            >
+              <Sparkles size={14} className="text-cyan" />
+              <span>Icon Studio</span>
+              <span className="admin-pill">Admin</span>
+            </button>
+          )}
+
           <a href="#meta" className="nav-link">Meta Comps</a>
           <a href="#builder" className="nav-link">Team Builder</a>
           <a href="#tierlist" className="nav-link">Tier List</a>
@@ -69,6 +92,15 @@ export const Navbar: React.FC<NavbarProps> = ({
                   <Shield size={14} className="text-emerald" />
                   <span>Session Active (Protected)</span>
                 </div>
+                {isStudioAdmin && (
+                  <button
+                    onClick={() => onSelectTab('studio')}
+                    className="dropdown-item btn-studio-item"
+                  >
+                    <Sparkles size={14} className="text-cyan" />
+                    <span>Open TFT Icon Studio</span>
+                  </button>
+                )}
                 <div className="dropdown-divider"></div>
                 <button onClick={onLogout} className="dropdown-item btn-logout-item">
                   <LogOut size={14} />

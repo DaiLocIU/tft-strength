@@ -1,0 +1,32 @@
+{
+  "version": "v27.0-0824",
+  "architecture": "MobileNetV2 (1280-d Feature Metric Space)",
+  "classes_count": 23,
+  "classes": [
+    "alistar",
+    "amumu",
+    "azir",
+    "bench_assassin",
+    "brambleback",
+    "draven",
+    "ezreal",
+    "faerie_dragon",
+    "gromp",
+    "hecarim",
+    "kayle",
+    "kogmaw",
+    "murkwolf",
+    "ornn",
+    "pebbles",
+    "scuttlecrab",
+    "shop_aphelios",
+    "shop_kayle",
+    "shop_malphite",
+    "shop_morgana",
+    "shop_teemo",
+    "taric",
+    "teemo"
+  ],
+  "total_embeddings": 162,
+  "last_trained_at": "2026-08-24 21:43:42"
+}

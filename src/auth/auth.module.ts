@@ -18,6 +18,7 @@ import { RefreshTokenStrategy } from './strategies/refresh-token.strategy';
     PrismaModule,
     PassportModule,
     JwtModule.registerAsync({
+      extraProviders: [AuthConfigService],
       inject: [AuthConfigService],
       useFactory: (authConfig: AuthConfigService) => ({
         secret: authConfig.jwtSecret,

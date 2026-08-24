@@ -3,11 +3,13 @@ import confetti from 'canvas-confetti';
 import { Navbar } from './components/Navbar';
 import { MatchesDashboard } from './components/MatchesDashboard';
 import { CreateMatchModal } from './components/CreateMatchModal';
+import { IconStudio } from './components/IconStudio';
 import { api, getUser, setAuthData } from './services/api';
 import { Match, User } from './types';
 
 export const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(getUser());
+  const [activeTab, setActiveTab] = useState<'matches' | 'studio'>('matches');
   const [matches, setMatches] = useState<Match[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [error401, setError401] = useState<string | null>(null);
@@ -30,19 +32,17 @@ export const App: React.FC = () => {
         // ignore parse error
       }
 
-      // Save to localStorage + update in-memory tokens
       setAuthData({ accessToken, refreshToken }, parsedUser);
-
-      // Directly update React state so Navbar re-renders immediately
       setUser(parsedUser);
-
-      // Clean query params from URL bar
       window.history.replaceState({}, document.title, window.location.pathname);
 
-      // Trigger celebration confetti
-      confetti({ particleCount: 75, spread: 60, origin: { y: 0.6 }, colors: ['#00f2fe', '#4facfe', '#10b981', '#f59e0b'] });
+      confetti({
+        particleCount: 75,
+        spread: 60,
+        origin: { y: 0.6 },
+        colors: ['#00f2fe', '#4facfe', '#10b981', '#f59e0b'],
+      });
 
-      // Load matches right after login
       setTimeout(() => {
         handleLoadMatches();
       }, 100);
@@ -67,7 +67,6 @@ export const App: React.FC = () => {
     });
   };
 
-  // 4. Fetch Matches from protected API (GET /matches)
   const handleLoadMatches = async () => {
     setLoading(true);
     setError401(null);
@@ -86,12 +85,10 @@ export const App: React.FC = () => {
     }
   };
 
-  // 5. Direct Real Google Login (calls backend /auth/google)
   const handleGoogleLogin = () => {
     api.loginWithGoogle();
   };
 
-  // 6. Create Match
   const handleCreateMatch = async (matchData: Partial<Match>) => {
     await api.createMatch(matchData);
     const updated = await api.getMatches();
@@ -99,12 +96,12 @@ export const App: React.FC = () => {
     triggerConfetti();
   };
 
-  // 7. Logout
   const handleLogout = async () => {
     await api.logout();
     setUser(null);
     setMatches(null);
     setError401(null);
+    setActiveTab('matches');
   };
 
   return (
@@ -112,21 +109,27 @@ export const App: React.FC = () => {
       {/* App Header */}
       <Navbar
         user={user}
+        activeTab={activeTab}
+        onSelectTab={(t) => setActiveTab(t as 'matches' | 'studio')}
         onGoogleLogin={handleGoogleLogin}
         onLogout={handleLogout}
       />
 
       {/* Main Content */}
       <main className="main-content">
-        <MatchesDashboard
-          matches={matches}
-          loading={loading}
-          error401={error401}
-          user={user}
-          onLoadMatches={handleLoadMatches}
-          onOpenCreateMatch={() => setIsCreateMatchOpen(true)}
-          onGoogleLogin={handleGoogleLogin}
-        />
+        {activeTab === 'studio' ? (
+          <IconStudio user={user} />
+        ) : (
+          <MatchesDashboard
+            matches={matches}
+            loading={loading}
+            error401={error401}
+            user={user}
+            onLoadMatches={handleLoadMatches}
+            onOpenCreateMatch={() => setIsCreateMatchOpen(true)}
+            onGoogleLogin={handleGoogleLogin}
+          />
+        )}
       </main>
 
       {/* Create Match Modal */}

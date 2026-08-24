@@ -1,0 +1,27 @@
+{
+  "screenshot": "Screenshot 2026-08-24 at 4.03.39\u202fPM.png",
+  "width": 3456,
+  "height": 2234,
+  "annotations": [
+    {
+      "id": "1acd92dd-650a-4287-8c5c-4f1a817a630e",
+      "name": "kayle",
+      "x": 1404,
+      "y": 860,
+      "width": 196,
+      "height": 233,
+      "confidence": 67.4,
+      "status": "detected"
+    },
+    {
+      "id": "cb3076e1-d50b-49a6-a95b-00468e45995f",
+      "name": "draven",
+      "x": 2112,
+      "y": 1183,
+      "width": 207,
+      "height": 290,
+      "confidence": 59.4,
+      "status": "detected"
+    }
+  ]
+}
