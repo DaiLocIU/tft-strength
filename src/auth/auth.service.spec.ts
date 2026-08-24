@@ -31,10 +31,12 @@ describe('AuthService (with MemoryUserStore and AuthConfigService)', () => {
         {
           provide: JwtService,
           useValue: {
-            signAsync: jest.fn().mockImplementation((payload: any, options: any) => {
-              const secret = options?.secret || 'testSecret';
-              return Promise.resolve(`token_for_${payload.sub}_${secret}`);
-            }),
+            signAsync: jest
+              .fn()
+              .mockImplementation((payload: any, options: any) => {
+                const secret = options?.secret || 'testSecret';
+                return Promise.resolve(`token_for_${payload.sub}_${secret}`);
+              }),
           },
         },
       ],
@@ -65,7 +67,9 @@ describe('AuthService (with MemoryUserStore and AuthConfigService)', () => {
       expect(result.accessToken).toBeDefined();
       expect(result.refreshToken).toBeDefined();
 
-      const inDb = await userStore.findUnique({ where: { email: 'newuser@example.com' } });
+      const inDb = await userStore.findUnique({
+        where: { email: 'newuser@example.com' },
+      });
       expect(inDb).toBeDefined();
       expect(inDb?.hashedRefreshToken).toBeDefined();
     });
@@ -92,7 +96,9 @@ describe('AuthService (with MemoryUserStore and AuthConfigService)', () => {
       expect(result.user.id).toBe(existing.id);
       expect(result.user.googleId).toBe('google-456');
 
-      const updated = await userStore.findUnique({ where: { id: existing.id } });
+      const updated = await userStore.findUnique({
+        where: { id: existing.id },
+      });
       expect(updated?.googleId).toBe('google-456');
       expect(updated?.avatar).toBe('https://google.com/pic.jpg');
     });

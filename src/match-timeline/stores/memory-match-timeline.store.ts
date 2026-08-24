@@ -3,6 +3,7 @@ import { RoundModel } from '../../../generated/prisma/models/Round';
 import {
   CreateMatchData,
   CreateRoundData,
+  MatchTimelineAggregate,
   MatchTimelineStore,
   UpdateMatchData,
   UpdateRoundData,
@@ -39,6 +40,38 @@ export class MemoryMatchTimelineStore implements MatchTimelineStore {
       (m) => m.id === id && (userId === undefined || m.userId === userId),
     );
     return match ? { ...match } : null;
+  }
+
+  async findMatchWithRounds(
+    id: number,
+    userId?: number,
+  ): Promise<MatchTimelineAggregate | null> {
+    const match = await this.findMatchById(id, userId);
+    if (!match) return null;
+
+    const rounds = await this.findAllRounds(id);
+    return {
+      ...match,
+      rounds,
+    };
+  }
+
+  async findAllMatchesWithRounds(
+    userId: number,
+  ): Promise<MatchTimelineAggregate[]> {
+    const matches = this.matches
+      .filter((m) => m.userId === userId)
+      .sort((a, b) => a.playedAt.getTime() - b.playedAt.getTime());
+
+    const result: MatchTimelineAggregate[] = [];
+    for (const match of matches) {
+      const rounds = await this.findAllRounds(match.id);
+      result.push({
+        ...match,
+        rounds,
+      });
+    }
+    return result;
   }
 
   async updateMatch(id: number, data: UpdateMatchData): Promise<MatchModel> {

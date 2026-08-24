@@ -1,4 +1,8 @@
-import { BadRequestException, ConflictException, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  NotFoundException,
+} from '@nestjs/common';
 import { MatchTimelineService } from './match-timeline.service';
 import { MemoryMatchTimelineStore } from './stores/memory-match-timeline.store';
 
@@ -183,6 +187,39 @@ describe('MatchTimelineService (with MemoryStore Seam)', () => {
       await expect(
         service.findOneRoundSnapshot(matchId, '5-1', USER_A),
       ).rejects.toThrow(NotFoundException);
+    });
+  });
+
+  describe('Match Strength Scoring', () => {
+    it('should compute overall and per-round strength scores for a match', async () => {
+      const match = await service.createMatch({ placement: 1 }, USER_A);
+      await service.recordRoundSnapshot(
+        match.id,
+        { stage: 2, roundNumber: 1, gold: 10, hp: 100, level: 3, streak: 1 },
+        USER_A,
+      );
+      await service.recordRoundSnapshot(
+        match.id,
+        { stage: 2, roundNumber: 2, gold: 20, hp: 95, level: 4, streak: 2 },
+        USER_A,
+      );
+
+      const strength = await service.getMatchStrength(match.id, USER_A);
+      expect(strength.matchId).toBe(match.id);
+      expect(strength.rounds).toHaveLength(2);
+      expect(strength.rounds[0].stage).toBe(2);
+      expect(strength.rounds[0].roundNumber).toBe(1);
+      expect(strength.rounds[0].placementScore).toBe(100);
+      expect(strength.rounds[0].total).toBeGreaterThan(0);
+      expect(strength.overallStrength).toBeGreaterThan(0);
+    });
+
+    it('should return 0 overallStrength when a match has no rounds', async () => {
+      const match = await service.createMatch({ placement: 4 }, USER_A);
+      const strength = await service.getMatchStrength(match.id, USER_A);
+      expect(strength.matchId).toBe(match.id);
+      expect(strength.overallStrength).toBe(0);
+      expect(strength.rounds).toEqual([]);
     });
   });
 });

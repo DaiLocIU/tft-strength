@@ -31,7 +31,10 @@ export const USER_STORE = Symbol('USER_STORE');
 export interface UserStore {
   findUnique(args: { where: UserWhereUniqueInput }): Promise<UserModel | null>;
   create(args: { data: UserCreateData }): Promise<UserModel>;
-  update(args: { where: { id: number }; data: UserUpdateData }): Promise<UserModel>;
+  update(args: {
+    where: { id: number };
+    data: UserUpdateData;
+  }): Promise<UserModel>;
   updateMany(args: {
     where: UserUpdateManyWhereInput;
     data: UserUpdateData;

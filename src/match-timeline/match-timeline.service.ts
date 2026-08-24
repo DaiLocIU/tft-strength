@@ -15,6 +15,7 @@ import {
   MATCH_TIMELINE_STORE,
   type MatchTimelineStore,
 } from './stores/match-timeline.store.interface';
+import { evaluateMatch } from '../strength/match-evaluator';
 
 @Injectable()
 export class MatchTimelineService {
@@ -50,10 +51,7 @@ export class MatchTimelineService {
 
   // --- Match Lifecycle Operations ---
 
-  async createMatch(
-    dto: CreateMatchDto,
-    userId: number,
-  ): Promise<MatchModel> {
+  async createMatch(dto: CreateMatchDto, userId: number): Promise<MatchModel> {
     return await this.store.createMatch({
       userId,
       placement: dto.placement,
@@ -211,5 +209,18 @@ export class MatchTimelineService {
   ): Promise<RoundModel> {
     const existing = await this.findOneRoundSnapshot(matchId, roundId, userId);
     return await this.store.deleteRound(existing.id);
+  }
+
+  // --- Match Strength Scoring ---
+
+  async getMatchStrength(matchId: number, userId: number) {
+    const match = await this.store.findMatchWithRounds(matchId, userId);
+    if (!match) {
+      throw new NotFoundException(
+        `Match with ID #${matchId} not found or access denied`,
+      );
+    }
+
+    return evaluateMatch(match);
   }
 }

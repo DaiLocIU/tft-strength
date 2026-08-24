@@ -1,9 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-redundant-type-constituents */
-
 import { Injectable } from '@nestjs/common';
 import { MatchModel } from '../../../generated/prisma/models/Match';
 import { RoundModel } from '../../../generated/prisma/models/Round';
@@ -11,6 +5,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import {
   CreateMatchData,
   CreateRoundData,
+  MatchTimelineAggregate,
   MatchTimelineStore,
   UpdateMatchData,
   UpdateRoundData,
@@ -42,6 +37,34 @@ export class PrismaMatchTimelineStore implements MatchTimelineStore {
   async findMatchById(id: number, userId?: number): Promise<MatchModel | null> {
     return await this.prisma.match.findFirst({
       where: { id, ...(userId ? { userId } : {}) },
+    });
+  }
+
+  async findMatchWithRounds(
+    id: number,
+    userId?: number,
+  ): Promise<MatchTimelineAggregate | null> {
+    return await this.prisma.match.findFirst({
+      where: { id, ...(userId ? { userId } : {}) },
+      include: {
+        rounds: {
+          orderBy: [{ stage: 'asc' }, { roundNumber: 'asc' }],
+        },
+      },
+    });
+  }
+
+  async findAllMatchesWithRounds(
+    userId: number,
+  ): Promise<MatchTimelineAggregate[]> {
+    return await this.prisma.match.findMany({
+      where: { userId },
+      include: {
+        rounds: {
+          orderBy: [{ stage: 'asc' }, { roundNumber: 'asc' }],
+        },
+      },
+      orderBy: { playedAt: 'asc' },
     });
   }
 

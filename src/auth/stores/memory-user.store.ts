@@ -18,7 +18,10 @@ export class MemoryUserStore implements UserStore {
       if (args.where.id !== undefined && u.id === args.where.id) return true;
       if (args.where.email !== undefined && u.email === args.where.email)
         return true;
-      if (args.where.googleId !== undefined && u.googleId === args.where.googleId)
+      if (
+        args.where.googleId !== undefined &&
+        u.googleId === args.where.googleId
+      )
         return true;
       return false;
     });
@@ -48,16 +51,21 @@ export class MemoryUserStore implements UserStore {
   }): Promise<UserModel> {
     const index = this.users.findIndex((u) => u.id === args.where.id);
     if (index === -1) {
-      throw new Error(`User with ID #${args.where.id} not found in memory store`);
+      throw new Error(
+        `User with ID #${args.where.id} not found in memory store`,
+      );
     }
 
     const current = this.users[index];
     const updated: UserModel = {
       ...current,
       name: args.data.name !== undefined ? args.data.name : current.name,
-      avatar: args.data.avatar !== undefined ? args.data.avatar : current.avatar,
+      avatar:
+        args.data.avatar !== undefined ? args.data.avatar : current.avatar,
       googleId:
-        args.data.googleId !== undefined ? args.data.googleId : current.googleId,
+        args.data.googleId !== undefined
+          ? args.data.googleId
+          : current.googleId,
       hashedRefreshToken:
         args.data.hashedRefreshToken !== undefined
           ? args.data.hashedRefreshToken
@@ -80,8 +88,14 @@ export class MemoryUserStore implements UserStore {
       if (args.where.id !== undefined && u.id !== args.where.id) {
         matches = false;
       }
-      if (args.where.hashedRefreshToken && typeof args.where.hashedRefreshToken === 'object') {
-        if ('not' in args.where.hashedRefreshToken && args.where.hashedRefreshToken.not === null) {
+      if (
+        args.where.hashedRefreshToken &&
+        typeof args.where.hashedRefreshToken === 'object'
+      ) {
+        if (
+          'not' in args.where.hashedRefreshToken &&
+          args.where.hashedRefreshToken.not === null
+        ) {
           if (u.hashedRefreshToken === null) {
             matches = false;
           }

@@ -37,6 +37,11 @@ export class MatchesController {
     return this.matchTimelineService.findOneMatch(+id, userId);
   }
 
+  @Get(':id/strength')
+  getStrength(@CurrentUser('userId') userId: number, @Param('id') id: string) {
+    return this.matchTimelineService.getMatchStrength(+id, userId);
+  }
+
   @Patch(':id')
   update(
     @CurrentUser('userId') userId: number,

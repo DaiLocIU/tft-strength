@@ -1,6 +1,10 @@
 import { MatchModel } from '../../../generated/prisma/models/Match';
 import { RoundModel } from '../../../generated/prisma/models/Round';
 
+export interface MatchTimelineAggregate extends MatchModel {
+  rounds: RoundModel[];
+}
+
 export interface CreateMatchData {
   userId: number;
   placement: number;
@@ -44,6 +48,13 @@ export interface MatchTimelineStore {
   findMatchById(id: number, userId?: number): Promise<MatchModel | null>;
   updateMatch(id: number, data: UpdateMatchData): Promise<MatchModel>;
   deleteMatch(id: number): Promise<MatchModel>;
+
+  // Aggregate operations
+  findMatchWithRounds(
+    id: number,
+    userId?: number,
+  ): Promise<MatchTimelineAggregate | null>;
+  findAllMatchesWithRounds(userId: number): Promise<MatchTimelineAggregate[]>;
 
   // Round snapshot operations
   createRound(data: CreateRoundData): Promise<RoundModel>;

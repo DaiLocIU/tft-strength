@@ -27,3 +27,8 @@ _Avoid_: EnvService, ConfigMap, AuthOptions
 **User Store**:
 The persistence seam decoupling user identity and session token operations from the database engine, with production Postgres and test in-memory adapters.
 _Avoid_: UserRepository, UserDao, PrismaUserWrapper
+
+**Match Evaluator**:
+The pure domain module that evaluates team strength across all round snapshots of a match, computing per-round breakdowns and aggregate match strength metrics.
+_Avoid_: StrengthCalculatorService, StrengthHelper, MatchScorer
+

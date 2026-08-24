@@ -1,17 +1,9 @@
-import {
-  ForbiddenException,
-  Inject,
-  Injectable,
-  Logger,
-} from '@nestjs/common';
+import { ForbiddenException, Inject, Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UserModel } from '../../generated/prisma/models/User';
 import { AuthConfigService } from './config/auth-config.service';
-import {
-  USER_STORE,
-  type UserStore,
-} from './stores/user.store.interface';
+import { USER_STORE, type UserStore } from './stores/user.store.interface';
 
 export interface GoogleUserPayload {
   googleId: string;
@@ -73,7 +65,9 @@ export class AuthService {
   async validateGoogleUser(
     payload: GoogleUserPayload,
   ): Promise<{ user: UserModel; accessToken: string; refreshToken: string }> {
-    this.logger.log(`Validating Google user profile for email: ${payload.email}`);
+    this.logger.log(
+      `Validating Google user profile for email: ${payload.email}`,
+    );
 
     let user = await this.userStore.findUnique({
       where: { email: payload.email },

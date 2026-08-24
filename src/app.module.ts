@@ -4,9 +4,10 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { MatchTimelineModule } from './match-timeline/match-timeline.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { StatsModule } from './stats/stats.module';
 
 @Module({
-  imports: [PrismaModule, AuthModule, MatchTimelineModule],
+  imports: [PrismaModule, AuthModule, MatchTimelineModule, StatsModule],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -43,13 +43,11 @@ export class AuthConfigService implements OnModuleInit {
     return process.env.JWT_SECRET || 'defaultJwtSecretKey';
   }
 
-  get jwtExpiresIn(): `${number}m` | `${number}s` | `${number}h` | `${number}d` {
+  get jwtExpiresIn():
+    `${number}m` | `${number}s` | `${number}h` | `${number}d` {
     return (
       (process.env.JWT_EXPIRES_IN as
-        | `${number}m`
-        | `${number}s`
-        | `${number}h`
-        | `${number}d`) || '5m'
+        `${number}m` | `${number}s` | `${number}h` | `${number}d`) || '5m'
     );
   }
 
@@ -58,16 +56,10 @@ export class AuthConfigService implements OnModuleInit {
   }
 
   get jwtRefreshExpiresIn():
-    | `${number}m`
-    | `${number}s`
-    | `${number}h`
-    | `${number}d` {
+    `${number}m` | `${number}s` | `${number}h` | `${number}d` {
     return (
       (process.env.JWT_REFRESH_EXPIRES_IN as
-        | `${number}m`
-        | `${number}s`
-        | `${number}h`
-        | `${number}d`) || '7d'
+        `${number}m` | `${number}s` | `${number}h` | `${number}d`) || '7d'
     );
   }
 

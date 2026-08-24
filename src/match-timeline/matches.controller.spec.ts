@@ -6,7 +6,6 @@ import { MATCH_TIMELINE_STORE } from './stores/match-timeline.store.interface';
 
 describe('MatchesController', () => {
   let controller: MatchesController;
-  let service: MatchTimelineService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -21,7 +20,6 @@ describe('MatchesController', () => {
     }).compile();
 
     controller = module.get<MatchesController>(MatchesController);
-    service = module.get<MatchTimelineService>(MatchTimelineService);
   });
 
   it('should be defined', () => {
@@ -38,5 +36,10 @@ describe('MatchesController', () => {
 
     const found = await controller.findOne(1, String(match.id));
     expect(found.id).toBe(match.id);
+
+    const strength = await controller.getStrength(1, String(match.id));
+    expect(strength.matchId).toBe(match.id);
+    expect(strength.overallStrength).toBeDefined();
+    expect(strength.rounds).toEqual([]);
   });
 });
