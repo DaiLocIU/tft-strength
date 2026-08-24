@@ -1,36 +1,40 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
   UseGuards,
 } from '@nestjs/common';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { RoundsService } from './rounds.service';
-import { CreateRoundDto } from './dto/create-round.dto';
-import { UpdateRoundDto } from './dto/update-round.dto';
+import { CreateRoundSnapshotDto } from './dto/create-round-snapshot.dto';
+import { UpdateRoundSnapshotDto } from './dto/update-round-snapshot.dto';
+import { MatchTimelineService } from './match-timeline.service';
 
 @UseGuards(JwtAuthGuard)
 @Controller('matches/:id/rounds')
 export class RoundsController {
-  constructor(private readonly roundsService: RoundsService) {}
+  constructor(private readonly matchTimelineService: MatchTimelineService) {}
 
   @Post()
   create(
     @CurrentUser('userId') userId: number,
     @Param('id') matchId: string,
-    @Body() createRoundDto: CreateRoundDto,
+    @Body() createRoundDto: CreateRoundSnapshotDto,
   ) {
-    return this.roundsService.create(+matchId, createRoundDto, userId);
+    return this.matchTimelineService.recordRoundSnapshot(
+      +matchId,
+      createRoundDto,
+      userId,
+    );
   }
 
   @Get()
   findAll(@CurrentUser('userId') userId: number, @Param('id') matchId: string) {
-    return this.roundsService.findAll(+matchId, userId);
+    return this.matchTimelineService.findAllRoundSnapshots(+matchId, userId);
   }
 
   @Get(':roundId')
@@ -39,7 +43,11 @@ export class RoundsController {
     @Param('id') matchId: string,
     @Param('roundId') roundId: string,
   ) {
-    return this.roundsService.findOne(+matchId, roundId, userId);
+    return this.matchTimelineService.findOneRoundSnapshot(
+      +matchId,
+      roundId,
+      userId,
+    );
   }
 
   @Patch(':roundId')
@@ -47,9 +55,14 @@ export class RoundsController {
     @CurrentUser('userId') userId: number,
     @Param('id') matchId: string,
     @Param('roundId') roundId: string,
-    @Body() updateRoundDto: UpdateRoundDto,
+    @Body() updateRoundDto: UpdateRoundSnapshotDto,
   ) {
-    return this.roundsService.update(+matchId, roundId, updateRoundDto, userId);
+    return this.matchTimelineService.updateRoundSnapshot(
+      +matchId,
+      roundId,
+      updateRoundDto,
+      userId,
+    );
   }
 
   @Delete(':roundId')
@@ -58,6 +71,10 @@ export class RoundsController {
     @Param('id') matchId: string,
     @Param('roundId') roundId: string,
   ) {
-    return this.roundsService.remove(+matchId, roundId, userId);
+    return this.matchTimelineService.removeRoundSnapshot(
+      +matchId,
+      roundId,
+      userId,
+    );
   }
 }
