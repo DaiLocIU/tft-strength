@@ -1,9 +1,9 @@
-import { MatchModel } from '../../../generated/prisma/models/Match';
-import { RoundModel } from '../../../generated/prisma/models/Round';
+import type { MatchModel } from '../../../generated/prisma/models/Match';
+import type { RoundModel } from '../../../generated/prisma/models/Round';
 
-export interface MatchTimelineAggregate extends MatchModel {
+export type MatchTimelineAggregate = MatchModel & {
   rounds: RoundModel[];
-}
+};
 
 export interface CreateMatchData {
   userId: number;
