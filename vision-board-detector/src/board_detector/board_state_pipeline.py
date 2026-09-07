@@ -4,6 +4,18 @@ from .model_adapters import ChampionIdentityCandidate, ChampionStarCandidate, He
 
 SignalSource = Literal["both", "occupancy_only", "champion_only", "empty"]
 
+# Identity models are trained from asset folders, whose identifiers do not
+# always match the champion name shown to players.
+CHAMPION_NAME_ALIASES = {
+    "ancient_sentinel": "Sentinel",
+}
+
+
+def normalize_champion_name(name: Optional[str]) -> Optional[str]:
+    if name is None:
+        return None
+    return CHAMPION_NAME_ALIASES.get(name.casefold().replace(" ", "_"), name)
+
 
 class CombinedHexSignal(TypedDict):
     row: int
@@ -62,7 +74,14 @@ def combine_predictions(
         )
         needs_review = False
         review_reason: Optional[str] = None
-        champion_name = raw_champion_name
+        champion_name = normalize_champion_name(raw_champion_name)
+        identity_candidates = [
+            {
+                **candidate,
+                "champion_name": normalize_champion_name(candidate["champion_name"]),
+            }
+            for candidate in identity_candidates
+        ]
 
         if (
             champion_mapped

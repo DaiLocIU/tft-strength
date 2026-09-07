@@ -167,21 +167,23 @@ onBeforeUnmount(() => {
     </div>
     <template v-else-if="match">
       <header class="detail-hero">
-        <div class="detail-placement">#{{ match.placement }}</div>
+        <div class="detail-placement">{{ match.placement === null ? '—' : `#${match.placement}` }}</div>
         <div>
           <p class="detail-eyebrow">
             {{
               match.placement === 1
                 ? 'VICTORY'
-                : match.placement <= 4
+                : match.placement !== null && match.placement <= 4
                   ? 'TOP FOUR'
-                  : 'MATCH REVIEW'
+                  : match.placement === null
+                    ? 'PLACEMENT PENDING'
+                    : 'MATCH REVIEW'
             }}
           </p>
-          <h1>{{ match.comp || `Match #${match.id}` }}</h1>
+          <h1>{{ match.name || match.comp || `Match #${match.id}` }}</h1>
           <p>
             {{ date(match.playedAt || match.createdAt) }}
-            <span v-if="match.version"> · Patch {{ match.version }}</span>
+            <span v-if="match.version"> · Set {{ match.version }}</span>
           </p>
         </div>
         <div class="detail-total">

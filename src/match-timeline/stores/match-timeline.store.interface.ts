@@ -7,17 +7,17 @@ export interface MatchTimelineAggregate extends MatchModel {
 
 export interface CreateMatchData {
   userId: number;
-  placement: number;
+  placement?: number | null;
   playedAt?: Date;
+  name?: string;
   comp?: string;
-  version?: string;
 }
 
 export interface UpdateMatchData {
-  placement?: number;
+  placement?: number | null;
   playedAt?: Date;
+  name?: string;
   comp?: string;
-  version?: string;
 }
 
 export interface CreateRoundData {

@@ -33,6 +33,10 @@ export class StatsService {
 
   async getStats(userId: number): Promise<UserStatsResponse> {
     const matches = await this.store.findAllMatchesWithRounds(userId);
+    const matchesWithPlacement = matches.filter(
+      (match): match is typeof match & { placement: number } =>
+        match.placement !== null,
+    );
 
     if (matches.length === 0) {
       return { compStats: [], strengthCurve: [] };
@@ -49,7 +53,7 @@ export class StatsService {
       const entry = compMap.get(key) ?? { games: 0, wins: 0, top4s: 0 };
       entry.games += 1;
       if (m.placement === 1) entry.wins += 1;
-      if (m.placement <= 4) entry.top4s += 1;
+      if (m.placement !== null && m.placement <= 4) entry.top4s += 1;
       compMap.set(key, entry);
     }
 
@@ -63,7 +67,7 @@ export class StatsService {
     );
 
     // --- Strength curve ---
-    const strengthCurve: StrengthCurvePoint[] = matches.map((m) => {
+    const strengthCurve: StrengthCurvePoint[] = matchesWithPlacement.map((m) => {
       const evaluated = evaluateMatch(m);
 
       return {

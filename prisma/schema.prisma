@@ -24,10 +24,11 @@ model User {
 model Match {
   id        Int      @id @default(autoincrement())
   userId    Int?
-  placement Int // 1-8 rank in that game
+  placement Int? // optional 1-8 final rank in that game
   playedAt  DateTime @default(now()) // date/time of the match
+  name      String? // optional player-provided match label
   comp      String? // optional label for team comp (e.g., "Reroll Kayle")
-  version   String? // game patch version (e.g., "18.1", "18.2")
+  version   Int      @default(18) // TFT set version; currently 18 or 19
   user             User?             @relation(fields: [userId], references: [id], onDelete: Cascade)
   rounds           Round[] // Relation: Match has many Rounds
   boardStateDrafts BoardStateDraft[]

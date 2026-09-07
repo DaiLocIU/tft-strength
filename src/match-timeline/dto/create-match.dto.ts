@@ -8,10 +8,11 @@ import {
 } from 'class-validator';
 
 export class CreateMatchDto {
+  @IsOptional()
   @IsInt()
   @Min(1)
   @Max(8)
-  placement: number;
+  placement?: number;
 
   @IsOptional()
   @IsDateString()
@@ -19,9 +20,10 @@ export class CreateMatchDto {
 
   @IsOptional()
   @IsString()
-  comp?: string;
+  name?: string;
 
   @IsOptional()
   @IsString()
-  version?: string;
+  comp?: string;
+
 }

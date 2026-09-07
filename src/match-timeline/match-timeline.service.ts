@@ -56,8 +56,8 @@ export class MatchTimelineService {
       userId,
       placement: dto.placement,
       playedAt: dto.playedAt ? new Date(dto.playedAt) : undefined,
+      name: dto.name,
       comp: dto.comp,
-      version: dto.version,
     });
   }
 
@@ -85,8 +85,8 @@ export class MatchTimelineService {
     return await this.store.updateMatch(id, {
       placement: dto.placement,
       playedAt: dto.playedAt ? new Date(dto.playedAt) : undefined,
+      name: dto.name,
       comp: dto.comp,
-      version: dto.version,
     });
   }
 
@@ -220,7 +220,12 @@ export class MatchTimelineService {
         `Match with ID #${matchId} not found or access denied`,
       );
     }
+    if (match.placement === null) {
+      throw new BadRequestException(
+        'Record a final placement before calculating match strength',
+      );
+    }
 
-    return evaluateMatch(match);
+    return evaluateMatch({ ...match, placement: match.placement });
   }
 }

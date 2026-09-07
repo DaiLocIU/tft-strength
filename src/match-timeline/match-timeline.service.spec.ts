@@ -21,13 +21,15 @@ describe('MatchTimelineService (with MemoryStore Seam)', () => {
   describe('Match Lifecycle', () => {
     it('should create and retrieve a match for a user', async () => {
       const created = await service.createMatch(
-        { placement: 1, comp: 'Rebel Sorcerer', version: '14.1' },
+        { placement: 1, name: 'Opening climb', comp: 'Rebel Sorcerer' },
         USER_A,
       );
 
       expect(created.id).toBeDefined();
       expect(created.placement).toBe(1);
       expect(created.userId).toBe(USER_A);
+      expect(created.name).toBe('Opening climb');
+      expect(created.version).toBe(18);
       expect(created.comp).toBe('Rebel Sorcerer');
 
       const found = await service.findOneMatch(created.id, USER_A);

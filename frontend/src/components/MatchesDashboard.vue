@@ -36,13 +36,16 @@ const wins = computed(() =>
   props.matches ? props.matches.filter((m) => m.placement === 1).length : 0,
 );
 const top4s = computed(() =>
-  props.matches ? props.matches.filter((m) => m.placement <= 4).length : 0,
+  props.matches
+    ? props.matches.filter((m) => m.placement !== null && m.placement <= 4).length
+    : 0,
 );
 const avgPlacement = computed(() => {
-  if (props.matches && props.matches.length > 0) {
+  const placedMatches = props.matches?.filter((m) => m.placement !== null) ?? [];
+  if (placedMatches.length > 0) {
     return (
-      props.matches.reduce((acc, m) => acc + m.placement, 0) /
-      props.matches.length
+      placedMatches.reduce((acc, m) => acc + (m.placement ?? 0), 0) /
+      placedMatches.length
     ).toFixed(1);
   }
   return '—';
@@ -62,7 +65,7 @@ const filteredMatches = computed(() => {
   if (!props.matches) return [];
   return props.matches.filter((m) => {
     if (filter.value === 'win') return m.placement === 1;
-    if (filter.value === 'top4') return m.placement <= 4;
+    if (filter.value === 'top4') return m.placement !== null && m.placement <= 4;
     return true;
   });
 });
@@ -244,7 +247,7 @@ function formatMatchDate(match: Match) {
           :key="match.id"
           role="button"
           tabindex="0"
-          :aria-label="`Review match ${match.id}, placement ${match.placement}`"
+          :aria-label="`Review match ${match.id}${match.placement === null ? ', placement pending' : `, placement ${match.placement}`}`"
           @click="emit('openMatch', match.id)"
           @keydown.enter="emit('openMatch', match.id)"
           @keydown.space.prevent="emit('openMatch', match.id)"
@@ -252,7 +255,7 @@ function formatMatchDate(match: Match) {
             'match-item-card',
             match.placement === 1
               ? 'placement-1'
-              : match.placement <= 4
+              : match.placement !== null && match.placement <= 4
                 ? 'placement-top4'
                 : 'placement-bot4',
           ]"
@@ -263,27 +266,29 @@ function formatMatchDate(match: Match) {
                 'placement-tag',
                 match.placement === 1
                   ? 'tag-win'
-                  : match.placement <= 4
+                  : match.placement !== null && match.placement <= 4
                     ? 'tag-top4'
                     : 'tag-bot4',
               ]"
             >
-              <span class="placement-number">#{{ match.placement }}</span>
+              <span class="placement-number">{{ match.placement === null ? '—' : `#${match.placement}` }}</span>
               <span class="placement-text">{{
                 match.placement === 1
                   ? 'Victory'
-                  : match.placement <= 4
+                  : match.placement !== null && match.placement <= 4
                     ? 'Top 4'
-                    : 'Defeat'
+                    : match.placement === null
+                      ? 'Pending'
+                      : 'Defeat'
               }}</span>
             </div>
 
             <div class="match-meta-details">
               <span class="game-mode-tag">{{
-                match.gameMode || 'Ranked TFT'
+                `Set ${match.version ?? 18}`
               }}</span>
               <span class="rounds-survived-tag">{{
-                match.comp || 'Open round timeline →'
+                match.name || match.comp || 'Open round timeline →'
               }}</span>
             </div>
           </div>
@@ -354,16 +359,6 @@ function formatMatchDate(match: Match) {
           </div>
 
           <div class="match-right-column">
-            <div v-if="match.damageDealt != null" class="game-stat-pill">
-              <span class="stat-title">Damage</span>
-              <span class="stat-number">{{
-                (match.damageDealt ?? 0).toLocaleString()
-              }}</span>
-            </div>
-            <div v-if="match.goldLeft != null" class="game-stat-pill">
-              <span class="stat-title">Gold Left</span>
-              <span class="stat-number">💰 {{ match.goldLeft || 0 }}</span>
-            </div>
             <span class="game-time">
               {{ formatMatchDate(match) }}
             </span>

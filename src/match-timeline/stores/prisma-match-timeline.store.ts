@@ -21,8 +21,8 @@ export class PrismaMatchTimelineStore implements MatchTimelineStore {
         userId: data.userId,
         placement: data.placement,
         playedAt: data.playedAt,
+        name: data.name,
         comp: data.comp,
-        version: data.version,
       },
     });
   }
@@ -74,8 +74,8 @@ export class PrismaMatchTimelineStore implements MatchTimelineStore {
       data: {
         placement: data.placement,
         playedAt: data.playedAt,
+        name: data.name,
         comp: data.comp,
-        version: data.version,
       },
     });
   }

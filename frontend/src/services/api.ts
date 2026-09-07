@@ -198,51 +198,10 @@ export const api = {
 
   // Create new match record
   createMatch: async (matchData?: Partial<Match>): Promise<Match> => {
-    const defaultData = {
-      placement: matchData?.placement ?? 1,
-      gameMode: matchData?.gameMode ?? 'Ranked (Set 13)',
-      damageDealt: matchData?.damageDealt ?? 145000,
-      goldLeft: matchData?.goldLeft ?? 38,
-      roundsSurvived: matchData?.roundsSurvived ?? 35,
-      augments: matchData?.augments ?? [
-        'Prismatic Ticket',
-        'Cybernetic Uplink III',
-        'Binary Airdrop',
-      ],
-      traits: matchData?.traits ?? [
-        { name: 'Rebel', tier: 3, activeCount: 7 },
-        { name: 'Sorcerer', tier: 2, activeCount: 4 },
-        { name: 'Bruiser', tier: 1, activeCount: 2 },
-      ],
-      champions: matchData?.champions ?? [
-        {
-          name: 'Jinx',
-          cost: 4,
-          stars: 3,
-          items: ['Infinity Edge', 'Guinsoo Rageblade', 'Giant Slayer'],
-        },
-        {
-          name: 'Vi',
-          cost: 4,
-          stars: 2,
-          items: ['Warmog Armor', 'Sunfire Cape', 'Dragon Claw'],
-        },
-        {
-          name: 'Ekko',
-          cost: 3,
-          stars: 3,
-          items: ['Hand of Justice', 'Ionic Spark'],
-        },
-        {
-          name: 'Sevika',
-          cost: 5,
-          stars: 2,
-          items: ['Bloodthirster', 'Titan Resolve'],
-        },
-      ],
-    };
-
-    const res = await apiClient.post<Match>('/matches', defaultData);
+    const res = await apiClient.post<Match>('/matches', {
+      placement: matchData?.placement ?? undefined,
+      name: matchData?.name || undefined,
+    });
     return res.data;
   },
 

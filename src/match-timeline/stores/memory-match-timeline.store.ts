@@ -19,10 +19,11 @@ export class MemoryMatchTimelineStore implements MatchTimelineStore {
     const match: MatchModel = {
       id: this.nextMatchId++,
       userId: data.userId,
-      placement: data.placement,
+      placement: data.placement ?? null,
       playedAt: data.playedAt ?? new Date(),
+      name: data.name ?? null,
       comp: data.comp ?? null,
-      version: data.version ?? null,
+      version: 18,
     };
     this.matches.push(match);
     return { ...match };
@@ -85,9 +86,8 @@ export class MemoryMatchTimelineStore implements MatchTimelineStore {
       ...current,
       placement: data.placement ?? current.placement,
       playedAt: data.playedAt ?? current.playedAt,
+      name: data.name !== undefined ? (data.name ?? null) : current.name,
       comp: data.comp !== undefined ? (data.comp ?? null) : current.comp,
-      version:
-        data.version !== undefined ? (data.version ?? null) : current.version,
     };
     this.matches[index] = updated;
     return { ...updated };

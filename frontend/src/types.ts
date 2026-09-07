@@ -14,13 +14,13 @@ export interface TokensResponse {
 }
 
 export interface Match {
+  name?: string | null;
   comp?: string;
   playedAt?: string;
-  version?: string;
+  version: number;
   id: number;
   userId: number;
-  placement: number;
-  gameMode?: string;
+  placement: number | null;
   augments?: string[];
   champions?: {
     name: string;
@@ -33,9 +33,6 @@ export interface Match {
     tier: number;
     activeCount: number;
   }[];
-  damageDealt?: number;
-  goldLeft?: number;
-  roundsSurvived?: number;
   createdAt: string;
 }
 

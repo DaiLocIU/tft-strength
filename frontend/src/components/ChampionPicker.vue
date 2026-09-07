@@ -406,8 +406,12 @@ defineExpose({ open, close, isOpen });
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
+  overflow-x: auto;
+  padding: 2px 4px 8px;
+  scrollbar-width: thin;
 }
 .champion-choice {
+  flex: 0 0 62px;
   width: 62px;
   padding: 0;
   border: 0;
@@ -446,7 +450,9 @@ defineExpose({ open, close, isOpen });
   font-weight: 600;
   line-height: 1.3;
   margin-top: 5px;
-  overflow-wrap: anywhere;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .champion-choice:hover .portrait {
   box-shadow: inset 0 0 0 2px #fff;
@@ -501,6 +507,9 @@ footer {
   .champion-choice,
   .portrait {
     width: 58px;
+  }
+  .champion-choice {
+    flex-basis: 58px;
   }
   .portrait {
     height: 58px;

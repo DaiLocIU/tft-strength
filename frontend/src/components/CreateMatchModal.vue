@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { X, Swords, Sparkles, Loader2 } from 'lucide-vue-next';
 import { Match } from '../types';
 
@@ -12,34 +12,25 @@ const emit = defineEmits<{
   (e: 'submit', matchData: Partial<Match>): void;
 }>();
 
-const placement = ref<number>(1);
-const gameMode = ref('Ranked (Set 13)');
-const damageDealt = ref(145000);
-const goldLeft = ref(42);
-const roundsSurvived = ref(36);
+const name = ref('');
+const placement = ref<number | null>(null);
 const loading = ref(false);
+
+watch(
+  () => props.isOpen,
+  (isOpen) => {
+    if (!isOpen) return;
+    name.value = '';
+    placement.value = null;
+  },
+);
 
 const handleSubmit = async () => {
   loading.value = true;
   try {
     emit('submit', {
       placement: placement.value,
-      gameMode: gameMode.value,
-      damageDealt: damageDealt.value,
-      goldLeft: goldLeft.value,
-      roundsSurvived: roundsSurvived.value,
-      augments: ['Prismatic Ticket', 'Cybernetic Uplink III', 'Binary Airdrop'],
-      traits: [
-        { name: 'Rebel', tier: 3, activeCount: 7 },
-        { name: 'Sorcerer', tier: 2, activeCount: 4 },
-        { name: 'Bruiser', tier: 1, activeCount: 2 },
-      ],
-      champions: [
-        { name: 'Jinx', cost: 4, stars: 3, items: ['Infinity Edge', 'Guinsoo Rageblade', 'Giant Slayer'] },
-        { name: 'Vi', cost: 4, stars: 2, items: ['Warmog Armor', 'Sunfire Cape', 'Dragon Claw'] },
-        { name: 'Ekko', cost: 3, stars: 3, items: ['Hand of Justice', 'Ionic Spark'] },
-        { name: 'Sevika', cost: 5, stars: 2, items: ['Bloodthirster', 'Titan Resolve'] },
-      ],
+      name: name.value.trim() || undefined,
     });
     emit('close');
   } finally {
@@ -56,14 +47,14 @@ const handleSubmit = async () => {
           <Swords :size="20" class="text-amber" />
           <h2>Record TFT Match</h2>
         </div>
-        <button class="modal-btn-close" @click="emit('close')">
+        <button class="modal-btn-close" aria-label="Close record match dialog" @click="emit('close')">
           <X :size="18" />
         </button>
       </div>
 
       <form @submit.prevent="handleSubmit" class="modal-form">
         <div class="form-group">
-          <label>Final Placement</label>
+          <label>Final Placement <span class="form-optional">(optional)</span></label>
           <div class="placement-selector-grid">
             <button
               v-for="p in [1, 2, 3, 4, 5, 6, 7, 8]"
@@ -83,45 +74,19 @@ const handleSubmit = async () => {
 
         <div class="form-row">
           <div class="form-group">
-            <label>Game Mode</label>
-            <select v-model="gameMode" class="form-input">
-              <option value="Ranked (Set 13)">Ranked (Set 13)</option>
-              <option value="Normal">Normal</option>
-              <option value="Hyper Roll">Hyper Roll</option>
-              <option value="Double Up">Double Up</option>
-            </select>
+            <label for="match-version">TFT Set</label>
+            <input id="match-version" value="Set 18" class="form-input" disabled />
           </div>
 
           <div class="form-group">
-            <label>Rounds Survived</label>
+            <label for="match-name">Name <span class="form-optional">(optional)</span></label>
             <input
-              type="number"
-              v-model.number="roundsSurvived"
+              id="match-name"
+              v-model="name"
+              type="text"
               class="form-input"
-              :min="1"
-              :max="50"
-            />
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>Total Damage Dealt</label>
-            <input
-              type="number"
-              v-model.number="damageDealt"
-              class="form-input"
-              :step="1000"
-            />
-          </div>
-
-          <div class="form-group">
-            <label>Gold Left</label>
-            <input
-              type="number"
-              v-model.number="goldLeft"
-              class="form-input"
-              :min="0"
+              maxlength="255"
+              placeholder="e.g. Climb to Diamond"
             />
           </div>
         </div>
