@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import { Swords, LogOut, ChevronDown, Shield, Sparkles, Grid3X3 } from 'lucide-vue-next';
+import { ref } from 'vue';
+import { Swords, LogOut, ChevronDown, Shield, Grid3X3 } from 'lucide-vue-next';
 import { User } from '../types';
 
 const props = defineProps<{
@@ -15,10 +15,6 @@ const emit = defineEmits<{
 }>();
 
 const dropdownOpen = ref(false);
-
-const isStudioAdmin = computed(() => {
-  return props.user?.email === 'loc.ldl.itou@gmail.com';
-});
 
 const toggleDropdown = () => {
   dropdownOpen.value = !dropdownOpen.value;
@@ -57,21 +53,6 @@ const closeDropdown = () => {
           <Grid3X3 :size="14" class="text-emerald" />
           <span>Board Review</span>
         </button>
-
-        <!-- Admin only Vision Icon Studio -->
-        <button
-          v-if="isStudioAdmin"
-          @click="emit('selectTab', 'studio')"
-          :class="['nav-link studio-nav-link', { active: activeTab === 'studio' }]"
-        >
-          <Sparkles :size="14" class="text-cyan" />
-          <span>Icon Studio</span>
-          <span class="admin-pill">Admin</span>
-        </button>
-
-        <a href="#meta" class="nav-link">Meta Comps</a>
-        <a href="#builder" class="nav-link">Team Builder</a>
-        <a href="#tierlist" class="nav-link">Tier List</a>
       </nav>
     </div>
 
@@ -103,14 +84,6 @@ const closeDropdown = () => {
             <Shield :size="14" class="text-emerald" />
             <span>Session Active (Protected)</span>
           </div>
-          <button
-            v-if="isStudioAdmin"
-            @click="emit('selectTab', 'studio')"
-            class="dropdown-item btn-studio-item"
-          >
-            <Sparkles :size="14" class="text-cyan" />
-            <span>Open TFT Icon Studio</span>
-          </button>
           <div class="dropdown-divider"></div>
           <button @click="emit('logout')" class="dropdown-item btn-logout-item">
             <LogOut :size="14" />
