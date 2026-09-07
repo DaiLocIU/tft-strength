@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>What Is A Hex Occupancy Classifier?</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>What Is A Hex Occupancy Classifier?</h1>
+      <p class="lede">
+        You already know where the hexes are. The next model does not need to find champions on the
+        whole screenshot. It only needs to answer one small question for each hex crop.
+      </p>
+
+      <div class="callout">
+        Goal: turn one cropped hex image into either <code>occupied</code> or <code>empty</code>.
+      </div>
+
+      <h2>Classifier Meaning</h2>
+      <p>
+        A classifier is a model that looks at one image and chooses one label from a fixed list. For
+        your first hex model, the list has only two labels.
+      </p>
+
+      <pre><code>input:  small crop around one hex
+output: occupied or empty</code></pre>
+
+      <p>
+        This is different from YOLO detection. Detection asks, "Where are the objects?" Classification
+        asks, "What kind of image is this?"
+      </p>
+
+      <pre><code>detection:
+  screenshot -&gt; boxes around boards or units
+
+classification:
+  one hex crop -&gt; occupied / empty</code></pre>
+
+      <h2>Why This Fits Your Project</h2>
+      <p>
+        You are already drawing hex centers. That means the location problem is partly solved. So do
+        not ask a model to search the whole board yet. Crop each known hex and ask a smaller question.
+      </p>
+
+      <pre><code>full screenshot
+  -&gt; board detector
+  -&gt; board crop
+  -&gt; 28 or 56 hex centers
+  -&gt; one crop per hex
+  -&gt; classifier predicts occupied / empty</code></pre>
+
+      <h2>Dataset Folder</h2>
+      <p>
+        Ultralytics classification datasets use folders as labels. Images inside
+        <code>occupied</code> are positive examples. Images inside <code>empty</code> are negative
+        examples.
+      </p>
+
+      <pre><code>data/hex-occupancy/
+  train/
+    occupied/
+    empty/
+  val/
+    occupied/
+    empty/</code></pre>
+
+      <p>
+        No YOLO <code>.txt</code> label file is needed for this classifier dataset. The folder name
+        is the label.
+      </p>
+
+      <h2>The Smallest Build Plan</h2>
+      <ol class="checklist">
+        <li>Use your existing board detector to crop boards.</li>
+        <li>Use your current hex code to get each hex center and radius.</li>
+        <li>Crop a square patch around each hex center.</li>
+        <li>Save the patches into a temporary review folder.</li>
+        <li>Manually move good examples into <code>occupied</code> and <code>empty</code>.</li>
+        <li>Train a small classification model.</li>
+        <li>Run prediction on new hex crops and draw occupied hexes.</li>
+      </ol>
+
+      <h2>First Coding Target</h2>
+      <p>
+        Do not train yet. First write one function that makes one crop around one hex. The function
+        should be boring and easy to test.
+      </p>
+
+      <pre><code>def crop_hex_patch(
+    image: Image.Image,
+    center_x: float,
+    center_y: float,
+    radius: float,
+) -&gt; Image.Image:
+    ...</code></pre>
+
+      <p>
+        Stop when you can create a contact sheet of hex patches from one board crop. If the patches
+        visually contain one hex each, then the dataset step is ready.
+      </p>
+
+      <h2>Recall</h2>
+      <ul class="checklist">
+        <li>What question does a classifier answer?</li>
+        <li>Why is this easier than detecting champions in the full screenshot?</li>
+        <li>Why does the folder name become the label?</li>
+      </ul>
+
+      <p class="small">
+        Primary sources:
+        <a href="https://docs.ultralytics.com/datasets/classify/">Ultralytics classification dataset guide</a>
+        and
+        <a href="https://docs.ultralytics.com/tasks/classify/">Ultralytics classification task guide</a>.
+        Previous lesson:
+        <a href="./0051-from-hex-grid-to-occupied-hexes.html">From Hex Grid To Occupied Hexes</a>.
+        Ask Codex when you are ready to write <code>crop_hex_patch</code>.
+      </p>
+    </main>
+  </body>
+</html>

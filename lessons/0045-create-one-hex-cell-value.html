@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Create One Hex Cell Value</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Create One Hex Cell Value</h1>
+      <p class="lede">
+        You defined the type. Now create one actual value that follows that type.
+      </p>
+
+      <div class="callout">
+        A type is only the shape. A value is real data that uses the shape.
+      </div>
+
+      <h2>Add One Function</h2>
+      <p>Under <code>HexCell</code>, write:</p>
+      <pre><code>def create_first_hex_cell() -&gt; HexCell:
+    return {
+        "row": 0,
+        "column": 0,
+        "center_x": 100.0,
+        "center_y": 200.0,
+        "radius": 40.0,
+    }</code></pre>
+
+      <h2>Add A Tiny Script Entry</h2>
+      <p>At the bottom of the file, write:</p>
+      <pre><code>if __name__ == "__main__":
+    cell = create_first_hex_cell()
+    print(cell)</code></pre>
+
+      <h2>Run It</h2>
+      <pre><code>cd /Users/inmac/Desktop/work-hard/tft-team-strength/vision-board-detector
+.venv/bin/python scripts/detect_hexes.py
+.venv/bin/python -m mypy scripts/detect_hexes.py
+.venv/bin/python -m ruff check scripts/detect_hexes.py</code></pre>
+
+      <h2>What You Should See</h2>
+      <pre><code>{'row': 0, 'column': 0, 'center_x': 100.0, 'center_y': 200.0, 'radius': 40.0}</code></pre>
+
+      <h2>Recall</h2>
+      <ul class="checklist">
+        <li>What is the difference between <code>HexCell</code> and <code>cell</code>?</li>
+        <li>Why are <code>center_x</code> and <code>center_y</code> floats?</li>
+        <li>What does <code>radius</code> tell us?</li>
+        <li>What will mypy catch if you misspell <code>column</code>?</li>
+      </ul>
+
+      <p class="small">
+        Next lesson: create 7 fake cells for the first row.
+      </p>
+    </main>
+  </body>
+</html>

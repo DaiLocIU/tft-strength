@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Review Bottom Row Hex Contact Sheet</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Review Bottom Row Hex Contact Sheet</h1>
+      <p class="lede">
+        You now have a contact sheet that draws the bottom row of seven hexes on every board crop.
+        The next skill is not writing more code. The next skill is judging the geometry.
+      </p>
+
+      <div class="callout">
+        Goal: use one review image to decide which tuning value to change next.
+      </div>
+
+      <h2>Run The Review</h2>
+      <pre><code>cd /Users/inmac/Desktop/work-hard/tft-team-strength/vision-board-detector
+.venv/bin/python scripts/detect_hexes.py --bottom-row-contact-sheet</code></pre>
+
+      <p>Open this file and inspect several crops, not only the first one:</p>
+      <pre><code>outputs/review/board-hex-bottom-row-contact-sheet.png</code></pre>
+
+      <h2>Judge One Thing At A Time</h2>
+      <ul class="checklist">
+        <li>If the whole row is too far left or right, tune <code>width</code>.</li>
+        <li>If the whole row is too high or low, tune <code>height</code>.</li>
+        <li>If each hex is too small or too large, tune <code>radius</code>.</li>
+        <li>If the empty space between hex borders is wrong, tune <code>gap</code>.</li>
+      </ul>
+
+      <p>
+        Do not change all four values at once. Change one value, rerun the contact sheet, then judge
+        again. That gives you a tight feedback loop.
+      </p>
+
+      <h2>Try One Tuning Run</h2>
+      <pre><code>.venv/bin/python scripts/detect_hexes.py \
+  --bottom-row-contact-sheet \
+  width=13.4 height=90 radius=6.1 gap=3.4</code></pre>
+
+      <p>
+        In this script, <code>gap</code> means border-to-border empty space. The center-to-center
+        step is calculated from the hex width plus that border gap.
+      </p>
+
+      <h2>Stop Condition</h2>
+      <p>
+        Stop tuning the bottom row when at least 10 random crops look acceptable. The row does not
+        need to be perfect yet. It only needs to be stable enough to teach the next step: a second
+        row with an offset.
+      </p>
+
+      <h2>Recall</h2>
+      <ul class="checklist">
+        <li>Which value moves the whole row left or right?</li>
+        <li>Which value changes border-to-border spacing?</li>
+        <li>Why should you change only one value per run?</li>
+      </ul>
+
+      <p class="small">
+        Primary source:
+        <a href="https://www.redblobgames.com/grids/hexagons/">Red Blob Games: Hexagonal Grids</a>.
+        Related lesson:
+        <a href="./0047-draw-one-hex-center-on-real-board.html"
+          >Draw One Hex Center On A Real Board</a
+        >. Ask Codex when one of the tuning values feels unclear.
+      </p>
+    </main>
+  </body>
+</html>

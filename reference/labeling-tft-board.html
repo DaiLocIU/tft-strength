@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Labeling TFT Board Reference</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+  <main>
+    <h1>Labeling TFT Board Reference</h1>
+    <p class="lede">A one-page checklist for creating consistent Label Studio board annotations.</p>
+
+    <h2>Label Config</h2>
+    <pre><code>&lt;View&gt;
+  &lt;Image name="image" value="$image"/&gt;
+  &lt;RectangleLabels name="label" toName="image"&gt;
+    &lt;Label value="board" background="#FF0000"/&gt;
+  &lt;/RectangleLabels&gt;
+&lt;/View&gt;</code></pre>
+
+    <h2>What To Draw</h2>
+    <p>Draw exactly one rectangle around the playable combat board area. Include the whole board surface, even if some cells are empty.</p>
+
+    <h2>What Not To Draw</h2>
+    <ul>
+      <li>Do not include the bench.</li>
+      <li>Do not include the shop.</li>
+      <li>Do not include the left trait panel.</li>
+      <li>Do not include the top stage/round UI.</li>
+      <li>Do not draw boxes around champions.</li>
+    </ul>
+
+    <h2>Consistency Rule</h2>
+    <p>If the board edge is visually unclear, prefer the same approximate boundary every time. A slightly imperfect but consistent dataset is easier for a model to learn than a dataset where every image uses a different definition.</p>
+
+    <h2>100-Image Batch Plan</h2>
+    <ul>
+      <li>Images 1-10: label slowly and define your personal boundary rule.</li>
+      <li>Images 11-70: label normally using the same rule.</li>
+      <li>Images 71-90: add variety: different rounds, units, effects, and board states.</li>
+      <li>Images 91-100: review earlier labels and fix obvious inconsistencies.</li>
+    </ul>
+
+    <h2>Quality Check</h2>
+    <p>Every image should answer yes to these questions:</p>
+    <ol>
+      <li>Is there exactly one <code>board</code> rectangle?</li>
+      <li>Does it exclude the bench and shop?</li>
+      <li>Does it include the whole playable board?</li>
+      <li>Would I draw the same box tomorrow?</li>
+    </ol>
+
+    <p class="small">Label Studio's <code>RectangleLabels</code> result stores <code>x</code>, <code>y</code>, <code>width</code>, and <code>height</code> as 0-100 values. Source: <a href="https://labelstud.io/tags/rectanglelabels">Label Studio RectangleLabels documentation</a>.</p>
+  </main>
+</body>
+</html>
+

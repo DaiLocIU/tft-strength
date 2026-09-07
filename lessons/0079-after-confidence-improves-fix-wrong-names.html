@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>After Confidence Improves, Fix Wrong Names</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>After Confidence Improves, Fix Wrong Names</h1>
+      <p class="lede">
+        Your champion names are better now. The next problem is different: some names are still
+        wrong even when the model is confident. That needs a wrong-name review loop, not another
+        broad low-confidence loop.
+      </p>
+
+      <div class="callout">
+        Win for this lesson: stop collecting random uncertainty, and start collecting the mistakes
+        you can see in the final board output.
+      </div>
+
+      <h2>The New Rule</h2>
+      <p>
+        Low confidence finds uncertain crops. Wrong-name review finds visible mistakes. After the
+        first active-learning pass, wrong-name review is usually more valuable.
+      </p>
+
+      <h2>Step 1: Run Combine On All Boards</h2>
+      <pre><code>cd /Users/inmac/Desktop/work-hard/tft-team-strength/vision-board-detector
+
+.venv/bin/python scripts/combine_hex_signals.py --all \
+  --champion-conf 0.65 \
+  --identity-padding 0.08</code></pre>
+
+      <h2>Step 2: Review Final Images</h2>
+      <p>
+        Open these images and look for wrong champion names in the final overlay:
+      </p>
+      <pre><code>outputs/combined-hex-signals/</code></pre>
+      <p>
+        Do not review every crop. Only write down examples where the displayed name is clearly
+        wrong.
+      </p>
+
+      <h2>Step 3: For Each Wrong Name, Save The Crop</h2>
+      <p>
+        The training target should be the champion box crop, not the full board. Put the crop into
+        the true class folder:
+      </p>
+      <pre><code>data/champion-identity/labeled/&lt;true_champion_name&gt;/</code></pre>
+      <p>
+        If the crop is not a real champion, put it into:
+      </p>
+      <pre><code>data/champion-identity/labeled/unknown/</code></pre>
+
+      <h2>Step 4: Fix Weak Classes First</h2>
+      <p>
+        Some classes still have very little data. These are high-risk classes:
+      </p>
+      <pre><code>lux_(blossom): 1
+lux_(elderwood): 2
+lux_(lunar): 2
+lux_(inferno): 5
+lux_(solar): 5
+training_dummy: 7
+ahri: 8
+kha'zix: 8
+malphite: 8</code></pre>
+      <p>
+        If a wrong prediction involves one of these, add more examples for that class before tuning
+        the model.
+      </p>
+
+      <h2>Step 5: Retrain Only After Useful New Labels</h2>
+      <pre><code>python3 scripts/split_champion_identity_dataset.py
+
+yolo classify train \
+  model=models/champion-identity-classifier.pt \
+  data=data/champion-identity \
+  imgsz=160 \
+  epochs=50 \
+  device=mps \
+  project=runs/classify \
+  name=champion-identity-wrong-name-fixes</code></pre>
+
+      <h2>Step 6: Add An Output Threshold</h2>
+      <p>
+        In the product output, do not trust every name. Use a threshold:
+      </p>
+      <pre><code>identity_confidence &gt;= 0.75 -> show champion name
+identity_confidence &lt;  0.75 -> show unknown / needs review</code></pre>
+      <p>
+        This turns model uncertainty into a controlled review queue instead of a wrong answer.
+      </p>
+
+      <h2>Retrieval Check</h2>
+      <pre><code>A. Keep reviewing every low-confidence crop forever.
+B. Review visible wrong names and add targeted examples.
+C. Add star detection before fixing wrong names.</code></pre>
+      <p>
+        Answer: B. Once the system mostly works, targeted error examples teach faster than broad
+        loops.
+      </p>
+
+      <p class="small">
+        Reference:
+        <a href="../reference/champion-name-to-hex-pipeline.html">Champion Name To Hex Pipeline</a>.
+        Previous lesson:
+        <a href="./0078-connect-champion-name-back-to-hex.html">Connect Champion Name Back To Hex</a>.
+        Primary source:
+        <a href="https://docs.ultralytics.com/tasks/classify/">Ultralytics classification task</a>.
+        Ask Codex follow-up questions if any step is unclear.
+      </p>
+    </main>
+  </body>
+</html>

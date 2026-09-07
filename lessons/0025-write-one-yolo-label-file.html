@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0025: Write One YOLO Label File</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+  <main>
+    <h1>Write One YOLO Label File</h1>
+    <p class="lede">Now that one board rectangle can become one YOLO line, write that line into one matching <code>.txt</code> file.</p>
+
+    <h2>The Rule</h2>
+    <p>For every image file, YOLO expects one label file with the same base name.</p>
+    <pre><code>image_1.png  -> image_1.txt
+image_19.png -> image_19.txt</code></pre>
+
+    <h2>Your First Target</h2>
+    <p>Do not build the full dataset exporter yet. First write one label file:</p>
+    <pre><code>data/yolo/labels/train/image_1.txt</code></pre>
+
+    <p>Inside it, the content should look like this:</p>
+    <pre><code>0 0.493813 0.448680 0.489074 0.460411</code></pre>
+
+    <h2>The Function Boundary</h2>
+    <pre><code>image filename + YOLO line + output folder -> one .txt file</code></pre>
+
+    <h2>Function To Write</h2>
+    <pre><code>def write_yolo_label_file(
+    image_filename: str,
+    yolo_line: str,
+    labels_dir: str,
+) -> None:
+    ...
+</code></pre>
+
+    <h2>Steps Inside The Function</h2>
+    <ol>
+      <li>Convert <code>labels_dir</code> to a <code>Path</code>.</li>
+      <li>Create the folder with <code>mkdir</code>.</li>
+      <li>Change the image suffix from <code>.png</code> to <code>.txt</code>.</li>
+      <li>Write the YOLO line plus a final newline.</li>
+    </ol>
+
+    <h2>Self Check</h2>
+    <p>After running your script, this command should print one YOLO row:</p>
+    <pre><code>cat data/yolo/labels/train/image_1.txt</code></pre>
+
+    <p class="small">Primary source: <a href="https://docs.ultralytics.com/datasets/detect/">Ultralytics detection dataset format</a>.</p>
+  </main>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0032: How To Train A Larger YOLO Dataset</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+  <main>
+    <h1>How To Train A Larger YOLO Dataset</h1>
+    <p class="lede">A larger dataset needs a real train/validation split before you judge model quality.</p>
+
+    <h2>The Folder Shape</h2>
+    <pre><code>data/yolo/images/train
+data/yolo/images/val
+data/yolo/labels/train
+data/yolo/labels/val</code></pre>
+
+    <h2>The Dataset YAML</h2>
+    <pre><code>path: data/yolo
+train: images/train
+val: images/val
+
+names:
+  0: board</code></pre>
+
+    <h2>The Split</h2>
+    <p>For a simple first version, use about 80% for training and 20% for validation.</p>
+
+    <pre><code>100 images -> 80 train, 20 val
+300 images -> 240 train, 60 val
+500 images -> 400 train, 100 val</code></pre>
+
+    <h2>Why This Matters</h2>
+    <p>Training images teach the model. Validation images check whether it works on screenshots it did not learn from directly.</p>
+
+    <h2>Training Command</h2>
+    <pre><code>.venv/bin/yolo detect train \
+  model=yolo11n.pt \
+  data=data/yolo/dataset.yaml \
+  epochs=50 \
+  imgsz=640 \
+  batch=8 \
+  project=runs/detect \
+  name=train-50</code></pre>
+
+    <h2>Settings To Understand</h2>
+    <ul>
+      <li><code>epochs</code>: how many full passes through the training set.</li>
+      <li><code>imgsz</code>: image size used during training.</li>
+      <li><code>batch</code>: how many images are processed together.</li>
+      <li><code>device</code>: CPU, GPU, or Apple <code>mps</code>.</li>
+    </ul>
+
+    <h2>Simple Rule</h2>
+    <p>With more data, prefer better validation over just more epochs.</p>
+
+    <p class="small">Primary source: <a href="https://docs.ultralytics.com/datasets/detect/">Ultralytics dataset docs</a> and <a href="https://docs.ultralytics.com/tasks/detect/">Ultralytics detection docs</a>.</p>
+  </main>
+</body>
+</html>

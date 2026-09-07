@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Diagnose A Weak Champion Detector</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Diagnose A Weak Champion Detector</h1>
+      <p class="lede">
+        Your current champion detector draws nothing at normal confidence and draws everything at
+        very low confidence. That means it is not ready for the pipeline yet.
+      </p>
+
+      <div class="callout">
+        Next goal: find out whether the problem is training/export, or simply not enough champion
+        examples.
+      </div>
+
+      <h2>The Meaning</h2>
+      <pre><code>conf=0.25:
+  no boxes
+
+conf=0.01:
+  boxes everywhere
+
+meaning:
+  the model has weak guesses, not real confidence</code></pre>
+
+      <h2>Do This Now</h2>
+      <ol class="checklist">
+        <li>Test the detector on the training images, not validation.</li>
+        <li>If training images also fail, inspect labels/export/training setup.</li>
+        <li>If training images work but validation fails, label more varied images.</li>
+        <li>Do not combine this model with hex occupancy yet.</li>
+      </ol>
+
+      <h2>Command 1: Test Train Images</h2>
+      <pre><code>cd /Users/inmac/Desktop/work-hard/tft-team-strength/vision-board-detector
+
+.venv/bin/yolo detect predict \
+  model=models/champion-detector.pt \
+  source=data/champion-detector/images/train \
+  imgsz=640 \
+  conf=0.25 \
+  save=True \
+  project=outputs/champion-detector \
+  name=pilot-train-conf025</code></pre>
+
+      <h2>Open Result</h2>
+      <pre><code>open /Users/inmac/Desktop/work-hard/tft-team-strength/runs/detect/outputs/champion-detector/pilot-train-conf025</code></pre>
+
+      <h2>How To Decide</h2>
+      <pre><code>case A:
+  train images show good boxes
+  val images show bad boxes
+
+next:
+  dataset is too small
+  label 50 more board crops
+
+case B:
+  train images also show no boxes
+
+next:
+  something is wrong earlier
+  check Label Studio export
+  check YOLO txt labels
+  train again from yolo11n.pt</code></pre>
+
+      <h2>If You Need More Data</h2>
+      <p>Do not label easy images first. Label the cases your hex classifier cannot handle.</p>
+      <pre><code>add images with:
+  Blue
+  Nunu
+  Kayle
+  Ivern
+  Maokai
+  Elder Dragon
+  little legend near board
+  overlapping champions</code></pre>
+
+      <h2>What Not To Do Yet</h2>
+      <p>
+        Do not write box-to-hex mapping yet. A mapper cannot fix a detector that does not know what
+        a champion body looks like.
+      </p>
+
+      <p class="small">
+        Primary reference:
+        <a href="https://docs.ultralytics.com/modes/predict/">Ultralytics predict mode guide</a>.
+        Previous lesson:
+        <a href="./0065-test-champion-detector-pilot.html">Test The Champion Detector Pilot</a>.
+        Ask Codex to inspect the train prediction output if you are unsure which case you have.
+      </p>
+    </main>
+  </body>
+</html>

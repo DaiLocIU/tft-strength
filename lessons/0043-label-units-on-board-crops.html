@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Label Units On Board Crops</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Label Units On Board Crops</h1>
+      <p class="lede">
+        The board detector gives you a clean board image. The next detector should find units on
+        that board.
+      </p>
+
+      <div class="callout">
+        Next target: one class named <code>unit</code>. Do not label champion names yet.
+      </div>
+
+      <h2>Why Not Champion Names Yet?</h2>
+      <p>
+        Champion identity is harder than unit location. A champion can have skins, items, effects,
+        size changes, and overlap. First learn the simpler task: draw a box around every unit on the
+        cropped board.
+      </p>
+      <p>
+        After the model can find units reliably, you can crop each unit and build a separate
+        classifier for champion identity.
+      </p>
+
+      <h2>The New Dataset</h2>
+      <pre><code>outputs/board-crops/        # current generated crops
+data/unit-raw/              # selected board crops to label
+data/unit-yolo/images/train
+data/unit-yolo/labels/train
+data/unit-yolo/dataset.yaml</code></pre>
+
+      <p>
+        Copy only good board crops into <code>data/unit-raw</code>. Start small: 30 to 50 images is
+        enough for the first smoke test.
+      </p>
+
+      <h2>Label Studio Config</h2>
+      <p>
+        Use the same object-detection style as before. Label Studio's
+        <code>RectangleLabels</code> creates bounding boxes on images, and its result stores
+        <code>x</code>, <code>y</code>, <code>width</code>, and <code>height</code> as percentages
+        of the image. Source:
+        <a href="https://labelstud.io/tags/rectanglelabels">Label Studio RectangleLabels docs</a>.
+      </p>
+
+      <pre><code>&lt;View&gt;
+  &lt;Image name="image" value="$image"/&gt;
+  &lt;RectangleLabels name="label" toName="image"&gt;
+    &lt;Label value="unit" background="#00AAFF"/&gt;
+  &lt;/RectangleLabels&gt;
+&lt;/View&gt;</code></pre>
+
+      <h2>Labeling Rule</h2>
+      <ul class="checklist">
+        <li>Draw one rectangle around each visible unit on the board.</li>
+        <li>Do not label bench units.</li>
+        <li>Do not label shop cards.</li>
+        <li>Do not label the Little Legend unless you want it as a separate class later.</li>
+        <li>Keep boxes consistent; perfect edges are less important than repeatable rules.</li>
+      </ul>
+
+      <h2>What This Unlocks</h2>
+      <p>
+        A board detector finds the play area. A unit detector finds every unit inside that play
+        area. Together, they create small unit crops that later become input for champion
+        recognition.
+      </p>
+
+      <h2>Recall</h2>
+      <ul class="checklist">
+        <li>Why detect <code>unit</code> before champion name?</li>
+        <li>Why label on board crops instead of full screenshots?</li>
+        <li>What should not be included in the <code>unit</code> label?</li>
+      </ul>
+
+      <p class="small">
+        Related: <a href="./0042-review-board-crops-with-contact-sheet.html">Review board crops</a>.
+        Ask Codex when you are ready to create the unit labeling project.
+      </p>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Board State JSON Contract</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Board State JSON Contract</h1>
+      <p class="lede">
+        A board-state contract is the stable data shape that later code can read without looking at
+        the review image.
+      </p>
+
+      <h2>One Board</h2>
+      <pre><code>{
+  "image_name": "image_388.png",
+  "champion_conf_threshold": 0.5,
+  "identity_padding": 0.08,
+  "units": [
+    {
+      "row": 2,
+      "column": 0,
+      "champion": "warwick",
+      "identity_confidence": 0.99,
+      "champion_box_confidence": 0.88,
+      "source": "both"
+    }
+  ]
+}</code></pre>
+
+      <h2>Rules</h2>
+      <p>
+        One occupied champion hex should produce one unit row. Empty hexes can stay out of the
+        output unless a later feature needs them.
+      </p>
+
+      <h2>Why JSON</h2>
+      <p>
+        JSON is easy for Python, JavaScript, and future app code to read. Python's standard
+        <code>json</code> module can serialize dictionaries and lists directly.
+      </p>
+
+      <p class="small">
+        Source:
+        <a href="https://docs.python.org/3/library/json.html">Python json module documentation</a>.
+      </p>
+    </main>
+  </body>
+</html>

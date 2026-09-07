@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0031: What Is An Epoch?</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+  <main>
+    <h1>What Is An Epoch?</h1>
+    <p class="lede">An epoch is one full pass through your training images.</p>
+
+    <h2>Your Dataset</h2>
+    <p>You currently have 100 labeled board images.</p>
+
+    <pre><code>epochs=1
+
+YOLO sees all 100 images one time.</code></pre>
+
+    <pre><code>epochs=20
+
+YOLO sees all 100 images twenty times.</code></pre>
+
+    <h2>Why Start With 1?</h2>
+    <p>One epoch is a smoke test. It answers:</p>
+    <pre><code>Can YOLO read dataset.yaml?
+Can YOLO find images?
+Can YOLO find labels?
+Can YOLO finish training?
+Can YOLO save best.pt?</code></pre>
+
+    <p>It is not meant to produce a good detector.</p>
+
+    <h2>Why Try 20 Next?</h2>
+    <p>Twenty epochs gives the model enough repeated practice to start learning the board shape and location.</p>
+
+    <pre><code>1 epoch:  pipeline test
+20 epochs: first learning test</code></pre>
+
+    <h2>The Risk</h2>
+    <p>More epochs is not always better. If the model sees the same images too many times, it can memorize them instead of learning the general board pattern.</p>
+
+    <h2>The Better Workflow</h2>
+    <pre><code>1. Run 1 epoch to test the pipeline.
+2. Run 20 epochs to see if learning starts.
+3. Split train and validation images.
+4. Train longer only if validation improves.</code></pre>
+
+    <h2>Mental Model</h2>
+    <pre><code>epoch = one study round through all training examples</code></pre>
+
+    <p class="small">Primary source: <a href="https://docs.ultralytics.com/modes/train/">Ultralytics train mode documentation</a>.</p>
+  </main>
+</body>
+</html>

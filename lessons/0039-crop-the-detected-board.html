@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0039: Crop The Detected Board</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+  <main>
+    <h1>Crop The Detected Board</h1>
+    <p class="lede">The board detector gives coordinates. The next step is cutting that board region out of the screenshot.</p>
+
+    <h2>Why Crop?</h2>
+    <p>Champion and unit analysis should not look at the full screenshot. The full screenshot contains side UI, shop, bench, facecam, YouTube controls, and chat.</p>
+
+    <pre><code>full screenshot -> detect board -> crop board -> analyze board contents</code></pre>
+
+    <h2>Current Output</h2>
+    <pre><code>{
+  "x1": 812.6,
+  "y1": 486.1,
+  "x2": 2565.5,
+  "y2": 1493.8,
+  "confidence": 0.9859
+}</code></pre>
+
+    <h2>What Those Coordinates Mean</h2>
+    <pre><code>x1, y1 = top-left corner
+x2, y2 = bottom-right corner</code></pre>
+
+    <h2>New Function</h2>
+    <pre><code>def crop_board(
+    image_path: str,
+    detection: BoardDetection,
+    output_path: str,
+) -> None:
+    ...</code></pre>
+
+    <h2>Tool To Use</h2>
+    <p>Use Pillow, the common Python image library:</p>
+    <pre><code>from PIL import Image</code></pre>
+
+    <h2>Important Detail</h2>
+    <p>Image crop coordinates should be integers, so convert the float values:</p>
+    <pre><code>left = int(detection["x1"])
+top = int(detection["y1"])
+right = int(detection["x2"])
+bottom = int(detection["y2"])</code></pre>
+
+    <h2>Self Check</h2>
+    <p>After running the script, open:</p>
+    <pre><code>outputs/board-crops/image_1.png</code></pre>
+
+    <p>It should show only the TFT board area.</p>
+  </main>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0033: Why Training Can Detect The Board</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+  <main>
+    <h1>Why Training Can Detect The Board</h1>
+    <p class="lede">Training works by repeatedly comparing the model's guessed box to your labeled box, then adjusting the model.</p>
+
+    <h2>One Training Example</h2>
+    <pre><code>image: TFT screenshot
+label: board rectangle from you</code></pre>
+
+    <p>Your label is the answer key.</p>
+
+    <h2>Before Training</h2>
+    <p>The model already has visual knowledge from pretraining, but it does not know your exact task yet.</p>
+
+    <pre><code>It may notice:
+- edges
+- shapes
+- textures
+- UI regions
+- repeated screen patterns</code></pre>
+
+    <h2>During Training</h2>
+    <p>For each image, YOLO does this loop:</p>
+
+    <pre><code>1. Look at the screenshot.
+2. Guess where the board is.
+3. Compare guess box with your label box.
+4. Calculate error.
+5. Adjust model numbers to reduce the error.
+6. Repeat on many images.</code></pre>
+
+    <h2>The Important Word: Error</h2>
+    <p>If the model guesses too far left, the error tells it to move the box right next time.</p>
+
+    <pre><code>Your label:
+[        board        ]
+
+Model guess:
+     [        board        ]
+
+Error:
+guess is too far right</code></pre>
+
+    <h2>What The Model Learns</h2>
+    <p>It does not memorize the word "board". It learns visual patterns that usually mean board:</p>
+
+    <pre><code>hex grid area
+board edges
+central arena shape
+common TFT camera angle
+relative position inside the screenshot</code></pre>
+
+    <h2>Why More Images Help</h2>
+    <p>One image teaches one case. Many images teach what stays stable across cases.</p>
+
+    <pre><code>Different maps
+Different units
+Different effects
+Different stream overlays
+Same target: board rectangle</code></pre>
+
+    <h2>Mental Model</h2>
+    <pre><code>label = answer key
+prediction = model guess
+loss = how wrong the guess is
+training = changing the model to reduce loss</code></pre>
+
+    <p class="small">Primary source: <a href="https://docs.ultralytics.com/modes/train/">Ultralytics train mode documentation</a>.</p>
+  </main>
+</body>
+</html>

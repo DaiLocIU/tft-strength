@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Write crop_all_boards</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Write <code>crop_all_boards</code></h1>
+      <p class="lede">
+        Today you are not adding new AI logic. You are writing the pipeline loop around your
+        existing detector.
+      </p>
+
+      <div class="callout">
+        Rule for this function: it should not train, label, or inspect images. It only loops,
+        detects, crops, and remembers failures.
+      </div>
+
+      <h2>Step 1: Put The Function Under <code>crop_board</code></h2>
+      <pre><code>def crop_all_boards(raw_dir: str, output_dir: str) -&gt; BatchCropSummary:
+    raw_path = Path(raw_dir)
+    output_path = Path(output_dir)</code></pre>
+      <p>
+        Keep <code>raw_dir</code> and <code>output_dir</code> as strings at the function boundary.
+        Inside the function, create new <code>Path</code> variables. This avoids the earlier mypy
+        problem where a variable started as <code>str</code> and later became <code>Path</code>.
+      </p>
+
+      <h2>Step 2: Create Two Lists</h2>
+      <pre><code>    cropped: list[str] = []
+    failed: list[str] = []</code></pre>
+      <p>
+        These lists are your debug report. <code>cropped</code> means the model found a board and
+        saved a crop. <code>failed</code> means the model found no board.
+      </p>
+
+      <h2>Step 3: Loop Through Images</h2>
+      <pre><code>    for image_path in sorted(raw_path.glob("*.png")):
+        detection = detect_board(raw_dir, image_path.name)</code></pre>
+      <p>
+        <code>image_path</code> is the full path. <code>image_path.name</code> is only the filename,
+        like <code>image_1.png</code>. Your <code>detect_board</code> function currently wants the
+        folder and filename separately.
+      </p>
+
+      <h2>Step 4: Handle Failure First</h2>
+      <pre><code>        if detection is None:
+            failed.append(image_path.name)
+            continue</code></pre>
+      <p>
+        <code>continue</code> means “skip the rest of this loop and move to the next image.” This
+        keeps the success path easier to read.
+      </p>
+
+      <h2>Step 5: Crop The Success Case</h2>
+      <pre><code>        crop_file = output_path / image_path.name
+        crop_board(str(image_path), detection, str(crop_file))
+        cropped.append(image_path.name)</code></pre>
+      <p>
+        This reuses your existing <code>crop_board</code>. Do not duplicate crop logic inside this
+        function.
+      </p>
+
+      <h2>Step 6: Return The Summary</h2>
+      <pre><code>    return {
+        "cropped": cropped,
+        "failed": failed,
+    }</code></pre>
+
+      <h2>Full Shape To Compare After You Type</h2>
+      <pre><code>def crop_all_boards(raw_dir: str, output_dir: str) -&gt; BatchCropSummary:
+    raw_path = Path(raw_dir)
+    output_path = Path(output_dir)
+
+    cropped: list[str] = []
+    failed: list[str] = []
+
+    for image_path in sorted(raw_path.glob("*.png")):
+        detection = detect_board(raw_dir, image_path.name)
+
+        if detection is None:
+            failed.append(image_path.name)
+            continue
+
+        crop_file = output_path / image_path.name
+        crop_board(str(image_path), detection, str(crop_file))
+        cropped.append(image_path.name)
+
+    return {
+        "cropped": cropped,
+        "failed": failed,
+    }</code></pre>
+
+      <h2>Test It</h2>
+      <p>Temporarily call it in <code>if __name__ == "__main__":</code>:</p>
+      <pre><code>summary = crop_all_boards("data/raw", "outputs/board-crops")
+print(f"cropped: {len(summary['cropped'])}")
+print(f"failed: {len(summary['failed'])}")
+print(f"failed files: {summary['failed']}")</code></pre>
+
+      <p>Then run:</p>
+      <pre><code>.venv/bin/python scripts/predict_board.py</code></pre>
+
+      <h2>Recall</h2>
+      <ul class="checklist">
+        <li>Why do we use <code>continue</code> after a failed detection?</li>
+        <li>Why should <code>crop_all_boards</code> reuse <code>crop_board</code>?</li>
+        <li>What does the <code>failed</code> list help you decide later?</li>
+      </ul>
+
+      <p class="small">
+        Related: <a href="./0040-batch-crop-board-images.html">Batch crop board images</a>.
+        Ask Codex to check your function after you type it.
+      </p>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0016: First Strict Python Errors</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+  <main>
+    <h1>First Strict Python Errors</h1>
+    <p class="lede">Strict Python is working when it complains before your code breaks at runtime.</p>
+
+    <h2>Current Result</h2>
+    <p>Your script still runs correctly:</p>
+    <pre><code>matched: 100
+missing: 0
+valid_labels: 100
+bad_labels: 0</code></pre>
+
+    <p>But strict tools found quality issues.</p>
+
+    <h2>Mypy Errors</h2>
+    <pre><code>Function is missing a type annotation
+Call to untyped function in typed context</code></pre>
+
+    <p>This is like TypeScript's <code>noImplicitAny</code>. Mypy wants function parameter and return types.</p>
+
+    <h2>Ruff Errors</h2>
+    <pre><code>Line too long
+f-string without placeholders</code></pre>
+
+    <p>These are style and readability checks.</p>
+
+    <h2>Your Next Small Refactor</h2>
+    <p>Do not rewrite everything. Add these imports:</p>
+    <pre><code>from typing import Any</code></pre>
+
+    <p>Then make the function signatures typed:</p>
+    <pre><code>def find_board_rectangles(task: dict[str, Any]) -> list[dict[str, Any]]:
+    ...
+
+def verify_labels_match_images(
+    export_path: str,
+    raw_dir: str,
+) -> tuple[list[str], list[str], list[str], list[str]]:
+    ...</code></pre>
+
+    <h2>Python 3.9 Note</h2>
+    <p>Your venv uses Python 3.9.6. If <code>list[str]</code> causes trouble, use this older style:</p>
+    <pre><code>from typing import Any, Dict, List, Tuple</code></pre>
+
+    <pre><code>def find_board_rectangles(task: Dict[str, Any]) -> List[Dict[str, Any]]:
+    ...
+
+def verify_labels_match_images(
+    export_path: str,
+    raw_dir: str,
+) -> Tuple[List[str], List[str], List[str], List[str]]:
+    ...</code></pre>
+
+    <h2>Run Checks</h2>
+    <pre><code>cd vision-board-detector
+.venv/bin/python -m mypy scripts/check_dataset.py
+.venv/bin/python -m ruff check scripts/check_dataset.py</code></pre>
+
+    <p class="small">The goal is to fix one strictness layer at a time: function signatures first, precise JSON types later.</p>
+  </main>
+</body>
+</html>
+

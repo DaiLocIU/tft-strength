@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Champion Foot Hex Choice</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Champion Foot Hex Choice</h1>
+      <p class="lede">
+        When a detected champion overlaps multiple hexes, assign the champion signal to the occupied
+        hex closest to the champion's bottom-center point.
+      </p>
+
+      <h2>Rule</h2>
+      <pre><code>champion box exists
+  -> compute bottom-center point
+  -> find occupied hex centers inside the box
+  -> if any exist, choose the one nearest bottom-center
+  -> otherwise choose the nearest hex overall</code></pre>
+
+      <h2>Why</h2>
+      <p>
+        A large champion's body can cover several hexes, but its board position is usually represented
+        by the feet/base area. Object detection gives the box; hex occupancy gives local board evidence.
+        The final choice should use both.
+      </p>
+
+      <h2>Python Shape</h2>
+      <pre><code>point_x = (box["x1"] + box["x2"]) / 2
+point_y = box["y2"]
+
+occupied_candidates = [
+    hex_cell
+    for hex_cell in hexes
+    if hex_is_occupied(hex_cell)
+    and box_contains_hex_center(box, hex_cell)
+]
+
+if occupied_candidates:
+    chosen_hex = nearest_hex(point_x, point_y, occupied_candidates)
+else:
+    chosen_hex = nearest_hex(point_x, point_y, hexes)</code></pre>
+
+      <h2>Fallback Meaning</h2>
+      <p>
+        The fallback is important: if the occupancy classifier misses the standing hex, the champion
+        detector can still mark one hex as occupied.
+      </p>
+
+      <p class="small">
+        References:
+        <a href="https://docs.ultralytics.com/tasks/detect/">Ultralytics object detection</a>,
+        <a href="https://www.redblobgames.com/grids/hexagons/">Red Blob hex grids</a>.
+      </p>
+    </main>
+  </body>
+</html>

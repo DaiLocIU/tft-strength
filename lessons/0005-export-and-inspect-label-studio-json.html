@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0005: Export And Inspect Label Studio JSON</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+  <main>
+    <h1>Export And Inspect Label Studio JSON</h1>
+    <p class="lede">You labeled 100 images. Now the next skill is reading the annotation export before writing any converter code.</p>
+
+    <div class="callout">
+      <strong>Milestone:</strong> 100 labeled images is enough for the first board detector experiment. Keep the other 179 images unused for now.
+    </div>
+
+    <h2>Your Quiz Answers</h2>
+    <ul>
+      <li>Bench inside board rectangle? <strong>No.</strong> Only the board.</li>
+      <li>One board rectangle per screenshot? <strong>Yes.</strong> Exactly one.</li>
+      <li>Consistent labels or perfect edges? <strong>Consistent labels.</strong></li>
+    </ul>
+
+    <h2>Export Task</h2>
+    <p>In Label Studio, export the labeled tasks as JSON. Save the export here:</p>
+    <pre><code>vision-board-detector/exports/label-studio/board-100.json</code></pre>
+
+    <h2>What To Look For</h2>
+    <p>Open the JSON file and find one labeled image. You are looking for these fields:</p>
+    <pre><code>"value": {
+  "x": 12.34,
+  "y": 22.50,
+  "width": 48.00,
+  "height": 31.25,
+  "rectanglelabels": ["board"]
+}</code></pre>
+
+    <h2>The Important Meaning</h2>
+    <p>Label Studio rectangle coordinates are percentages, not pixels. The top-left corner is <code>x</code> and <code>y</code>. The size is <code>width</code> and <code>height</code>. All four values are from <code>0</code> to <code>100</code>.</p>
+
+    <h2>Do Not Write Python Yet</h2>
+    <p>First, inspect three labels manually. For each one, answer:</p>
+    <ol>
+      <li>What image file does this annotation belong to?</li>
+      <li>Where is the rectangle's top-left corner?</li>
+      <li>How wide and tall is the rectangle?</li>
+      <li>Does <code>rectanglelabels</code> contain exactly <code>board</code>?</li>
+    </ol>
+
+    <h2>Next Step</h2>
+    <p>After you save the export, tell the agent the file path. Then we will write the first tiny Python script by hand: load the JSON and print how many labeled tasks it contains.</p>
+
+    <p class="small">Primary source: <a href="https://labelstud.io/tags/rectanglelabels">Label Studio RectangleLabels documentation</a>.</p>
+  </main>
+</body>
+</html>
+

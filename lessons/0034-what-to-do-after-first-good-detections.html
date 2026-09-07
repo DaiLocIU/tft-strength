@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0034: What To Do After First Good Detections</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+  <main>
+    <h1>What To Do After First Good Detections</h1>
+    <p class="lede">A good screenshot is not the finish line. Now you inspect many predictions and decide what kind of problem remains.</p>
+
+    <h2>Right Now</h2>
+    <p>Your model has passed the first useful test: it can detect the board with high confidence on at least one unseen screenshot.</p>
+
+    <h2>Next Action</h2>
+    <pre><code>.venv/bin/yolo detect predict \
+  model=runs/detect/train-20/weights/best.pt \
+  source=data/raw \
+  project=runs/detect \
+  name=review-raw</code></pre>
+
+    <p>This creates prediction images for many raw screenshots. Your job is to review them like a dataset doctor.</p>
+
+    <h2>If Results Are Good</h2>
+    <pre><code>one box
+high confidence
+board only
+no bench
+no side UI
+works across different videos/maps</code></pre>
+
+    <p>Then do this:</p>
+    <ol>
+      <li>Create a real train/val split.</li>
+      <li>Train again with validation images separated.</li>
+      <li>Test on new unlabeled screenshots.</li>
+      <li>Start writing Python code that loads <code>best.pt</code> and returns board coordinates.</li>
+    </ol>
+
+    <h2>If Results Are Bad</h2>
+    <p>Classify the failure first. Do not guess.</p>
+
+    <pre><code>No box:
+  lower confidence and check if weak boxes exist
+
+Many boxes:
+  train longer, add cleaner labels, or raise confidence
+
+Wrong area:
+  add more examples where that wrong area appears
+
+Box includes bench:
+  make labels more consistent and relabel edge cases
+
+Works on train, fails on new images:
+  add varied data and use real validation</code></pre>
+
+    <h2>The Iteration Loop</h2>
+    <pre><code>predict many images
+find failure pattern
+fix labels or add examples
+retrain
+predict again</code></pre>
+
+    <h2>Most Important Rule</h2>
+    <p>Do not add random data. Add data that represents the failures you actually see.</p>
+
+    <p class="small">Primary source: <a href="https://docs.ultralytics.com/modes/predict/">Ultralytics predict mode documentation</a>.</p>
+  </main>
+</body>
+</html>

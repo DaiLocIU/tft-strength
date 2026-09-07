@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Create First Row Of Hex Centers</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Create First Row Of Hex Centers</h1>
+      <p class="lede">
+        Now write the first real board function: create 7 hex cells in one row.
+      </p>
+
+      <div class="callout">
+        Today’s goal: return 7 <code>HexCell</code> values with columns <code>0</code> through
+        <code>6</code>.
+      </div>
+
+      <h2>The Idea</h2>
+      <p>
+        A TFT board row has 7 cells. In one row, all cells share the same
+        <code>center_y</code>. Only <code>center_x</code> changes.
+      </p>
+
+      <pre><code>column 0: start_x
+column 1: start_x + gap
+column 2: start_x + gap * 2
+...
+column 6: start_x + gap * 6</code></pre>
+
+      <h2>Add This Function</h2>
+      <pre><code>def create_hex_row(
+    row: int,
+    start_x: float,
+    center_y: float,
+    gap: float,
+    radius: float,
+) -&gt; list[HexCell]:
+    hexes: list[HexCell] = []
+
+    for column in range(7):
+        hexes.append(
+            {
+                "row": row,
+                "column": column,
+                "center_x": start_x + column * gap,
+                "center_y": center_y,
+                "radius": radius,
+            }
+        )
+
+    return hexes</code></pre>
+
+      <h2>Add A Tiny Test</h2>
+      <pre><code>if __name__ == "__main__":
+    first_row = create_hex_row(
+        row=0,
+        start_x=100.0,
+        center_y=200.0,
+        gap=80.0,
+        radius=40.0,
+    )
+
+    print(first_row)
+    print(len(first_row))</code></pre>
+
+      <h2>What This Teaches</h2>
+      <p>
+        <code>range(7)</code> gives column numbers <code>0</code> to <code>6</code>. That matches
+        the 7 board slots in one TFT row.
+      </p>
+      <p>
+        <code>start_x + column * gap</code> is the first important geometry formula in this project.
+      </p>
+
+      <h2>Run It</h2>
+      <pre><code>cd /Users/inmac/Desktop/work-hard/tft-team-strength/vision-board-detector
+.venv/bin/python scripts/detect_hexes.py
+.venv/bin/python -m mypy scripts/detect_hexes.py
+.venv/bin/python -m ruff check scripts/detect_hexes.py</code></pre>
+
+      <h2>Expected</h2>
+      <p>You should see a list with 7 dictionaries, then:</p>
+      <pre><code>7</code></pre>
+
+      <h2>Recall</h2>
+      <ul class="checklist">
+        <li>Why does only <code>center_x</code> change in one row?</li>
+        <li>What does <code>column * gap</code> do?</li>
+        <li>Why does <code>range(7)</code> stop at column <code>6</code>?</li>
+      </ul>
+
+      <p class="small">
+        Next lesson: add row offset so row 1 starts half a gap to the right.
+      </p>
+    </main>
+  </body>
+</html>

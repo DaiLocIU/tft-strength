@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Create The Second Hex Row</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Create The Second Hex Row</h1>
+      <p class="lede">
+        After the bottom row looks acceptable, the next step is one row above it. Do not build all
+        28 cells yet. Add only the second row so you can inspect one new idea: row offset.
+      </p>
+
+      <div class="callout">
+        Goal: calculate seven hexes in row <code>2</code> from the bottom-row geometry.
+      </div>
+
+      <h2>The New Idea</h2>
+      <p>
+        A pointy-top hex row above another row is not directly above it like a square grid. It is
+        shifted sideways by half of the center-to-center step.
+      </p>
+
+      <pre><code>second_row_x = bottom_start_x + center_step / 2 + column * center_step
+second_row_y = bottom_center_y - vertical_step</code></pre>
+
+      <p>
+        For a regular pointy-top hex, the vertical center step is roughly
+        <code>1.5 * radius</code>. This is a starting point for visual tuning, not a promise that
+        every TFT crop has perfect geometry.
+      </p>
+
+      <h2>Write One Helper</h2>
+      <p>Add this after <code>create_bottom_row_hex_cells</code>:</p>
+
+      <pre><code>def create_second_row_hex_cells(
+    image_path: str,
+    width_percent: float,
+    height_percent: float,
+    radius_percent: float,
+    gap_percent: float,
+) -&gt; list[HexCell]:
+    image = Image.open(image_path)
+    width = image.width
+    height = image.height
+
+    bottom_start_x = width * (width_percent / 100)
+    bottom_center_y = height * (height_percent / 100)
+    radius = width * (radius_percent / 100)
+    border_gap = width * (gap_percent / 100)
+    hex_width = 2 * radius * cos(pi / 6)
+    center_step = hex_width + border_gap
+    vertical_step = 1.5 * radius
+
+    hexes: list[HexCell] = []
+
+    for column in range(7):
+        hexes.append(
+            {
+                "row": 2,
+                "column": column,
+                "center_x": bottom_start_x + center_step / 2 + column * center_step,
+                "center_y": bottom_center_y - vertical_step,
+                "radius": radius,
+            }
+        )
+
+    return hexes</code></pre>
+
+      <h2>Draw Two Rows</h2>
+      <p>
+        In <code>__main__</code>, create both rows and draw them together. Keep the bottom row so
+        you can compare the offset.
+      </p>
+
+      <pre><code>bottom_row = create_bottom_row_hex_cells(
+    crop_path,
+    tuning["width_percent"],
+    tuning["height_percent"],
+    tuning["radius_percent"],
+    tuning["gap_percent"],
+)
+second_row = create_second_row_hex_cells(
+    crop_path,
+    tuning["width_percent"],
+    tuning["height_percent"],
+    tuning["radius_percent"],
+    tuning["gap_percent"],
+)
+
+draw_hex_cells(
+    crop_path,
+    bottom_row + second_row,
+    overlay_path,
+)</code></pre>
+
+      <h2>Check It</h2>
+      <pre><code>cd /Users/inmac/Desktop/work-hard/tft-team-strength/vision-board-detector
+.venv/bin/python scripts/detect_hexes.py
+.venv/bin/python -m mypy scripts/detect_hexes.py
+.venv/bin/python -m ruff check scripts/detect_hexes.py</code></pre>
+
+      <h2>Recall</h2>
+      <ul class="checklist">
+        <li>Why does the second row add <code>center_step / 2</code> to x?</li>
+        <li>Why does the second row subtract from y?</li>
+        <li>Why should you draw two rows before writing all four?</li>
+      </ul>
+
+      <p class="small">
+        Primary source:
+        <a href="https://www.redblobgames.com/grids/hexagons/">Red Blob Games: Hexagonal Grids</a>.
+        Previous lesson:
+        <a href="./0049-review-bottom-row-hex-contact-sheet.html"
+          >Review Bottom Row Hex Contact Sheet</a
+        >. Ask Codex if the row appears shifted the wrong direction.
+      </p>
+    </main>
+  </body>
+</html>

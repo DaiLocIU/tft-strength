@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0014: Annotation Vs Result</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+  <main>
+    <h1>Annotation Vs Result</h1>
+    <p class="lede">Label Studio has two different levels: the submitted annotation and the rectangle results inside it.</p>
+
+    <h2>Why The Table Says 1</h2>
+    <p>The table's <code>1</code> means this image has one submitted annotation object.</p>
+
+    <h2>Why Detail Shows 2 Boards</h2>
+    <p>Inside that one annotation object, there can be multiple rectangle results:</p>
+    <pre><code>task
+  annotations: [
+    {
+      result: [
+        tiny board rectangle,
+        real board rectangle
+      ]
+    }
+  ]</code></pre>
+
+    <h2>Your Dataset Rule</h2>
+    <p>For this project, each image should have:</p>
+    <pre><code>1 task
+1 annotation
+1 board rectangle result</code></pre>
+
+    <h2>What To Fix</h2>
+    <p>Open the detail labeling screen for <code>image_19.png</code> and <code>image_33.png</code>. Delete the tiny rectangle result. Keep the large board rectangle. Then save/update and export JSON again.</p>
+
+    <h2>Memory Check</h2>
+    <ol>
+      <li>Does table annotation count equal rectangle count?</li>
+      <li>Where do rectangles live in JSON?</li>
+      <li>What is the target rectangle count per task?</li>
+    </ol>
+  </main>
+</body>
+</html>
+

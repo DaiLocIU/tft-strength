@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0020: Dict Return, Not Set Return</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+  <main>
+    <h1>Dict Return, Not Set Return</h1>
+    <p class="lede">Curly braces can mean two different things in Python. The colon decides whether it is a dictionary.</p>
+
+    <h2>Set Syntax</h2>
+    <pre><code>return {
+    matched,
+    missing,
+}</code></pre>
+    <p>This is a set. It has values only. It does not have named fields.</p>
+
+    <h2>Dictionary Syntax</h2>
+    <pre><code>return {
+    "matched": matched,
+    "missing": missing,
+}</code></pre>
+    <p>This is a dictionary. It has keys and values. This matches <code>TypedDict</code>.</p>
+
+    <h2>TypedDict Rule</h2>
+    <p>If the return type is <code>VerifyResult</code>, the return value must look like the interface:</p>
+    <pre><code>class VerifyResult(TypedDict):
+    matched: List[str]
+    missing: List[str]
+    valid_labels: List[str]
+    bad_labels: List[str]</code></pre>
+
+    <h2>Next Habit</h2>
+    <p>For required <code>TypedDict</code> fields, prefer bracket access:</p>
+    <pre><code>matched = result["matched"]</code></pre>
+    <p>Use <code>.get()</code> only when a key might be missing.</p>
+  </main>
+</body>
+</html>
+

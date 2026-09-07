@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Write Combine Hex Signals</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Write Combine Hex Signals</h1>
+      <p class="lede">
+        You want hex occupancy to stay as the primary signal, and champion box mapping to act as a
+        second signal. The next script should combine both into one final occupied hex decision.
+      </p>
+
+      <div class="callout">
+        Win for this lesson: design <code>combine_hex_signals.py</code> so it compares two model
+        opinions per hex and draws one review image.
+      </div>
+
+      <h2>The Pipeline</h2>
+      <pre><code>board crop
+  -> hex occupancy classifier
+  -> champion detector mapped to hexes
+  -> combine signals
+  -> final occupied hexes</code></pre>
+
+      <h2>Step 1: Create The File</h2>
+      <pre><code>vision-board-detector/scripts/combine_hex_signals.py</code></pre>
+
+      <h2>Step 2: Import Existing Work</h2>
+      <p>Reuse your scripts. Do not reimplement hex cropping or champion detection.</p>
+      <pre><code>from predict_hex_occupancy import predict_board_hex_occupancy
+from map_champions_to_hexes import (
+    assign_champions_to_hexes,
+    predict_champion_boxes,
+)</code></pre>
+
+      <h2>Step 3: Define One Hex Key</h2>
+      <p>
+        Both signals must speak the same language. The shared key is
+        <code>(row, column)</code>.
+      </p>
+      <pre><code>hex_key = (row, column)</code></pre>
+
+      <h2>Step 4: Get Primary Signal</h2>
+      <p>The occupancy classifier produces one prediction for every hex.</p>
+      <pre><code>occupancy_predictions = predict_board_hex_occupancy(
+    board_crop_path,
+    HEX_OCCUPANCY_MODEL_PATH,
+)</code></pre>
+
+      <h2>Step 5: Get Second Signal</h2>
+      <p>
+        The champion detector produces boxes. Convert those boxes to nearest hexes, then make a set
+        of hex keys.
+      </p>
+      <pre><code>champion_hex_keys = {
+    (assignment["hex"]["row"], assignment["hex"]["column"])
+    for assignment in champion_assignments
+}</code></pre>
+
+      <h2>Step 6: Combine With A Simple Rule</h2>
+      <p>Start simple. A hex is finally occupied if either signal says occupied.</p>
+      <pre><code>final_occupied = occupancy_occupied or champion_mapped</code></pre>
+
+      <h2>Step 7: Track Why</h2>
+      <p>Do not only store true or false. Store the reason, so debugging is possible.</p>
+      <pre><code>both:
+  occupancy says occupied
+  champion detector maps champion here
+
+occupancy_only:
+  occupancy says occupied
+  champion detector does not map here
+
+champion_only:
+  occupancy says empty
+  champion detector maps champion here
+
+empty:
+  both say empty</code></pre>
+
+      <h2>Step 8: Draw Review Colors</h2>
+      <pre><code>green:
+  both signals agree occupied
+
+orange:
+  occupancy only
+
+blue:
+  champion only
+
+gray:
+  empty</code></pre>
+
+      <h2>Step 9: Test One Image</h2>
+      <pre><code>cd /Users/inmac/Desktop/work-hard/tft-team-strength/vision-board-detector
+
+.venv/bin/python scripts/combine_hex_signals.py image_1.png</code></pre>
+
+      <h2>Step 10: Review Before Batch</h2>
+      <pre><code>open outputs/combined-hex-signals</code></pre>
+
+      <h2>Decision Rule</h2>
+      <pre><code>if green is mostly correct:
+  both models agree well
+
+if orange is often correct:
+  occupancy model catches cases champion detector misses
+
+if blue is often correct:
+  champion detector fixes occupancy misses
+
+if orange or blue is often wrong:
+  tune thresholds before trusting final output</code></pre>
+
+      <h2>First Version Goal</h2>
+      <p>
+        The first version should not be clever. It should make disagreement visible. Once you can
+        see disagreement, you can decide better rules.
+      </p>
+
+      <p class="small">
+        Primary reference:
+        <a href="https://docs.ultralytics.com/usage/python/">Ultralytics YOLO Python usage</a>.
+        Previous lesson:
+        <a href="./0072-write-the-first-champion-to-hex-script.html">Write The First Champion To Hex Script</a>.
+        Ask Codex to implement <code>combine_hex_signals.py</code> when you are ready.
+      </p>
+    </main>
+  </body>
+</html>

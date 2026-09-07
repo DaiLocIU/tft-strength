@@ -1,0 +1,594 @@
+[
+  {
+    "name": "Ahri",
+    "apiName": "DA_18_Ahri",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_ahri.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/ahri.jpg",
+    "bytes": 5501
+  },
+  {
+    "name": "Akali",
+    "apiName": "DA_18_Akali_AD",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_akali.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/akali.jpg",
+    "bytes": 4571
+  },
+  {
+    "name": "Alistar",
+    "apiName": "DA_18_Alistar",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_alistar.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/alistar.webp",
+    "bytes": 3328
+  },
+  {
+    "name": "Alune",
+    "apiName": "DA_18_Alune",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_alune.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/alune.webp",
+    "bytes": 2670
+  },
+  {
+    "name": "Amumu",
+    "apiName": "DA_Amumu18",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_amumu.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/amumu.jpg",
+    "bytes": 7027
+  },
+  {
+    "name": "Aphelios",
+    "apiName": "DA_18_Aphelios",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_aphelios.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/aphelios.webp",
+    "bytes": 2444
+  },
+  {
+    "name": "Ashe",
+    "apiName": "DA_18_Ashe",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_ashe.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/ashe.jpg",
+    "bytes": 5659
+  },
+  {
+    "name": "Azir",
+    "apiName": "DA_18_Azir",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_azir.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/azir.webp",
+    "bytes": 3688
+  },
+  {
+    "name": "Brambleback",
+    "apiName": "DA_Brambleback18",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_brambleback.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/brambleback.jpg",
+    "bytes": 6043
+  },
+  {
+    "name": "Caitlyn",
+    "apiName": "DA_18_Caitlyn",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_caitlyn.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/caitlyn.webp",
+    "bytes": 2934
+  },
+  {
+    "name": "Camille",
+    "apiName": "DA_18_Camille",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_camille.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/camille.webp",
+    "bytes": 2802
+  },
+  {
+    "name": "Cassiopeia",
+    "apiName": "DA_18_Cassiopeia",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_cassiopeia.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/cassiopeia.webp",
+    "bytes": 3094
+  },
+  {
+    "name": "Cinderling",
+    "apiName": "DA_Cinderling18",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_cinderling.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/cinderling.webp",
+    "bytes": 2840
+  },
+  {
+    "name": "Diana",
+    "apiName": "DA_18_Diana",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_diana.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/diana.webp",
+    "bytes": 2752
+  },
+  {
+    "name": "Draven",
+    "apiName": "DA_Draven18",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_draven.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/draven.webp",
+    "bytes": 2682
+  },
+  {
+    "name": "Elder Dragon",
+    "apiName": "DA_18_ElderDragon",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_elderdragon.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/elderdragon.webp",
+    "bytes": 1982
+  },
+  {
+    "name": "Elise",
+    "apiName": "DA_18_Elise",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_elise.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/elise.webp",
+    "bytes": 2798
+  },
+  {
+    "name": "Ezreal",
+    "apiName": "DA_18_Ezreal",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_ezreal.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/ezreal.webp",
+    "bytes": 3206
+  },
+  {
+    "name": "Fiddlesticks",
+    "apiName": "DA_Fiddlesticks18",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_fiddlesticks.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/fiddlesticks.jpg",
+    "bytes": 5167
+  },
+  {
+    "name": "Gnar",
+    "apiName": "DA_18_GnarSmall",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_gnar.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/gnar.webp",
+    "bytes": 3216
+  },
+  {
+    "name": "Gromp",
+    "apiName": "DA_Gromp18_AP",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_gromp.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/gromp.jpg",
+    "bytes": 4844
+  },
+  {
+    "name": "Hecarim",
+    "apiName": "DA_18_Hecarim",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_hecarim.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/hecarim.webp",
+    "bytes": 4122
+  },
+  {
+    "name": "Ivern",
+    "apiName": "DA_18_Ivern",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_ivern.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/ivern.webp",
+    "bytes": 3712
+  },
+  {
+    "name": "Karma",
+    "apiName": "DA_Karma18",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_karma.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/karma.jpg",
+    "bytes": 6111
+  },
+  {
+    "name": "Kayle",
+    "apiName": "DA_18_Kayle",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_kayle.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/kayle.jpg",
+    "bytes": 6104
+  },
+  {
+    "name": "Kennen",
+    "apiName": "DA_18_Kennen",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_kennen.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/kennen.jpg",
+    "bytes": 5922
+  },
+  {
+    "name": "Kha'Zix",
+    "apiName": "DA_18_KhaZix",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_khazix.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/khazix.jpg",
+    "bytes": 4110
+  },
+  {
+    "name": "Kobuko",
+    "apiName": "DA_18_Kobuko",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_kobuko.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/kobuko.jpg",
+    "bytes": 6113
+  },
+  {
+    "name": "Kog'Maw",
+    "apiName": "DA_KogMaw18_AD",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_kogmaw.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/kogmaw.webp",
+    "bytes": 3714
+  },
+  {
+    "name": "Krug",
+    "apiName": "DA_Krug18",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_krug.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/krug.webp",
+    "bytes": 2836
+  },
+  {
+    "name": "LeBlanc",
+    "apiName": "DA_18_LeBlanc",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_leblanc.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/leblanc.jpg",
+    "bytes": 4955
+  },
+  {
+    "name": "Leona",
+    "apiName": "DA_18_Leona",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_leona.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/leona.jpg",
+    "bytes": 6491
+  },
+  {
+    "name": "Lillia",
+    "apiName": "DA_18_Lillia",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_lillia.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/lillia.webp",
+    "bytes": 3776
+  },
+  {
+    "name": "Lux",
+    "apiName": "DA_Lux18_Base",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_lux.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/lux.webp",
+    "bytes": 3138
+  },
+  {
+    "name": "Lux (Blackthorn)",
+    "apiName": "DA_Lux18_Blackthorn",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_lux.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/lux.webp",
+    "bytes": 3138
+  },
+  {
+    "name": "Lux (Blossom)",
+    "apiName": "DA_Lux18_Blossom",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_lux.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/lux.webp",
+    "bytes": 3138
+  },
+  {
+    "name": "Lux (Coven)",
+    "apiName": "DA_18_Lux_Coven",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_lux.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/lux.webp",
+    "bytes": 3138
+  },
+  {
+    "name": "Lux (Elderwood)",
+    "apiName": "DA_18_Lux_Elderwood",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_lux.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/lux.webp",
+    "bytes": 3138
+  },
+  {
+    "name": "Lux (Fae)",
+    "apiName": "DA_18_Lux_Fae",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_lux.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/lux.webp",
+    "bytes": 3138
+  },
+  {
+    "name": "Lux (Inferno)",
+    "apiName": "DA_18_Lux_Inferno",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_lux.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/lux.webp",
+    "bytes": 3138
+  },
+  {
+    "name": "Lux (Lunar)",
+    "apiName": "DA_18_Lux_Moonbeam",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_lux.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/lux.webp",
+    "bytes": 3138
+  },
+  {
+    "name": "Lux (Primal)",
+    "apiName": "DA_18_Lux_Primal",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_lux.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/lux.webp",
+    "bytes": 3138
+  },
+  {
+    "name": "Lux (Solar)",
+    "apiName": "DA_18_Lux_Sunbeam",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_lux.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/lux.webp",
+    "bytes": 3138
+  },
+  {
+    "name": "Malphite",
+    "apiName": "DA_18_Malphite",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_malphite.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/malphite.jpg",
+    "bytes": 5107
+  },
+  {
+    "name": "Mama Beak",
+    "apiName": "DA_CrimsonRaptor18",
+    "url": "https://cdn.lolchess.gg/upload/images/champions/Raptor_1783677107-CrimsonRaptor.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/mamabeak.jpg",
+    "bytes": 4602
+  },
+  {
+    "name": "Maokai",
+    "apiName": "DA_18_Maokai",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_maokai.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/maokai.webp",
+    "bytes": 2656
+  },
+  {
+    "name": "Master Yi",
+    "apiName": "DA_18_MasterYi_AD",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_masteryi.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/masteryi.jpg",
+    "bytes": 5753
+  },
+  {
+    "name": "Morgana",
+    "apiName": "DA_18_Morgana",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_morgana.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/morgana.webp",
+    "bytes": 3016
+  },
+  {
+    "name": "Murkwolf",
+    "apiName": "DA_Murkwolf18",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_murkwolf.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/murkwolf.webp",
+    "bytes": 4234
+  },
+  {
+    "name": "Nidalee",
+    "apiName": "DA_Nidalee18_AP",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_nidalee.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/nidalee.webp",
+    "bytes": 2742
+  },
+  {
+    "name": "Ornn",
+    "apiName": "DA_18_Ornn",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_ornn.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/ornn.jpg",
+    "bytes": 5528
+  },
+  {
+    "name": "Pebbles",
+    "apiName": "DA_18_Sentry",
+    "url": "https://cdn.lolchess.gg/upload/images/champions/Pebbles_1783677606-Sentry.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/pebbles.jpg",
+    "bytes": 1789
+  },
+  {
+    "name": "Rakan",
+    "apiName": "DA_18_Rakan",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_rakan.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/rakan.webp",
+    "bytes": 2778
+  },
+  {
+    "name": "Rammus",
+    "apiName": "DA_18_Rammus",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_rammus.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/rammus.webp",
+    "bytes": 2654
+  },
+  {
+    "name": "Rek'Sai",
+    "apiName": "DA_18_RekSai",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_reksai.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/reksai.jpg",
+    "bytes": 5178
+  },
+  {
+    "name": "Rengar",
+    "apiName": "DA_18_Rengar",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_rengar.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/rengar.webp",
+    "bytes": 3816
+  },
+  {
+    "name": "Scuttlecrab",
+    "apiName": "DA_Scuttlecrab18",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_scuttlecrab.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/scuttlecrab.jpg",
+    "bytes": 5465
+  },
+  {
+    "name": "Sejuani",
+    "apiName": "DA_18_Sejuani",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_sejuani.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/sejuani.jpg",
+    "bytes": 7390
+  },
+  {
+    "name": "Sentinel",
+    "apiName": "DA_Sentinel18",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_sentinel.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/sentinel.jpg",
+    "bytes": 5906
+  },
+  {
+    "name": "Sett",
+    "apiName": "DA_18_Sett",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_sett.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/sett.webp",
+    "bytes": 2568
+  },
+  {
+    "name": "Shen",
+    "apiName": "DA_18_Shen",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_shen.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/shen.jpg",
+    "bytes": 5493
+  },
+  {
+    "name": "Sivir",
+    "apiName": "DA_18_Sivir",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_sivir.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/sivir.webp",
+    "bytes": 3930
+  },
+  {
+    "name": "Soraka",
+    "apiName": "DA_18_Soraka",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_soraka.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/soraka.jpg",
+    "bytes": 7028
+  },
+  {
+    "name": "Taric",
+    "apiName": "DA_Taric18",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_taric.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/taric.webp",
+    "bytes": 2882
+  },
+  {
+    "name": "Teemo",
+    "apiName": "DA_18_Teemo",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_teemo.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/teemo.jpg",
+    "bytes": 5527
+  },
+  {
+    "name": "Tristana",
+    "apiName": "DA_18_Tristana",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_tristana.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/tristana.webp",
+    "bytes": 3804
+  },
+  {
+    "name": "Varus",
+    "apiName": "DA_18_Varus",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_varus.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/varus.jpg",
+    "bytes": 5834
+  },
+  {
+    "name": "Veigar",
+    "apiName": "DA_18_Veigar",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_veigar.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/veigar.webp",
+    "bytes": 2506
+  },
+  {
+    "name": "Vi",
+    "apiName": "DA_Vi18",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_vi.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/vi.webp",
+    "bytes": 3036
+  },
+  {
+    "name": "Warwick",
+    "apiName": "DA_18_Warwick",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_warwick.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/warwick.webp",
+    "bytes": 3018
+  },
+  {
+    "name": "Xayah",
+    "apiName": "DA_18_Xayah",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_xayah.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/xayah.webp",
+    "bytes": 2082
+  },
+  {
+    "name": "Yorick",
+    "apiName": "DA_18_Yorick",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_yorick.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/yorick.webp",
+    "bytes": 2642
+  },
+  {
+    "name": "Yunara",
+    "apiName": "DA_18_Yunara",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_yunara.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/yunara.webp",
+    "bytes": 3714
+  },
+  {
+    "name": "Zyra",
+    "apiName": "DA_18_Zyra",
+    "url": "https://c-tft-api.op.gg/img/set/18/tft-champion/tiles/tft18_zyra.tft_set18.jpg?image=q_auto:good,f_webp&v=1788508742",
+    "status": "downloaded",
+    "path": "/images/tft/set-18/zyra.jpg",
+    "bytes": 5700
+  }
+]

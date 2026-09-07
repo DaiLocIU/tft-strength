@@ -1,0 +1,55 @@
+# Notes
+
+- User wants step-by-step teaching, not a large finished system.
+- User wants Label Studio for labeling, not an in-app custom labeler.
+- Start from scratch after removing the old `tft-vision-service` folder.
+- Keep the first detector focused on only one label: `board`.
+- User wants generated code to be explained as learning material, with small manual exercises instead of receiving only finished scripts.
+- User prefers starting from empty code and being guided to write each part manually.
+- User has chosen a Label Studio rectangle config with one label, `board`, and plans to label 100 images.
+- User has 279 total images and has labeled 100 images for the first board detector.
+- User asked which Label Studio export type to use. Recommendation: JSON first for learning/converter practice, YOLO later for direct training.
+- User exported `board-100.json`; Label Studio image paths use `/data/upload/1/<hash>-image_N.png`, so the original filename can be recovered by stripping the 8-hex hash prefix.
+- User copied raw images into `vision-board-detector/data/raw`; 100 of 100 labeled tasks match local raw images.
+- User is ready to hand-write a `verify labels match images` function.
+- User wrote `scripts/check_dataset.py`; syntax is valid, but it needs a script entry point to call the function and print results.
+- User asked why the script can run before creating a venv. Current `check_dataset.py` only uses standard-library modules, so global/system Python is enough for now; venv becomes important when installing external packages like Ultralytics or OpenCV.
+- User ran `scripts/check_dataset.py` successfully: matched 100, missing 0. Next step is validating each task has exactly one `board` rectangle.
+- User added `find_board_rectangles`; script runs, but it counted task entries instead of tasks with exactly one board rectangle. Actual dataset has 98 valid tasks and 2 bad tasks: `image_19.png`, `image_33.png`.
+- Label Studio was installed into `vision-board-detector/.venv` as version 1.13.1 and started with default data dir on port 8081 because 8080 was busy.
+- User noticed Label Studio table shows 1 annotation while detail view has 2 board rectangles. Explanation: one annotation object can contain multiple result rectangles.
+- User wants Python to feel more like TypeScript. Added strict `mypy`, `ruff`, and `pyright` config; installed `mypy` and `ruff`; first strict run found missing function annotations plus two Ruff issues.
+- User wants to type `tasks = json.load(file)` like TypeScript `Array<TaskItem>`. Teach `TypedDict` plus `cast`.
+- User asked the difference between Label Studio annotations and Python type annotations. Explain as dataset labels versus code type hints.
+- User hit strict mypy errors from reassigning `str` parameters to `Path` values. Teach using new local variable names such as `export_file` and `raw_path`.
+- User returned `{matched, missing, ...}` and mypy correctly inferred `set[list[str]]`; teach dictionary syntax with key-value pairs and avoiding `.get()` when keys are required in a `TypedDict`.
+- User's `check_dataset.py` now passes mypy and runtime validation: matched 100, missing 0, valid_labels 100, bad_labels 0. Ruff still reports style issues. Next CV step is Label Studio rectangle to YOLO conversion.
+- User asked what YOLO format is, how it differs from normal x/y rectangle format, and why not train directly with Label Studio x/y values.
+- User asked what Ultralytics YOLO is. Teach it as the training/prediction toolkit for the board detector, not as code they must implement from scratch.
+- User printed one converted `YoloRectangle` successfully. Next teaching step is formatting it into one YOLO label line string before writing `.txt` files.
+- User implemented `yolo_rectangle_to_line`. Next step is writing one YOLO `.txt` label file for one image before exporting the full dataset.
+- User's current loop generated 100 YOLO label files under `vision-board-detector/data/yolo/labels/train`; mypy passes. Next step is copying the matching 100 raw images into `data/yolo/images/train`.
+- User's `copy_yolo_image_file` default accidentally used `data/yolo/labels/train` for `images_dir`, so 100 PNG files were copied into the labels folder. Teach folder-contract debugging before dataset YAML.
+- User fixed the YOLO image folder issue: labels/train has 100 TXT and 0 PNG, images/train has 100 PNG. Next step is creating `data/yolo/dataset.yaml`.
+- User created `data/yolo/dataset.yaml`; verified YAML, 100 train images, 100 train labels, and mypy success. Next step is installing Ultralytics and running a one-epoch smoke training command.
+- User ran the one-epoch YOLO smoke train successfully and saw `runs/detect/train`. Teach them to interpret artifacts and use `weights/best.pt` for one prediction next.
+- User asked what `epochs` means and why the first run used 1 while the next recommendation used 20. Teach 1 epoch as pipeline smoke test and 20 epochs as first learning test.
+- User asked how to train with a larger dataset. Teach real train/validation split first, then longer training with batch/imgsz/device choices.
+- User asked why training can detect the board. Teach prediction vs label, loss/error, and repeated model weight adjustment.
+- User got good `train-20` detections and asked what to do next for both good and bad results. Teach broad prediction review and failure-category iteration.
+- User used `device=mps` successfully and saw `GPU_mem 4.27G`. Teach CPU vs GPU, Apple MPS, and GPU memory usage.
+- User copied latest `best.pt` into `vision-board-detector/models/board-detector.pt`. Next step is Python inference code with Ultralytics instead of CLI-only prediction.
+- User created `scripts/predict_board.py` that loads `models/board-detector.pt`, predicts `data/raw/image_1.png`, and prints `results[0].boxes`. Next step is extracting a typed `BoardDetection`.
+- User's `detect_board` now handles no boxes and multiple boxes by choosing highest confidence. Runtime and mypy both pass for `scripts/predict_board.py`.
+- Next step after board detection inference is cropping the detected board image. Teach using Pillow and `BoardDetection` coordinates.
+- User successfully cropped one board image. Next step is batch-cropping all detected boards from `data/raw` into `outputs/board-crops`, with a typed summary that tracks cropped and failed image names.
+- User already added `BatchCropSummary` and wants to hand-write `crop_all_boards` step by step. Teach the function body before adding a polished CLI.
+- User now has batch cropping working: 343 cropped board images and 5 failures. Next step is visual QA with a contact sheet before using board crops for champion/unit detection.
+- User says crop review looks good. Next CV target is a generic `unit` detector on board crops, not champion identity yet. Label only units on the board; exclude bench, shop, and Little Legend for now.
+- User redirected: before unit/champion detection, detect the 28 TFT hex cells on each cropped board. Added a first geometry-based `scripts/detect_hexes.py` that estimates 4 rows x 7 columns and draws overlays for review.
+- User found the generated hex script too fast and asked to remove it. Removed `vision-board-detector/scripts/detect_hexes.py`; next teaching step is rebuilding it manually from empty code, starting with a `HexCell` `TypedDict`.
+- User recreated `scripts/detect_hexes.py` with only the `HexCell` `TypedDict`. Next micro-step is creating one fake `HexCell` value and printing it.
+- User correctly noticed `center_x` and `center_y` are not enough to draw a hex; added `radius` to `HexCell`.
+- User wants the next real board-game hex step. Teach `create_hex_row(...) -> list[HexCell]` first: 7 cells, same `center_y`, `center_x = start_x + column * gap`.
+- User wants visual feedback earlier for hex geometry. Next step is drawing one `HexCell` center as a red dot on a real board crop, then tuning `center_x` and `center_y` visually.
+- User asked why `Image.open(image_path).convert("RGB")` is used. Teach that `Image.open` preserves the original image mode, while RGB normalization makes drawing colored overlays predictable.

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0015: Strict Python Like TypeScript</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+  <main>
+    <h1>Strict Python Like TypeScript</h1>
+    <p class="lede">Python can feel closer to TypeScript if you use type hints, a type checker, and a linter.</p>
+
+    <h2>The Difference</h2>
+    <p>TypeScript checks types before runtime. Python normally waits until runtime. Strict Python adds a separate checker so many mistakes are caught earlier.</p>
+
+    <h2>The Three Tools</h2>
+    <ul>
+      <li><code>type hints</code>: annotations you write in Python code.</li>
+      <li><code>mypy</code> or <code>pyright</code>: static type checkers.</li>
+      <li><code>ruff</code>: fast linting and style checks.</li>
+    </ul>
+
+    <h2>Example</h2>
+    <pre><code>def clean_filename(name: str) -> str:
+    return name.strip()</code></pre>
+
+    <p>This tells the checker: <code>name</code> must be a string, and the function returns a string.</p>
+
+    <h2>Your Next Refactor</h2>
+    <p>Do not rewrite the whole script. Add types to one function first:</p>
+    <pre><code>def find_board_rectangles(task: dict) -> list:
+    ...</code></pre>
+
+    <p>Then improve it one step later with more precise types.</p>
+
+    <h2>Commands</h2>
+    <pre><code>cd vision-board-detector
+.venv/bin/python -m pip install mypy ruff
+.venv/bin/python -m mypy scripts/check_dataset.py
+.venv/bin/python -m ruff check scripts/check_dataset.py</code></pre>
+
+    <h2>Important</h2>
+    <p>Your venv currently uses Python 3.9.6, so the strict config targets Python 3.9 syntax. That means avoid newer syntax like <code>list[str]</code> until we intentionally move the venv to a newer Python.</p>
+
+    <p class="small">The goal is not perfect typing immediately. The goal is to make one function clearer and easier to trust.</p>
+  </main>
+</body>
+</html>
+

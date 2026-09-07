@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0028: Create YOLO Dataset YAML</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+  <main>
+    <h1>Create YOLO Dataset YAML</h1>
+    <p class="lede">Now the files exist. YOLO still needs one config file that explains where they are.</p>
+
+    <h2>What YOLO Has</h2>
+    <pre><code>data/yolo/images/train/*.png
+data/yolo/labels/train/*.txt</code></pre>
+
+    <h2>What YOLO Needs Next</h2>
+    <pre><code>data/yolo/dataset.yaml</code></pre>
+
+    <h2>The File</h2>
+    <pre><code>path: data/yolo
+train: images/train
+val: images/train
+
+names:
+  0: board</code></pre>
+
+    <h2>Meaning</h2>
+    <ul>
+      <li><code>path</code>: root folder of the YOLO dataset.</li>
+      <li><code>train</code>: image folder used for training.</li>
+      <li><code>val</code>: image folder used for validation.</li>
+      <li><code>names</code>: class id to class name mapping.</li>
+    </ul>
+
+    <h2>Why Val Uses Train For Now</h2>
+    <p>This is temporary. A real dataset should split images into train and validation sets. For the first smoke test, using the same folder lets you test the pipeline before adding more complexity.</p>
+
+    <h2>Self Check</h2>
+    <pre><code>cat data/yolo/dataset.yaml</code></pre>
+
+    <p>You should see one class:</p>
+    <pre><code>0: board</code></pre>
+
+    <p class="small">Primary source: <a href="https://docs.ultralytics.com/datasets/detect/">Ultralytics detection dataset documentation</a>.</p>
+  </main>
+</body>
+</html>

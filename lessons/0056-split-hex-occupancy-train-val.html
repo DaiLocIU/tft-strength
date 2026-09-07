@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Split Hex Occupancy Into Train And Val</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Split Hex Occupancy Into Train And Val</h1>
+      <p class="lede">
+        After reviewing the contact sheets, the next real step is to create a training set and a
+        validation set for the classifier.
+      </p>
+
+      <div class="callout">
+        Goal: turn <code>data/hex-occupancy/labeled</code> into an Ultralytics classification
+        dataset with <code>train</code> and <code>val</code> folders.
+      </div>
+
+      <h2>Why Split?</h2>
+      <p>
+        The classifier needs two groups. <code>train</code> teaches the model. <code>val</code>
+        tests whether the model works on examples it did not train on.
+      </p>
+
+      <pre><code>train:
+  examples the model learns from
+
+val:
+  examples held back for checking</code></pre>
+
+      <h2>The Important Rule</h2>
+      <p>
+        Split by original board image, not by random patch. Patches from the same board are visually
+        related. If some patches from <code>image_120</code> go to train and other patches from
+        <code>image_120</code> go to val, the validation result becomes too easy.
+      </p>
+
+      <pre><code>good:
+  image_120_* all in train
+  image_121_* all in val
+
+bad:
+  image_120_r0_c0 in train
+  image_120_r0_c1 in val</code></pre>
+
+      <h2>Target Folder Shape</h2>
+      <p>
+        Ultralytics classification uses folder names as labels. That means both
+        <code>occupied</code> and <code>empty</code> must exist under both <code>train</code> and
+        <code>val</code>.
+      </p>
+
+      <pre><code>data/hex-occupancy/
+  train/
+    occupied/
+    empty/
+  val/
+    occupied/
+    empty/</code></pre>
+
+      <h2>Split Size</h2>
+      <p>
+        Use about <code>80%</code> of board images for training and <code>20%</code> for validation.
+        With your current dataset, that is a good first split. Later, you can improve it by making
+        sure different maps and video sources appear in both groups.
+      </p>
+
+      <h2>Your Next Command</h2>
+      <p>After you finish scanning the contact sheets, ask Codex to implement this script:</p>
+
+      <pre><code>scripts/split_hex_occupancy_dataset.py</code></pre>
+
+      <p>The script should:</p>
+
+      <ol class="checklist">
+        <li>Read files from <code>data/hex-occupancy/labeled/occupied</code> and <code>empty</code>.</li>
+        <li>Group files by original image name.</li>
+        <li>Put 80% of image groups into <code>train</code>.</li>
+        <li>Put 20% of image groups into <code>val</code>.</li>
+        <li>Copy files into the Ultralytics folder layout.</li>
+        <li>Print counts for each class in train and val.</li>
+      </ol>
+
+      <h2>Stop Rule</h2>
+      <p>Do not train until the split prints nonzero counts for all four folders:</p>
+
+      <pre><code>train/occupied
+train/empty
+val/occupied
+val/empty</code></pre>
+
+      <h2>Recall</h2>
+      <ul class="checklist">
+        <li>What is <code>train</code> used for?</li>
+        <li>What is <code>val</code> used for?</li>
+        <li>Why split by board image instead of random patch?</li>
+      </ul>
+
+      <p class="small">
+        Primary source:
+        <a href="https://docs.ultralytics.com/datasets/classify/">Ultralytics classification dataset guide</a>.
+        Previous lesson:
+        <a href="./0055-review-before-training-hex-occupancy.html">Review Before Training Hex Occupancy</a>.
+        Ask Codex next: "implement the train val split".
+      </p>
+    </main>
+  </body>
+</html>

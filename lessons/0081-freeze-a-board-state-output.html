@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Freeze A Board State Output</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Freeze A Board State Output</h1>
+      <p class="lede">
+        Your visual result is good enough. The next step is to make the result useful to code:
+        export one clean JSON board state for every board crop.
+      </p>
+
+      <div class="callout">
+        Win for this lesson: stop judging only screenshots and define the data your next feature
+        will consume.
+      </div>
+
+      <h2>Why This Is Next</h2>
+      <p>
+        The review image answers: <code>does this look right?</code>. The JSON output answers:
+        <code>what units are on which hexes?</code>. Team strength, traits, star levels, and tests
+        all need the second answer.
+      </p>
+
+      <h2>Step 1: Keep The Current Models</h2>
+      <pre><code>models/champion-detector.pt
+models/champion-identity-classifier.pt
+models/hex-occupancy-classifier.pt</code></pre>
+      <p>
+        Do not retrain again until you find a clear failure group. The current pipeline is good
+        enough to become a data producer.
+      </p>
+
+      <h2>Step 2: Add A JSON Output Folder</h2>
+      <pre><code>outputs/board-state/
+  image_388.json
+  image_389.json</code></pre>
+
+      <h2>Step 3: Export Units Only</h2>
+      <p>
+        Start with one record per occupied champion hex:
+      </p>
+      <pre><code>{
+  "row": 2,
+  "column": 0,
+  "champion": "warwick",
+  "identity_confidence": 0.99,
+  "champion_box_confidence": 0.88,
+  "source": "both"
+}</code></pre>
+
+      <h2>Step 4: Add An Identity Gate</h2>
+      <p>
+        Since you saw wrong names mostly below about <code>0.70</code>, the JSON should not trust
+        weak names.
+      </p>
+      <pre><code>identity_confidence &gt;= 0.70 -> champion name
+identity_confidence &lt;  0.70 -> "unknown"</code></pre>
+
+      <h2>Step 5: Verify Five Boards</h2>
+      <p>
+        Pick five hard boards, then compare their review image to their JSON file. This is your
+        first board-state test set.
+      </p>
+      <pre><code>image_388.png
+image_389.png
+image_400.png
+image_403.png
+image_404.png</code></pre>
+
+      <h2>Step 6: Only Then Add Stars</h2>
+      <p>
+        Star detection should be the next visual model after board-state JSON works. Otherwise you
+        are adding another prediction before the current output is stable.
+      </p>
+
+      <h2>Retrieval Check</h2>
+      <pre><code>A. Retrain again immediately.
+B. Export stable board-state JSON.
+C. Add star model before output data.</code></pre>
+      <p>
+        Answer: B. Once the visual result is good, freeze the data contract.
+      </p>
+
+      <p class="small">
+        Reference:
+        <a href="../reference/board-state-json-contract.html">Board State JSON Contract</a>.
+        Previous lesson:
+        <a href="./0080-balance-missed-champions-and-wrong-names.html">Balance Missed Champions And Wrong Names</a>.
+        Primary source:
+        <a href="https://docs.python.org/3/library/json.html">Python json module documentation</a>.
+        Ask Codex follow-up questions if the output shape needs changing.
+      </p>
+    </main>
+  </body>
+</html>

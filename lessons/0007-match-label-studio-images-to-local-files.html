@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0007: Match Label Studio Images To Local Files</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+  <main>
+    <h1>Match Label Studio Images To Local Files</h1>
+    <p class="lede">Before conversion or training, you need to know which JSON task belongs to which image file.</p>
+
+    <h2>Your Export</h2>
+    <p>Your first task points to this image path:</p>
+    <pre><code>/data/upload/1/0992a392-image_2.png</code></pre>
+
+    <p>This is Label Studio's internal upload path. The useful original filename is:</p>
+    <pre><code>image_2.png</code></pre>
+
+    <h2>The Pattern</h2>
+    <p>Label Studio added an 8-character hash before the original filename:</p>
+    <pre><code>0992a392-image_2.png
+^^^^^^^^ hash added by Label Studio
+         image_2.png is your original name</code></pre>
+
+    <h2>Where Images Should Live</h2>
+    <p>Put your original screenshots here:</p>
+    <pre><code>vision-board-detector/data/raw/</code></pre>
+
+    <p>For this export, the first 10 expected original names are:</p>
+    <pre><code>image_2.png
+image_1.png
+image_4.png
+image_3.png
+image_5.png
+image_6.png
+image_7.png
+image_8.png
+image_9.png
+image_13.png</code></pre>
+
+    <h2>If You Do Not Have The Original Images</h2>
+    <p>Export a format that includes images, such as <strong>COCO with Images</strong>, then copy the downloaded images into <code>vision-board-detector/data/raw/</code>. But if you still have your original 279 screenshots, use those instead.</p>
+
+    <h2>Next Python Skill</h2>
+    <p>The first script should not train. It should only print this mapping:</p>
+    <pre><code>Label Studio path: 0992a392-image_2.png
+Local raw image:   image_2.png</code></pre>
+
+    <p class="small">Primary source: <a href="https://labelstud.io/guide/export.html">Label Studio export documentation</a>. Label Studio exports both task data and annotations in JSON format.</p>
+  </main>
+</body>
+</html>
+

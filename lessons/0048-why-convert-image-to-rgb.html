@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Why Convert Image To RGB</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Why <code>convert("RGB")</code>?</h1>
+      <p class="lede">
+        <code>Image.open(image_path)</code> loads an image in whatever pixel format the file uses.
+        <code>convert("RGB")</code> makes that format predictable before drawing.
+      </p>
+
+      <div class="callout">
+        For your hex overlay code: RGB means every pixel has red, green, and blue channels, so
+        drawing <code>"red"</code> or <code>"white"</code> behaves normally.
+      </div>
+
+      <h2>Image Mode</h2>
+      <p>
+        Pillow images have a <code>mode</code>. The official Pillow docs describe <code>RGB</code>
+        as true color with three 8-bit channels, and <code>RGBA</code> as RGB plus an alpha
+        transparency channel.
+        <a href="https://pillow.readthedocs.io/en/latest/handbook/concepts.html#modes">
+          Pillow image modes
+        </a>
+      </p>
+
+      <pre><code>image = Image.open(image_path)
+print(image.mode)</code></pre>
+
+      <p>You might see:</p>
+      <pre><code>RGB
+RGBA
+P
+L</code></pre>
+
+      <h2>Why Normalize?</h2>
+      <p>
+        Your overlay function wants a simple color image. If the file is grayscale, palette-based,
+        or has transparency, drawing can behave differently or save differently. Converting to
+        <code>RGB</code> gives the rest of your function one stable assumption.
+      </p>
+
+      <pre><code>image = Image.open(image_path).convert("RGB")</code></pre>
+
+      <h2>What It Does Not Mean</h2>
+      <p>
+        It does not resize the image. It does not detect anything. It does not change coordinates.
+        It only changes how each pixel stores color.
+      </p>
+
+      <h2>In Your Code</h2>
+      <pre><code>image = Image.open(image_path).convert("RGB")
+draw = ImageDraw.Draw(image)</code></pre>
+
+      <p>
+        Read this as: “open the board crop, make it a normal color image, then prepare to draw on
+        it.”
+      </p>
+
+      <h2>Recall</h2>
+      <ul class="checklist">
+        <li>Does <code>convert("RGB")</code> resize the image?</li>
+        <li>What are the three channels in RGB?</li>
+        <li>Why is predictable image mode useful before drawing overlays?</li>
+      </ul>
+
+      <p class="small">
+        Next: draw one dot on the board crop, then inspect the saved image.
+      </p>
+    </main>
+  </body>
+</html>

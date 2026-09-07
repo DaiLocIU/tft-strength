@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Choose Champion Hex With Occupancy</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Choose Champion Hex With Occupancy</h1>
+      <p class="lede">
+        You already combine hex occupancy and champion detection. Now refine the champion signal so
+        large champions choose the occupied hex nearest their feet.
+      </p>
+
+      <div class="callout">
+        Win for this lesson: update <code>get_champion_confidences_by_hex</code> so champion boxes
+        prefer occupied hexes under the box, but still work when occupancy misses.
+      </div>
+
+      <h2>The Problem</h2>
+      <pre><code>large champion box covers:
+  row 2 column 3: occupied
+  row 2 column 4: occupied
+
+bottom-center point is closer to:
+  row 2 column 4
+
+final champion signal goes to:
+  row 2 column 4</code></pre>
+
+      <h2>The Decision Rule</h2>
+      <p>
+        Do not ask whether the champion box is perfectly placed on an occupied hex. Ask a smaller
+        question: among the occupied hexes under this box, which one is closest to the box bottom?
+      </p>
+      <pre><code>if occupied hexes exist under champion box:
+    choose nearest occupied hex to bottom-center
+else:
+    choose nearest hex to bottom-center</code></pre>
+
+      <h2>Step 1: Make Occupancy Easy To Query</h2>
+      <pre><code>def create_occupancy_predictions_by_hex(
+    occupancy_predictions: list[HexOccupancyPrediction],
+) -> dict[tuple[int, int], HexOccupancyPrediction]:
+    return {
+        hex_key(prediction["row"], prediction["column"]): prediction
+        for prediction in occupancy_predictions
+    }</code></pre>
+
+      <h2>Step 2: Check Box Area</h2>
+      <p>
+        Start with a simple area rule: a hex is under the champion box when its center is inside the
+        box.
+      </p>
+      <pre><code>def hex_center_is_inside_champion_box(hex_cell: HexCell, box: ChampionBox) -> bool:
+    return (
+        box["x1"] <= hex_cell["center_x"] <= box["x2"]
+        and box["y1"] <= hex_cell["center_y"] <= box["y2"]
+    )</code></pre>
+
+      <h2>Step 3: Choose The Best Hex</h2>
+      <pre><code>def find_best_hex_for_champion_box(...):
+    point_x, point_y = box_bottom_center(box, image_height, foot_offset_ratio)
+
+    occupied_hexes_under_box = [
+        hex_cell
+        for hex_cell in hexes
+        if hex_key(hex_cell["row"], hex_cell["column"]) in occupied_hex_keys
+        and hex_center_is_inside_champion_box(hex_cell, box)
+    ]
+
+    if len(occupied_hexes_under_box) > 0:
+        return find_nearest_hex(point_x, point_y, occupied_hexes_under_box)
+
+    return find_nearest_hex(point_x, point_y, hexes)</code></pre>
+
+      <h2>Step 4: Use It Per Box</h2>
+      <pre><code>for box in champion_boxes:
+    assigned_hex = find_best_hex_for_champion_box(
+        box,
+        hexes,
+        occupied_hex_keys,
+        board_image.height,
+        foot_offset_ratio,
+    )</code></pre>
+
+      <h2>Retrieval Check</h2>
+      <p>Before reading the answer, choose the correct fallback rule from memory.</p>
+      <pre><code>A. If no occupied hex is under the champion box, ignore the champion box.
+B. If no occupied hex is under the champion box, choose nearest hex to bottom-center.
+C. If two occupied hexes are under the champion box, choose the highest confidence box.</code></pre>
+      <p>
+        Answer: B. Champion detection is still useful when occupancy misses; the bottom-center point
+        gives the best fallback.
+      </p>
+
+      <h2>Test It</h2>
+      <pre><code>cd /Users/inmac/Desktop/work-hard/tft-team-strength/vision-board-detector
+
+env PYTHONPYCACHEPREFIX=/private/tmp/codex-pycache \
+  .venv/bin/python -m py_compile scripts/combine_hex_signals.py
+
+.venv/bin/python scripts/combine_hex_signals.py image_1.png</code></pre>
+
+      <p class="small">
+        Reference:
+        <a href="../reference/champion-foot-hex-choice.html">Champion Foot Hex Choice</a>.
+        Previous lesson:
+        <a href="./0073-write-combine-hex-signals.html">Write Combine Hex Signals</a>.
+        Primary sources:
+        <a href="https://docs.ultralytics.com/tasks/detect/">Ultralytics object detection</a>,
+        <a href="https://www.redblobgames.com/grids/hexagons/">Red Blob hex grids</a>.
+        Ask Codex follow-up questions if any step is unclear.
+      </p>
+    </main>
+  </body>
+</html>

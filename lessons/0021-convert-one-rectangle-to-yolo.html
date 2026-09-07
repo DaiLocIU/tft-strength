@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0021: Convert One Rectangle To YOLO</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+  <main>
+    <h1>Convert One Rectangle To YOLO</h1>
+    <p class="lede">Now that labels match images, the next skill is converting one Label Studio rectangle into one YOLO training line.</p>
+
+    <h2>Where You Are</h2>
+    <pre><code>matched: 100
+missing: 0
+valid_labels: 100
+bad_labels: 0</code></pre>
+
+    <p>This means the dataset is ready for conversion practice.</p>
+
+    <h2>The Two Formats</h2>
+    <p>Label Studio rectangle:</p>
+    <pre><code>x, y, width, height</code></pre>
+    <p><code>x</code> and <code>y</code> are the top-left corner. Values are percentages from 0 to 100.</p>
+
+    <p>YOLO rectangle:</p>
+    <pre><code>class_id center_x center_y width height</code></pre>
+    <p><code>center_x</code>, <code>center_y</code>, <code>width</code>, and <code>height</code> are normalized values from 0 to 1.</p>
+
+    <h2>The Formula</h2>
+    <pre><code>x = label_studio_x / 100
+y = label_studio_y / 100
+w = label_studio_width / 100
+h = label_studio_height / 100
+
+center_x = x + w / 2
+center_y = y + h / 2</code></pre>
+
+    <h2>Your Next Function</h2>
+    <p>Create this function in <code>scripts/check_dataset.py</code> for now:</p>
+    <pre><code>def rectangle_to_yolo(rectangle: RectangleValue) -> str:
+    ...</code></pre>
+
+    <p>It should return one string like:</p>
+    <pre><code>0 0.350000 0.400000 0.500000 0.400000</code></pre>
+
+    <h2>Manual Test</h2>
+    <p>Use this input:</p>
+    <pre><code>{
+    "x": 10,
+    "y": 20,
+    "width": 50,
+    "height": 40,
+    "rectanglelabels": ["board"],
+}</code></pre>
+
+    <p>Expected output:</p>
+    <pre><code>0 0.350000 0.400000 0.500000 0.400000</code></pre>
+
+    <h2>Stop Point</h2>
+    <p>Do not write files yet. First make one rectangle convert correctly.</p>
+  </main>
+</body>
+</html>
+

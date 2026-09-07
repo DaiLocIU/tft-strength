@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>What To Do When Hex Predictions Still Fail</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>What To Do When Hex Predictions Still Fail</h1>
+      <p class="lede">
+        If <code>predict_hex_occupancy</code> is still wrong, do not blindly label forever. First
+        decide what kind of wrong result you are seeing.
+      </p>
+
+      <div class="callout">
+        Current corrected labels: <code>1218 occupied</code> and <code>3598 empty</code>.
+      </div>
+
+      <h2>The Short Answer</h2>
+      <p>
+        Yes, the main loop is still label and retrain. But only do that when the mistake is a visual
+        example problem. If the same failure returns again and again, it may be a code or model-design
+        problem.
+      </p>
+
+      <pre><code>good loop:
+  find mistakes
+  label those exact mistakes
+  rebuild split
+  retrain
+  predict again</code></pre>
+
+      <h2>Three Kinds Of Wrong</h2>
+      <p>Before retraining, sort each wrong image into one of these buckets.</p>
+
+      <pre><code>data problem:
+  label is wrong or missing
+  fix labels, then retrain
+
+threshold problem:
+  prediction is low confidence or borderline
+  adjust confidence rule or mark uncertain
+
+model-design problem:
+  crop does not contain enough information
+  change crop, add context, or detect unit anchor instead</code></pre>
+
+      <h2>When Labeling Helps</h2>
+      <p>
+        Labeling helps when the model has not seen enough examples of a visual pattern: item effects,
+        flying champions, shadows, dark arena colors, big champions overlapping neighbors, or partial
+        body crops.
+      </p>
+
+      <pre><code>label more if:
+  the crop shows useful visual evidence
+  a human can decide from the crop
+  the mistake type appears in only some examples</code></pre>
+
+      <h2>When Labeling Is Not Enough</h2>
+      <p>
+        If a human cannot tell from the crop alone, the classifier also cannot reliably learn it.
+        Then the next fix is code or model design.
+      </p>
+
+      <pre><code>change design if:
+  crop is too small
+  champion body belongs to neighbor hex
+  standing point is outside the crop
+  shadow is the only reliable signal
+  same false positive returns after retraining</code></pre>
+
+      <h2>The Next Practical Step</h2>
+      <p>
+        Create a new mistake list only for the current model, relabel those images, rebuild the
+        split, retrain one version, and compare. Do not mix old mistake lists with new ones unless
+        they still fail.
+      </p>
+
+      <pre><code>data/hex-occupancy/mistakes/v3-wrong.txt
+
+then:
+  open http://localhost:8091/?queue=v3-wrong
+  relabel only those boards
+  rebuild split
+  train v4
+  predict all again</code></pre>
+
+      <h2>Stop Rule</h2>
+      <p>
+        If the same mistake type survives two focused retrains, stop adding more random labels. Then
+        change one design variable and test again.
+      </p>
+
+      <pre><code>possible design changes:
+  larger crop around each hex
+  lower/higher occupied threshold
+  save uncertain predictions for review
+  classify with neighbor context
+  detect champion foot/shadow anchor</code></pre>
+
+      <h2>Recall</h2>
+      <ul class="checklist">
+        <li>When does labeling more help?</li>
+        <li>When should you change the code instead?</li>
+        <li>Why keep a separate mistake list for each model version?</li>
+      </ul>
+
+      <p class="small">
+        Primary source:
+        <a href="https://docs.ultralytics.com/tasks/classify/">Ultralytics classification task guide</a>.
+        Previous lesson:
+        <a href="./0058-use-hex-classifier-on-one-board.html">Use The Hex Classifier On One Board</a>.
+        Ask Codex next with the new wrong image numbers, or say: "add uncertain prediction review".
+      </p>
+    </main>
+  </body>
+</html>

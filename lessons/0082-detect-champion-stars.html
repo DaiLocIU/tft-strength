@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Detect Champion Stars</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Detect Champion Stars</h1>
+      <p class="lede">
+        Your board-state result is good enough to add the next field:
+        <code>star_level</code>. Do this as a small classifier on champion crops first.
+      </p>
+
+      <div class="callout">
+        Win for this lesson: choose the first star-detection design without making the pipeline too
+        complicated.
+      </div>
+
+      <h2>The Correct First Design</h2>
+      <p>
+        Start with classification, not detection. You already have a champion box. Use that box to
+        crop one champion, then classify the crop as one of four classes:
+      </p>
+      <pre><code>data/champion-star/
+  labeled/
+    1star/
+    2star/
+    3star/
+    unknown/</code></pre>
+      <p>
+        Use <code>unknown</code> for bad boxes, UI pieces, unclear crops, or champions where the
+        star signal is not visible.
+      </p>
+
+      <h2>Step 1: Make Star Crops</h2>
+      <p>
+        Reuse the current champion detector. For every board crop, detect champion boxes and save
+        one crop per box. Use more top padding than champion identity, because star information is
+        often near the top area around the champion health/name UI.
+      </p>
+      <pre><code>outputs/champion-star-crops/
+  image_388_box_000.png
+  image_388_box_001.png
+  image_389_box_000.png</code></pre>
+
+      <h2>Step 2: Label The Crops</h2>
+      <p>
+        Look at each crop by hand first. Move it into exactly one folder:
+      </p>
+      <pre><code>1star    -> visible one-star champion
+2star    -> visible two-star champion
+3star    -> visible three-star champion
+unknown  -> unclear or bad crop</code></pre>
+
+      <h2>Step 3: Split Train And Val</h2>
+      <p>
+        The folder layout should match the same Ultralytics classification format you used for
+        champion identity:
+      </p>
+      <pre><code>data/champion-star/
+  train/
+    1star/
+    2star/
+    3star/
+    unknown/
+  val/
+    1star/
+    2star/
+    3star/
+    unknown/</code></pre>
+
+      <h2>Step 4: Train A Star Classifier</h2>
+      <p>
+        Use a classifier because each crop should return one label.
+      </p>
+      <pre><code>yolo classify train \
+  model=yolo11n-cls.pt \
+  data=data/champion-star \
+  imgsz=160 \
+  epochs=50 \
+  device=mps \
+  project=../runs/classify \
+  name=champion-star</code></pre>
+
+      <h2>Step 5: Connect Back To Board State</h2>
+      <p>
+        Add the star classifier beside champion identity in Champion-to-Hex Evidence:
+      </p>
+      <pre><code>champion box
+  -> identity crop -> champion_name
+  -> star crop     -> star_level
+  -> chosen hex    -> Board State JSON</code></pre>
+      <p>
+        The Board State unit should become:
+      </p>
+      <pre><code>{
+  "row": 2,
+  "column": 0,
+  "champion": "warwick",
+  "star_level": 2,
+  "star_confidence": 0.91
+}</code></pre>
+
+      <h2>Important Rule</h2>
+      <p>
+        Do not mix star labels into champion identity. <code>warwick</code> and
+        <code>2star</code> are two different questions, so they should be two different classifiers.
+      </p>
+
+      <h2>Retrieval Check</h2>
+      <pre><code>A. Train one classifier with champion names and stars mixed together.
+B. Train a small star classifier on champion crops.
+C. Train a new board detector for stars.</code></pre>
+      <p>
+        Answer: B. Star level is a separate visual attribute of a detected champion.
+      </p>
+
+      <p class="small">
+        Reference:
+        <a href="../reference/champion-name-to-hex-pipeline.html">Champion Name To Hex Pipeline</a>.
+        Previous lesson:
+        <a href="./0081-freeze-a-board-state-output.html">Freeze A Board State Output</a>.
+        Primary source:
+        <a href="https://docs.ultralytics.com/tasks/classify/">Ultralytics classification task guide</a>.
+        Ask Codex follow-up questions if you want to write the crop collection script next.
+      </p>
+    </main>
+  </body>
+</html>

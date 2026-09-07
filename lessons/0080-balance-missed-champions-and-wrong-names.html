@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Balance Missed Champions And Wrong Names</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Balance Missed Champions And Wrong Names</h1>
+      <p class="lede">
+        Your names are mostly wrong only below about 70% identity confidence. But
+        <code>--champion-conf 0.65</code> misses real champions. The next skill is separating
+        detector recall from identity trust.
+      </p>
+
+      <div class="callout">
+        Win for this lesson: use a lower detector threshold to find champions, and a higher identity
+        threshold to decide whether to trust the name.
+      </div>
+
+      <h2>Two Thresholds</h2>
+      <pre><code>champion-conf
+  controls: keep or drop detected champion boxes
+  too high: misses real champions
+
+identity-conf
+  controls: trust or hide champion names
+  too low: shows wrong names</code></pre>
+
+      <h2>The Next Decision</h2>
+      <p>
+        Since <code>--champion-conf 0.65</code> misses champions, do not keep raising it. Lower it
+        back toward recall, then hide weak names separately.
+      </p>
+      <pre><code>recommended detector threshold: 0.45 or 0.50
+recommended identity threshold: 0.70 or 0.75</code></pre>
+
+      <h2>Step 1: Run A Recall Test</h2>
+      <p>
+        Compare the same boards with two detector thresholds:
+      </p>
+      <pre><code>cd /Users/inmac/Desktop/work-hard/tft-team-strength/vision-board-detector
+
+.venv/bin/python scripts/combine_hex_signals.py image_388.png \
+  --champion-conf 0.50 \
+  --identity-padding 0.08
+
+.venv/bin/python scripts/combine_hex_signals.py image_388.png \
+  --champion-conf 0.65 \
+  --identity-padding 0.08</code></pre>
+      <p>
+        If <code>0.50</code> finds the missing champion and only adds a few extra boxes, prefer
+        <code>0.50</code>.
+      </p>
+
+      <h2>Step 2: Add Identity Gate</h2>
+      <p>
+        The board should not display weak names as if they are facts. Add an identity threshold:
+      </p>
+      <pre><code>identity_confidence &gt;= 0.70 -> draw champion name
+identity_confidence &lt;  0.70 -> draw unknown / ?</code></pre>
+      <p>
+        This lets the detector keep recall without letting the classifier create wrong names.
+      </p>
+
+      <h2>Step 3: Split Errors By Type</h2>
+      <pre><code>real champion missing completely
+  -> detector data problem
+  -> label more champion boxes, retrain champion-detector.pt
+
+box is present but name is wrong or weak
+  -> identity data problem
+  -> save crop to correct labeled folder, retrain classifier</code></pre>
+
+      <h2>Step 4: Stop Criteria</h2>
+      <p>
+        Stop improving identity when wrong names mostly happen below your identity threshold. Then
+        the product behavior is:
+      </p>
+      <pre><code>good box + confident name -> champion name
+good box + weak name      -> unknown
+missing box              -> improve detector</code></pre>
+
+      <h2>Retrieval Check</h2>
+      <pre><code>A. Raise champion-conf until names look clean.
+B. Lower champion-conf for recall, gate weak names separately.
+C. Add more identity labels for missing detector boxes.</code></pre>
+      <p>
+        Answer: B. Missing boxes are detector recall; weak names are identity confidence.
+      </p>
+
+      <p class="small">
+        Reference:
+        <a href="../reference/champion-name-to-hex-pipeline.html">Champion Name To Hex Pipeline</a>.
+        Previous lesson:
+        <a href="./0079-after-confidence-improves-fix-wrong-names.html">After Confidence Improves, Fix Wrong Names</a>.
+        Primary sources:
+        <a href="https://docs.ultralytics.com/tasks/detect/">Ultralytics detection</a>
+        and
+        <a href="https://docs.ultralytics.com/tasks/classify/">Ultralytics classification</a>.
+        Ask Codex follow-up questions if any threshold decision is unclear.
+      </p>
+    </main>
+  </body>
+</html>

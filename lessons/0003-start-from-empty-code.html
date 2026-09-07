@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0003: Start From Empty Code</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+  <main>
+    <h1>Start From Empty Code</h1>
+    <p class="lede">This lesson changes the approach: you write the code, and the agent guides one small step at a time.</p>
+
+    <div class="callout">
+      <strong>Rule:</strong> do not generate the full detector. Write one file, one idea, one test at a time.
+    </div>
+
+    <h2>What Exists Now</h2>
+    <p>The project folder is intentionally empty except for folders:</p>
+    <pre><code>vision-board-detector/
+  data/raw/
+  exports/label-studio/
+  label_studio/
+  scripts/
+  src/board_detector/</code></pre>
+
+    <h2>First Thing You Will Write</h2>
+    <p>You will write the Label Studio config by hand. Create this file:</p>
+    <pre><code>vision-board-detector/label_studio/board_label_config.xml</code></pre>
+
+    <p>Type this yourself:</p>
+    <pre><code>&lt;View&gt;
+  &lt;Image name="image" value="$image"/&gt;
+  &lt;RectangleLabels name="label" toName="image"&gt;
+    &lt;Label value="board"/&gt;
+  &lt;/RectangleLabels&gt;
+&lt;/View&gt;</code></pre>
+
+    <h2>What This Teaches</h2>
+    <p>This teaches the first computer vision workflow skill: defining what a human should label. If the label is vague, the model learns vague behavior.</p>
+
+    <h2>Check Yourself</h2>
+    <ol>
+      <li>What is the only label name?</li>
+      <li>What does <code>RectangleLabels</code> mean we are drawing?</li>
+      <li>Why are we not labeling champions yet?</li>
+    </ol>
+
+    <h2>After You Write It</h2>
+    <p>Tell the agent: <code>I wrote the Label Studio config</code>. Then the next step is to create the smallest Python file that reads one Label Studio export.</p>
+
+    <p class="small">Primary source: <a href="https://labelstud.io/tags/rectanglelabels.html">Label Studio RectangleLabels documentation</a>.</p>
+  </main>
+</body>
+</html>
+

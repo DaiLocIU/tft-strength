@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Label The First Hex Occupancy Batch</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Label The First Hex Occupancy Batch</h1>
+      <p class="lede">
+        The tiny labeler is ready. Your next job is to create the first real dataset for the
+        classifier, not to train yet.
+      </p>
+
+      <div class="callout">
+        Goal: label 30 board crops, then check whether the saved <code>occupied</code> and
+        <code>empty</code> patches look correct.
+      </div>
+
+      <h2>What To Click</h2>
+      <p>Click a hex only when a champion is standing on that hex.</p>
+
+      <pre><code>click:
+  champion on board hex
+
+do not click:
+  empty hex
+  bench unit
+  shop unit
+  item orb
+  little legend
+  mouse cursor
+  health bar only</code></pre>
+
+      <p>
+        The tool defaults every hex to <code>empty</code>. That is good because most cells are empty.
+        You only mark the minority class: <code>occupied</code>.
+      </p>
+
+      <h2>Exact Work Session</h2>
+      <ol class="checklist">
+        <li>Open <code>http://localhost:8091</code>.</li>
+        <li>For each board crop, click only occupied hexes.</li>
+        <li>Press <code>Save labels</code>.</li>
+        <li>Stop after 30 board crops.</li>
+        <li>Ask Codex to create an occupancy dataset contact sheet.</li>
+      </ol>
+
+      <h2>Why Stop At 30?</h2>
+      <p>
+        Thirty board crops gives about <code>30 x 28 = 840</code> patch examples with the current
+        player-side grid. That is enough to find bad crop size, wrong hex alignment, or confusing
+        labels before you spend time labeling 100+ boards.
+      </p>
+
+      <h2>What Good Data Looks Like</h2>
+      <p>
+        The saved <code>occupied</code> images should usually show a champion body or feet. The saved
+        <code>empty</code> images should show only board/arena texture. Some difficult examples are
+        allowed, but the folder should mostly be obvious to your eyes.
+      </p>
+
+      <h2>Stop Rule</h2>
+      <p>Do not train until these three checks pass:</p>
+
+      <pre><code>occupied folder has examples
+empty folder has examples
+random saved patches visually match their folder label</code></pre>
+
+      <h2>Recall</h2>
+      <ul class="checklist">
+        <li>Why do we click only occupied hexes?</li>
+        <li>Why stop after 30 boards instead of labeling everything?</li>
+        <li>What must be true before training?</li>
+      </ul>
+
+      <p class="small">
+        Primary source:
+        <a href="https://docs.ultralytics.com/datasets/classify/">Ultralytics classification dataset guide</a>.
+        Previous lesson:
+        <a href="./0053-what-is-a-hex-occupancy-classifier.html">What Is A Hex Occupancy Classifier?</a>.
+        Ask Codex after 30 boards and say: "create occupancy dataset contact sheet".
+      </p>
+    </main>
+  </body>
+</html>

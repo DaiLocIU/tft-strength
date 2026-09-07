@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Review Conf 0.50 Champion Predictions</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Review Conf 0.50 Champion Predictions</h1>
+      <p class="lede">
+        Your actual next step is to test whether the 100 epoch champion detector is usable at
+        <code>conf=0.5</code>. This is a usability gate, not another training step.
+      </p>
+
+      <div class="callout">
+        Win for this lesson: decide whether the model is good enough to use, needs more labeled
+        data, or has a label problem.
+      </div>
+
+      <h2>Why This Step Comes Next</h2>
+      <p>
+        A trained model is only useful if its predictions look correct on real screenshots. At
+        <code>conf=0.5</code>, YOLO only keeps boxes it scores as fairly confident, so this test
+        answers: “Can I trust this model enough for the next pipeline step?”
+      </p>
+
+      <h2>Command</h2>
+      <pre><code>cd /Users/inmac/Desktop/work-hard/tft-team-strength/vision-board-detector
+
+.venv/bin/yolo detect predict \
+  model=models/champion-detector.pt \
+  source=data/raw \
+  imgsz=640 \
+  conf=0.5 \
+  save=True \
+  project=outputs/champion-detector \
+  name=clean-100-raw-conf050</code></pre>
+
+      <h2>Open The Output</h2>
+      <pre><code>open outputs/champion-detector/clean-100-raw-conf050</code></pre>
+
+      <h2>Review 10 Images</h2>
+      <ol class="checklist">
+        <li>Count how many real champions are boxed.</li>
+        <li>Count how many real champions are missed.</li>
+        <li>Count wrong boxes on UI, items, effects, or background.</li>
+        <li>Save the names of 3 bad images for the next labeling batch.</li>
+      </ol>
+
+      <h2>Decision</h2>
+      <pre><code>if most champions are boxed and wrong boxes are rare:
+  use this model next
+
+if many champions are missed but wrong boxes are rare:
+  add more labeled champion examples
+
+if many boxes are on wrong objects:
+  inspect your labels before training more
+
+if both misses and wrong boxes are high:
+  label hard examples and retrain</code></pre>
+
+      <h2>The Key Lesson</h2>
+      <p>
+        More training is not the next step until you know what kind of failure you have. Missed
+        champions need more examples. Wrong boxes often mean confusing labels or not enough negative
+        variation.
+      </p>
+
+      <p class="small">
+        Primary reference:
+        <a href="https://docs.ultralytics.com/modes/predict/">Ultralytics predict mode guide</a>.
+        Previous lesson:
+        <a href="./0067-use-the-100-epoch-champion-detector.html">Use The 100 Epoch Champion Detector</a>.
+        Ask Codex to inspect your 3 bad images after you run this.
+      </p>
+    </main>
+  </body>
+</html>

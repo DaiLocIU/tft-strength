@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0004: Label 100 Board Images</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+  <main>
+    <h1>Label 100 Board Images</h1>
+    <p class="lede">Your job now is not coding. Your job is teaching the future model what <code>board</code> means.</p>
+
+    <div class="callout">
+      Your config is correct for this stage: one image, one rectangle tool, one label named <code>board</code>.
+    </div>
+
+    <h2>The Config</h2>
+    <pre><code>&lt;View&gt;
+  &lt;Image name="image" value="$image"/&gt;
+  &lt;RectangleLabels name="label" toName="image"&gt;
+    &lt;Label value="board" background="#FF0000"/&gt;
+  &lt;/RectangleLabels&gt;
+&lt;/View&gt;</code></pre>
+
+    <h2>The Skill</h2>
+    <p>Computer vision starts with a definition. If you label the bench sometimes and exclude it other times, the model learns confusion. So the real skill is drawing the same semantic boundary across many screenshots.</p>
+
+    <h2>Your Boundary Rule</h2>
+    <p>For this first detector, label only the combat board. Exclude bench, shop, side panels, top UI, and champion-specific boxes.</p>
+
+    <h2>Before Labeling All 100</h2>
+    <p>Label only 10 images first. Then stop and review them as a set. Ask: “Did I use the same definition of board every time?” Fix those 10 before continuing.</p>
+
+    <h2>Why 100 Images</h2>
+    <p>One or two images teach memorization. A larger set teaches variation: different units, effects, camera states, rounds, and visual clutter. That variation is what helps the detector generalize.</p>
+
+    <h2>Mini Quiz</h2>
+    <ol>
+      <li>Should the bench be inside the <code>board</code> rectangle?</li>
+      <li>Should every screenshot have exactly one board rectangle?</li>
+      <li>Which matters more at this stage: consistent labels or perfect edges?</li>
+    </ol>
+
+    <h2>Next Step</h2>
+    <p>After 10 labels, export a small JSON sample from Label Studio. Then we will inspect the JSON together before writing Python.</p>
+
+    <p class="small">Reference: <a href="../reference/labeling-tft-board.html">Labeling TFT Board Reference</a>. Primary source: <a href="https://labelstud.io/tags/rectanglelabels">Label Studio RectangleLabels documentation</a>.</p>
+  </main>
+</body>
+</html>
+

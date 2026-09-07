@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Batch Crop Board Images</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Batch Crop Board Images</h1>
+      <p class="lede">
+        You can crop one detected board now. The next step is to run the same logic on every
+        screenshot and produce a clean folder of board-only images.
+      </p>
+
+      <div class="callout">
+        Goal: turn <code>data/raw/*.png</code> into <code>outputs/board-crops/*.png</code>, while
+        also printing which images failed detection.
+      </div>
+
+      <h2>The Idea</h2>
+      <p>
+        A model demo answers one question: “Can this image detect a board?” A pipeline answers a
+        better question: “Can my project process all screenshots reliably?”
+      </p>
+      <p>
+        Use <code>Path.glob("*.png")</code> to find many image files. Sort the files so the output
+        is stable every time you run it. Python's <code>pathlib</code> docs note that glob results
+        are not guaranteed to be ordered, so sorting is a good habit.
+        <a href="https://docs.python.org/3.9/library/pathlib.html#pathlib.Path.glob">Python pathlib</a>
+      </p>
+
+      <h2>The Function Shape</h2>
+      <pre><code>class BatchCropSummary(TypedDict):
+    cropped: list[str]
+    failed: list[str]
+
+
+def crop_all_boards(raw_dir: str, output_dir: str) -&gt; BatchCropSummary:
+    ...</code></pre>
+
+      <p>
+        This return type is easier to debug than just printing text. Later you can ask:
+        how many crops worked, which images failed, and which failures should go back to Label
+        Studio.
+      </p>
+
+      <h2>Your Next Code</h2>
+      <pre><code>raw_path = Path(raw_dir)
+output_path = Path(output_dir)
+
+cropped: list[str] = []
+failed: list[str] = []
+
+for image_path in sorted(raw_path.glob("*.png")):
+    detection = detect_board(raw_dir, image_path.name)
+
+    if detection is None:
+        failed.append(image_path.name)
+        continue
+
+    crop_file = output_path / image_path.name
+    crop_board(str(image_path), detection, str(crop_file))
+    cropped.append(image_path.name)
+
+return {
+    "cropped": cropped,
+    "failed": failed,
+}</code></pre>
+
+      <h2>Why This Is The Right Next Step</h2>
+      <ul class="checklist">
+        <li>It tests the model on many screenshots, not only your favorite one.</li>
+        <li>It creates board-only images for the next detector, such as champions or units.</li>
+        <li>It gives you a failure list for the next active-learning loop.</li>
+      </ul>
+
+      <h2>Run Check</h2>
+      <p>After you write it, run:</p>
+      <pre><code>.venv/bin/python scripts/predict_board.py --all</code></pre>
+      <p>
+        If you do not add <code>--all</code> yet, temporarily call
+        <code>crop_all_boards("data/raw", "outputs/board-crops")</code> inside
+        <code>if __name__ == "__main__":</code>.
+      </p>
+
+      <h2>Recall</h2>
+      <p>Before coding, answer from memory:</p>
+      <ul class="checklist">
+        <li>Why should failed images be saved into a list?</li>
+        <li>Why should <code>raw_dir</code> and <code>output_dir</code> be variables?</li>
+        <li>What does <code>image_path.name</code> give you?</li>
+      </ul>
+
+      <p class="small">
+        Related: <a href="./0039-crop-the-detected-board.html">Crop the detected board</a>.
+        Ask Codex when a line feels unclear.
+      </p>
+    </main>
+  </body>
+</html>

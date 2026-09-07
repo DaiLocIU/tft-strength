@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0001: Create The Board Detector Project</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+  <main>
+    <h1>Create The Board Detector Project</h1>
+    <p class="lede">Your first computer vision win is small and concrete: teach a model to find the TFT board as one object.</p>
+
+    <div class="callout">
+      <strong>Mission link:</strong> We are not detecting champions yet. We are building the cropper that finds the board area first.
+    </div>
+
+    <h2>What You Built</h2>
+    <p>The folder <code>vision-board-detector/</code> is a clean Python project with four jobs:</p>
+    <ul>
+      <li>store raw TFT screenshots,</li>
+      <li>define the Label Studio labeling UI,</li>
+      <li>convert Label Studio exports to YOLO format,</li>
+      <li>train and run a one-class YOLO detector.</li>
+    </ul>
+
+    <h2>The Mental Model</h2>
+    <p>An object detector learns from many examples of this form:</p>
+    <pre><code>image + rectangle around object + class name</code></pre>
+    <p>For this project, the class name is always <code>board</code>. Label Studio stores rectangle positions as percentages of image size in its JSON export, and the converter script turns those percentages into the normalized YOLO label format. See the <a href="https://labelstud.io/guide/export.html">Label Studio export guide</a>.</p>
+
+    <h2>Step 1: Put Screenshots In Raw Data</h2>
+    <pre><code>mkdir -p vision-board-detector/data/raw</code></pre>
+    <p>Copy 10 to 30 full TFT screenshots into that folder. Use original screenshots, not cropped boards.</p>
+
+    <h2>Step 2: Label In Label Studio</h2>
+    <p>Create a Label Studio project and use this config:</p>
+    <pre><code>vision-board-detector/label_studio/board_label_config.xml</code></pre>
+    <p>Draw one rectangle around only the playable board region. The official Label Studio docs describe exporting annotations when your first batch is labeled.</p>
+
+    <h2>Step 3: Convert To YOLO</h2>
+    <pre><code>cd vision-board-detector
+python scripts/convert_label_studio_to_yolo.py \
+  --export exports/label-studio/board-export.json \
+  --images data/raw \
+  --out datasets/tft-board-yolo</code></pre>
+
+    <h2>Step 4: Train</h2>
+    <p>Ultralytics provides a Python API for loading a pretrained YOLO model and training it on a custom detection dataset. See the <a href="https://docs.ultralytics.com/usage/python/">Ultralytics Python usage guide</a>.</p>
+    <pre><code>python scripts/train_board_detector.py \
+  --data datasets/tft-board-yolo/dataset.yaml \
+  --epochs 30</code></pre>
+
+    <h2>Step 5: Predict</h2>
+    <pre><code>python scripts/predict_board.py \
+  --weights runs/detect/tft-board/weights/best.pt \
+  --source data/raw/example.png</code></pre>
+
+    <h2>Retrieval Check</h2>
+    <p>Before looking back, answer from memory:</p>
+    <ol>
+      <li>What is the only label in this first detector?</li>
+      <li>Why do we detect the board before champions?</li>
+      <li>What file does the training script read to know where the dataset is?</li>
+    </ol>
+
+    <p class="small">Ask the agent follow-up questions when a command, file, or concept is unclear. The next lesson should happen after you have at least a few labeled screenshots exported from Label Studio.</p>
+    <p class="small">Reference: <a href="../reference/board-detection-workflow.html">TFT Board Detection Workflow</a></p>
+  </main>
+</body>
+</html>
+

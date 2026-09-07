@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0035: CPU vs GPU And GPU Memory</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+  <main>
+    <h1>CPU vs GPU And GPU Memory</h1>
+    <p class="lede">A CPU is good at many different jobs. A GPU is good at doing many simple math jobs at the same time.</p>
+
+    <h2>CPU</h2>
+    <pre><code>CPU = general-purpose worker</code></pre>
+    <p>It is good for app logic, files, Python control flow, operating system work, and many different tasks.</p>
+
+    <h2>GPU</h2>
+    <pre><code>GPU = parallel math worker</code></pre>
+    <p>It is good for neural network training because training repeats huge amounts of matrix math.</p>
+
+    <h2>Why Training Likes GPU</h2>
+    <pre><code>image pixels
+-> tensors
+-> matrix math
+-> prediction
+-> loss
+-> gradients
+-> weight update</code></pre>
+
+    <p>Most of this is repeated numeric math, so GPU can be much faster.</p>
+
+    <h2>Apple Silicon</h2>
+    <p>On your Mac, PyTorch uses Apple's Metal Performance Shaders backend. In commands, this is:</p>
+    <pre><code>device=mps</code></pre>
+
+    <h2>GPU_mem 4.27G</h2>
+    <p>This means the training process is using about 4.27 GB of GPU-accessible memory.</p>
+
+    <pre><code>GPU_mem 0G    -> not using GPU
+GPU_mem 4.27G -> using GPU memory</code></pre>
+
+    <h2>What Uses That Memory?</h2>
+    <ul>
+      <li>model weights</li>
+      <li>image batches</li>
+      <li>intermediate tensor results</li>
+      <li>gradients used for learning</li>
+      <li>optimizer/training state</li>
+    </ul>
+
+    <h2>If GPU Memory Is Too High</h2>
+    <p>Reduce one of these:</p>
+    <pre><code>batch
+imgsz
+model size</code></pre>
+
+    <p class="small">Primary sources: <a href="https://docs.ultralytics.com/modes/train/">Ultralytics train mode docs</a> and <a href="https://docs.pytorch.org/docs/stable/notes/mps.html">PyTorch MPS backend docs</a>.</p>
+  </main>
+</body>
+</html>

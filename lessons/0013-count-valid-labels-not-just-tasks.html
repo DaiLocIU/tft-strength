@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0013: Count Valid Labels, Not Just Tasks</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+  <main>
+    <h1>Count Valid Labels, Not Just Tasks</h1>
+    <p class="lede">A script can run and still answer the wrong question. Dataset validation means checking the structure you need for training.</p>
+
+    <h2>Your Current Output</h2>
+    <pre><code>matched: 100
+missing: 0
+board_annotations: 100</code></pre>
+
+    <p>This proves the script checked 100 tasks. It does not prove each task has exactly one board rectangle.</p>
+
+    <h2>The Better Question</h2>
+    <p>For this first detector, each task should have exactly one rectangle labeled <code>board</code>.</p>
+
+    <pre><code>valid board labels: 98
+bad board labels: 2</code></pre>
+
+    <p>The two tasks with duplicate board rectangles are:</p>
+    <pre><code>image_19.png
+image_33.png</code></pre>
+
+    <h2>Better Return Shape</h2>
+    <p>Instead of returning only <code>board_annotations</code>, also return <code>bad_labels</code>.</p>
+
+    <pre><code>if len(rectangles) == 1:
+    valid_labels.append(original_filename)
+else:
+    bad_labels.append({
+        "image": original_filename,
+        "rectangle_count": len(rectangles),
+    })</code></pre>
+
+    <h2>What You Learned</h2>
+    <ul>
+      <li><code>matched</code> means the image file exists.</li>
+      <li><code>valid_labels</code> means the annotation shape is correct.</li>
+      <li>A valid training example needs both.</li>
+    </ul>
+
+    <h2>Stop Point</h2>
+    <p>Fix the two duplicate labels in Label Studio or make the script print them clearly. Do not convert to YOLO until the count is:</p>
+    <pre><code>valid board labels: 100
+bad board labels: 0</code></pre>
+  </main>
+</body>
+</html>
+

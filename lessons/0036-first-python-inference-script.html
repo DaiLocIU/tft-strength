@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0036: First Python Inference Script</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+  <main>
+    <h1>First Python Inference Script</h1>
+    <p class="lede">The trained model is now stable. The next step is using it from Python code.</p>
+
+    <h2>Current State</h2>
+    <pre><code>models/board-detector.pt</code></pre>
+
+    <p>This file is your board detector. The app should load this path, not a temporary <code>runs/...</code> training path.</p>
+
+    <h2>Goal</h2>
+    <pre><code>input: image path
+output: board box coordinates + confidence</code></pre>
+
+    <h2>New Script</h2>
+    <pre><code>scripts/predict_board.py</code></pre>
+
+    <h2>First Version Should Only Do This</h2>
+    <ol>
+      <li>Load <code>models/board-detector.pt</code>.</li>
+      <li>Run prediction on one screenshot.</li>
+      <li>Print each detected box.</li>
+      <li>Print confidence.</li>
+    </ol>
+
+    <h2>Why This Matters</h2>
+    <p>The CLI is good for experiments. Python inference code is what your real app will call.</p>
+
+    <pre><code>training command -> creates model
+inference code   -> uses model in product</code></pre>
+
+    <h2>Function Boundary To Aim For</h2>
+    <pre><code>def detect_board(image_path: str) -> BoardDetection | None:
+    ...</code></pre>
+
+    <p>But do not start with the final function. First print raw results and understand what Ultralytics returns.</p>
+
+    <h2>Next Check</h2>
+    <pre><code>.venv/bin/python scripts/predict_board.py</code></pre>
+
+    <p>The output should show a confidence near your prediction result, such as <code>0.99</code>.</p>
+
+    <p class="small">Primary source: <a href="https://docs.ultralytics.com/usage/python/">Ultralytics Python usage documentation</a>.</p>
+  </main>
+</body>
+</html>

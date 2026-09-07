@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0012: Validate One Board Rectangle Per Task</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+  <main>
+    <h1>Validate One Board Rectangle Per Task</h1>
+    <p class="lede">Your images match. Now prove the labels are structurally correct before converting them.</p>
+
+    <div class="callout">
+      Current status: <strong>matched: 100</strong>, <strong>missing: 0</strong>. That means the JSON tasks can find local images.
+    </div>
+
+    <h2>New Question</h2>
+    <p>For every task, does Label Studio contain exactly one rectangle with label <code>board</code>?</p>
+
+    <h2>Where The Rectangle Lives</h2>
+    <p>Inside one task, follow this path:</p>
+    <pre><code>task
+  -> annotations
+  -> result
+  -> value
+  -> rectanglelabels</code></pre>
+
+    <h2>What To Count</h2>
+    <p>A valid result has:</p>
+    <pre><code>"type": "rectanglelabels"</code></pre>
+
+    <p>and:</p>
+    <pre><code>"rectanglelabels": ["board"]</code></pre>
+
+    <h2>Your Next Function</h2>
+    <p>Add a second function to <code>scripts/check_dataset.py</code>:</p>
+    <pre><code>def find_board_rectangles(task):
+    rectangles = []
+
+    # loop over task annotations
+    # loop over each annotation result
+    # keep only result type rectanglelabels
+    # keep only results where rectanglelabels contains board
+    # append result["value"]
+
+    return rectangles</code></pre>
+
+    <h2>Expected Final Check</h2>
+    <p>After you call it for all tasks, your output should become:</p>
+    <pre><code>matched: 100
+missing: 0
+valid board labels: 100
+bad board labels: 0</code></pre>
+
+    <h2>Why This Matters</h2>
+    <p>YOLO training expects one text label file per image. If a task has zero board rectangles, there is no label to write. If a task has two board rectangles, your dataset definition is inconsistent.</p>
+
+    <p class="small">Stop after this validation passes. The next lesson is coordinate conversion from Label Studio format to YOLO format.</p>
+  </main>
+</body>
+</html>
+

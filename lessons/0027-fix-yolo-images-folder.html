@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0027: Fix The YOLO Images Folder</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+  <main>
+    <h1>Fix The YOLO Images Folder</h1>
+    <p class="lede">Your code generated labels correctly, but copied images into the labels folder.</p>
+
+    <h2>The Bug</h2>
+    <pre><code>images_dir: str = "data/yolo/labels/train"</code></pre>
+
+    <p>That default points to the label folder. It should point to the image folder.</p>
+
+    <h2>The Fix</h2>
+    <pre><code>images_dir: str = "data/yolo/images/train"</code></pre>
+
+    <h2>Correct YOLO Shape</h2>
+    <pre><code>data/yolo/images/train/image_1.png
+data/yolo/labels/train/image_1.txt</code></pre>
+
+    <h2>Why This Matters</h2>
+    <p>YOLO does not scan one folder and guess which files are labels. It expects images and labels to live in predictable parallel folders.</p>
+
+    <h2>After Fixing</h2>
+    <p>Clean the accidentally copied PNG files from the labels folder, then run the exporter again.</p>
+
+    <pre><code>find data/yolo/labels/train -name "*.png" | wc -l
+find data/yolo/images/train -name "*.png" | wc -l
+find data/yolo/labels/train -name "*.txt" | wc -l</code></pre>
+
+    <p>The expected result is:</p>
+    <pre><code>labels/train PNG files: 0
+images/train PNG files: 100
+labels/train TXT files: 100</code></pre>
+  </main>
+</body>
+</html>

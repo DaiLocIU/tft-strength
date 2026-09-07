@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0038: Handle Zero, One, Or Many Detections</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+  <main>
+    <h1>Handle Zero, One, Or Many Detections</h1>
+    <p class="lede">Production inference code must handle more than the happy path.</p>
+
+    <h2>The Three Cases</h2>
+    <pre><code>0 boxes  -> return None
+1 box    -> return that box
+2+ boxes -> choose highest confidence</code></pre>
+
+    <h2>Why Highest Confidence?</h2>
+    <p>Your board detector should return one board. If it returns more than one, the first practical rule is to trust the box the model scores highest.</p>
+
+    <pre><code>best_index = int(boxes.conf.argmax())</code></pre>
+
+    <p><code>argmax</code> means: give me the index of the largest value.</p>
+
+    <h2>Typed Boundary</h2>
+    <p>Ultralytics works at runtime, but its Python types are broad. Keep that looseness near the library call:</p>
+
+    <pre><code>results = cast(list[Any], model(image_path))</code></pre>
+
+    <p>Then return your own strict app shape:</p>
+
+    <pre><code>BoardDetection | None</code></pre>
+
+    <h2>Mental Model</h2>
+    <pre><code>external library output: flexible, messy
+your app output: small, typed, predictable</code></pre>
+
+    <p class="small">Primary source: <a href="https://docs.ultralytics.com/modes/predict/">Ultralytics predict mode documentation</a>.</p>
+  </main>
+</body>
+</html>

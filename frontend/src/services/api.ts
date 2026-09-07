@@ -1,8 +1,19 @@
 /// <reference types="vite/client" />
+import type { RoundSnapshot } from '../types';
+import championImages from './champion-images.json';
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
-import { Match, TokensResponse, User } from '../types';
+import {
+  BoardStateDraft,
+  BoardGuide,
+  SaveBoardRound,
+  Match,
+  TftSetChampionsResponse,
+  TokensResponse,
+  User,
+} from '../types';
 
-const API_BASE_URL = (import.meta.env?.VITE_API_URL as string) || 'http://localhost:3000';
+const API_BASE_URL =
+  (import.meta.env?.VITE_API_URL as string) || 'http://localhost:3000';
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -17,7 +28,8 @@ const REFRESH_TOKEN_KEY = 'tft_refresh_token';
 const USER_KEY = 'tft_user';
 
 let currentAccessToken: string | null = localStorage.getItem(ACCESS_TOKEN_KEY);
-let currentRefreshToken: string | null = localStorage.getItem(REFRESH_TOKEN_KEY);
+let currentRefreshToken: string | null =
+  localStorage.getItem(REFRESH_TOKEN_KEY);
 let currentUser: User | null = localStorage.getItem(USER_KEY)
   ? JSON.parse(localStorage.getItem(USER_KEY)!)
   : null;
@@ -37,7 +49,10 @@ export const getAuthTokens = () => ({
 
 export const getUser = () => currentUser;
 
-export const setAuthData = (tokens: TokensResponse | null, user?: User | null) => {
+export const setAuthData = (
+  tokens: TokensResponse | null,
+  user?: User | null,
+) => {
   if (tokens) {
     currentAccessToken = tokens.accessToken;
     currentRefreshToken = tokens.refreshToken;
@@ -88,7 +103,7 @@ apiClient.interceptors.request.use(
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
 
 // 2. RESPONSE INTERCEPTOR: Silent Token Refresh on 401
@@ -131,7 +146,7 @@ apiClient.interceptors.response.use(
               'Content-Type': 'application/json',
               Authorization: `Bearer ${currentRefreshToken}`,
             },
-          }
+          },
         );
 
         const newTokens = refreshResponse.data;
@@ -151,7 +166,7 @@ apiClient.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 export const api = {
@@ -161,6 +176,18 @@ export const api = {
   },
 
   // Fetch Protected Matches
+  getMatch: async (id: number): Promise<Match> =>
+    (await apiClient.get(`/matches/${id}`)).data,
+  getRounds: async (id: number): Promise<RoundSnapshot[]> =>
+    (await apiClient.get(`/matches/${id}/rounds`)).data,
+  getRound: async (id: number, roundId: number): Promise<RoundSnapshot> =>
+    (await apiClient.get(`/matches/${id}/rounds/${roundId}`)).data,
+  getScreenshot: async (draftId: number): Promise<Blob> =>
+    (
+      await apiClient.get(`/board-state-intake/drafts/${draftId}/image`, {
+        responseType: 'blob',
+      })
+    ).data,
   getMatches: async (): Promise<Match[]> => {
     const res = await apiClient.get<Match[]>('/matches');
     return res.data;
@@ -174,22 +201,116 @@ export const api = {
       damageDealt: matchData?.damageDealt ?? 145000,
       goldLeft: matchData?.goldLeft ?? 38,
       roundsSurvived: matchData?.roundsSurvived ?? 35,
-      augments: matchData?.augments ?? ['Prismatic Ticket', 'Cybernetic Uplink III', 'Binary Airdrop'],
+      augments: matchData?.augments ?? [
+        'Prismatic Ticket',
+        'Cybernetic Uplink III',
+        'Binary Airdrop',
+      ],
       traits: matchData?.traits ?? [
         { name: 'Rebel', tier: 3, activeCount: 7 },
         { name: 'Sorcerer', tier: 2, activeCount: 4 },
         { name: 'Bruiser', tier: 1, activeCount: 2 },
       ],
       champions: matchData?.champions ?? [
-        { name: 'Jinx', cost: 4, stars: 3, items: ['Infinity Edge', 'Guinsoo Rageblade', 'Giant Slayer'] },
-        { name: 'Vi', cost: 4, stars: 2, items: ['Warmog Armor', 'Sunfire Cape', 'Dragon Claw'] },
-        { name: 'Ekko', cost: 3, stars: 3, items: ['Hand of Justice', 'Ionic Spark'] },
-        { name: 'Sevika', cost: 5, stars: 2, items: ['Bloodthirster', 'Titan Resolve'] },
+        {
+          name: 'Jinx',
+          cost: 4,
+          stars: 3,
+          items: ['Infinity Edge', 'Guinsoo Rageblade', 'Giant Slayer'],
+        },
+        {
+          name: 'Vi',
+          cost: 4,
+          stars: 2,
+          items: ['Warmog Armor', 'Sunfire Cape', 'Dragon Claw'],
+        },
+        {
+          name: 'Ekko',
+          cost: 3,
+          stars: 3,
+          items: ['Hand of Justice', 'Ionic Spark'],
+        },
+        {
+          name: 'Sevika',
+          cost: 5,
+          stars: 2,
+          items: ['Bloodthirster', 'Titan Resolve'],
+        },
       ],
     };
 
     const res = await apiClient.post<Match>('/matches', defaultData);
     return res.data;
+  },
+
+  getSetChampions: async (setNumber = 18): Promise<TftSetChampionsResponse> => {
+    const res = await apiClient.get<TftSetChampionsResponse>(
+      `/tft-data/sets/${setNumber}/champions`,
+    );
+    const localImages: Record<string, string> = championImages;
+    return {
+      ...res.data,
+      champions: res.data.champions.map((champion) => ({
+        ...champion,
+        imageUrl: localImages[champion.apiName] ?? champion.imageUrl,
+      })),
+    };
+  },
+
+  uploadBoardStateImage: async (file: File): Promise<BoardStateDraft> => {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const res = await apiClient.post<BoardStateDraft>(
+      '/board-state-intake/drafts/upload',
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        timeout: 60000,
+      },
+    );
+    return res.data;
+  },
+
+  detectBoardStateDraft: async (draftId: number): Promise<BoardStateDraft> => {
+    const res = await apiClient.post<BoardStateDraft>(
+      `/board-state-intake/drafts/${draftId}/detect`,
+      {
+        championConfidence: 0.65,
+        identityPadding: 0.08,
+        identityConfidence: 0.75,
+      },
+      {
+        timeout: 120000,
+      },
+    );
+    return res.data;
+  },
+
+  analyzeBoard: async (
+    draftId: number,
+    data: Omit<SaveBoardRound, 'matchId'>,
+  ): Promise<BoardGuide> => {
+    return (
+      await apiClient.post<BoardGuide>(
+        `/board-state-intake/drafts/${draftId}/analyze`,
+        data,
+      )
+    ).data;
+  },
+
+  saveBoardRound: async (
+    draftId: number,
+    data: SaveBoardRound,
+  ): Promise<BoardStateDraft> => {
+    return (
+      await apiClient.post<BoardStateDraft>(
+        `/board-state-intake/drafts/${draftId}/save-round`,
+        data,
+      )
+    ).data;
   },
 
   // Manual token refresh

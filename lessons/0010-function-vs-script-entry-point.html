@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0010: Function Vs Script Entry Point</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+  <main>
+    <h1>Function Vs Script Entry Point</h1>
+    <p class="lede">Your function can be correct, but the file still prints nothing unless something calls the function.</p>
+
+    <h2>What Happened</h2>
+    <p>You wrote a function:</p>
+    <pre><code>def verify_labels_match_images(export_path, raw_dir):
+    ...</code></pre>
+
+    <p>That defines reusable behavior. But when you run the file, Python does not automatically call that function.</p>
+
+    <h2>The Entry Point</h2>
+    <p>Add this block at the bottom of the file:</p>
+    <pre><code>if __name__ == "__main__":
+    export_path = "exports/label-studio/board-100.json"
+    raw_dir = "data/raw"
+
+    matched, missing = verify_labels_match_images(export_path, raw_dir)
+
+    print(f"matched: {len(matched)}")
+    print(f"missing: {len(missing)}")</code></pre>
+
+    <h2>How To Run</h2>
+    <p>Run from inside the project folder:</p>
+    <pre><code>cd vision-board-detector
+python3 scripts/check_dataset.py</code></pre>
+
+    <h2>Expected Output</h2>
+    <pre><code>matched: 100
+missing: 0</code></pre>
+
+    <h2>What You Learned</h2>
+    <ul>
+      <li>A function defines behavior.</li>
+      <li>An entry point runs behavior.</li>
+      <li>Testing starts by making the smallest useful output visible.</li>
+    </ul>
+  </main>
+</body>
+</html>
+

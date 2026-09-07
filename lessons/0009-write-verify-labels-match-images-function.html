@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0009: Write Verify Labels Match Images Function</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+  <main>
+    <h1>Write Verify Labels Match Images Function</h1>
+    <p class="lede">Write one function whose only job is proving every Label Studio task can find its raw image.</p>
+
+    <h2>Function Goal</h2>
+    <p>The function should receive two paths:</p>
+    <pre><code>export_path: path to board-100.json
+raw_dir: path to data/raw</code></pre>
+
+    <p>It should return two lists:</p>
+    <pre><code>matched
+missing</code></pre>
+
+    <h2>Write In Small Steps</h2>
+    <ol>
+      <li>Open the JSON file.</li>
+      <li>Loop over each task.</li>
+      <li>Read <code>task["data"]["image"]</code>.</li>
+      <li>Extract the filename from the path.</li>
+      <li>Remove the Label Studio hash prefix.</li>
+      <li>Check whether the recovered filename exists in <code>raw_dir</code>.</li>
+    </ol>
+
+    <h2>Starter Shape</h2>
+    <p>Type this by hand, then fill one TODO at a time:</p>
+    <pre><code>def verify_labels_match_images(export_path, raw_dir):
+    # TODO 1: load JSON
+    # TODO 2: create matched and missing lists
+    # TODO 3: loop over tasks
+    # TODO 4: recover original filename
+    # TODO 5: check raw image exists
+    # TODO 6: return matched, missing
+    pass</code></pre>
+
+    <h2>One Key Transformation</h2>
+    <pre><code>0992a392-image_2.png -> image_2.png</code></pre>
+
+    <p>That is the heart of this function.</p>
+
+    <h2>Stop Point</h2>
+    <p>After your function prints:</p>
+    <pre><code>matched: 100
+missing: 0</code></pre>
+
+    <p>stop. Do not convert to YOLO yet.</p>
+  </main>
+</body>
+</html>
+

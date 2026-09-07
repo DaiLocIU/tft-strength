@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>First Hex Occupancy Classifier Smoke Train</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>First Hex Occupancy Classifier Smoke Train</h1>
+      <p class="lede">
+        Your hex occupancy dataset now has <code>train</code> and <code>val</code> folders. The next
+        step is a tiny classifier training run, only to prove the pipeline works.
+      </p>
+
+      <div class="callout">
+        Goal: run a 1-epoch classification smoke train and confirm Ultralytics accepts the dataset.
+      </div>
+
+      <h2>Where You Are</h2>
+      <p>Your dataset already has the folder shape Ultralytics classification expects:</p>
+
+      <pre><code>data/hex-occupancy/
+  train/
+    occupied/ 641 images
+    empty/    2019 images
+  val/
+    occupied/ 135 images
+    empty/    537 images</code></pre>
+
+      <p>
+        In classification, the folder name is the label. So <code>occupied</code> and
+        <code>empty</code> become the two classes.
+      </p>
+
+      <h2>Smoke Train Command</h2>
+      <p>
+        Run only <code>1</code> epoch first. This is not for a good model. It is for checking that
+        the dataset loads, labels are found, and training produces output files.
+      </p>
+
+      <pre><code>.venv/bin/yolo classify train \
+  model=yolo11n-cls.pt \
+  data=data/hex-occupancy \
+  epochs=1 \
+  imgsz=96 \
+  project=runs/classify \
+  name=hex-occupancy-smoke</code></pre>
+
+      <h2>Why <code>classify</code>?</h2>
+      <p>
+        Your board detector used object detection because it needed to find a rectangle. This model
+        sees one already-cropped hex patch, so it only chooses a class.
+      </p>
+
+      <pre><code>detect:
+  image -&gt; box positions
+
+classify:
+  image -&gt; one label + confidence</code></pre>
+
+      <h2>What Success Looks Like</h2>
+      <p>After the run, you should see a folder like this:</p>
+
+      <pre><code>runs/classify/hex-occupancy-smoke/
+  weights/
+    best.pt
+    last.pt
+  results.csv
+  results.png
+  confusion_matrix.png</code></pre>
+
+      <p>
+        The important file is <code>weights/best.pt</code>. Later, that becomes your hex occupancy
+        classifier.
+      </p>
+
+      <h2>Do Not Optimize Yet</h2>
+      <p>
+        Do not tune epochs, learning rate, or model size yet. First answer one question: can this
+        dataset train end to end?
+      </p>
+
+      <h2>Stop Rule</h2>
+      <p>After the 1-epoch run, ask Codex to inspect the result. We need these facts:</p>
+
+      <pre><code>Did training finish?
+Where is best.pt?
+What were train/val classes?
+What does the confusion matrix suggest?</code></pre>
+
+      <h2>Recall</h2>
+      <ul class="checklist">
+        <li>Why is this a classification task?</li>
+        <li>Why run only 1 epoch first?</li>
+        <li>Which file becomes the trained classifier?</li>
+      </ul>
+
+      <p class="small">
+        Primary sources:
+        <a href="https://docs.ultralytics.com/datasets/classify/">Ultralytics classification dataset guide</a>
+        and
+        <a href="https://docs.ultralytics.com/tasks/classify/">Ultralytics classification task guide</a>.
+        Previous lesson:
+        <a href="./0056-split-hex-occupancy-train-val.html">Split Hex Occupancy Into Train And Val</a>.
+        Ask Codex next: "run the classifier smoke train".
+      </p>
+    </main>
+  </body>
+</html>

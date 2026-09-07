@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Write The First Champion To Hex Script</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Write The First Champion To Hex Script</h1>
+      <p class="lede">
+        You now have board crops, hex centers, and a champion detector that is good enough for
+        normal cases. The next step is to write one small visual script that maps detected champion
+        boxes to hexes.
+      </p>
+
+      <div class="callout">
+        Win for this lesson: create one review image where every detected champion box points to a
+        selected row,column hex.
+      </div>
+
+      <h2>Step 1: Create The Script</h2>
+      <p>Create this file:</p>
+      <pre><code>vision-board-detector/scripts/map_champions_to_hexes.py</code></pre>
+
+      <p>Start with one board crop. Do not batch all images yet.</p>
+      <pre><code>IMAGE_NAME = "image_1.png"
+MODEL_PATH = "models/champion-detector.pt"
+CROPS_DIR = "outputs/board-crops"
+OUTPUT_DIR = "outputs/champion-hex-map"</code></pre>
+
+      <h2>Step 2: Reuse Your Hex Code</h2>
+      <p>
+        Import <code>create_board_hex_cells</code> from <code>detect_hexes.py</code>. Do not rewrite
+        the hex geometry.
+      </p>
+      <pre><code>from detect_hexes import HexCell, HexTuning, create_board_hex_cells</code></pre>
+
+      <h2>Step 3: Run The Champion Detector</h2>
+      <p>
+        Load <code>models/champion-detector.pt</code> and run prediction on one board crop.
+      </p>
+      <pre><code>model = YOLO(MODEL_PATH)
+results = model(image_path, conf=0.5, verbose=False)</code></pre>
+
+      <h2>Step 4: Convert Box To Point</h2>
+      <p>
+        Each champion box becomes one point. Use the bottom-center of the box because it is closest
+        to the champion's board position.
+      </p>
+      <pre><code>point_x = (x1 + x2) / 2
+point_y = y2</code></pre>
+
+      <h2>Step 5: Choose The Nearest Hex</h2>
+      <p>
+        Compare the bottom-center point to all 28 hex centers. The closest one is the first mapping
+        guess.
+      </p>
+      <pre><code>distance = (point_x - hex_x) ** 2 + (point_y - hex_y) ** 2</code></pre>
+
+      <h2>Step 6: Draw A Review Overlay</h2>
+      <p>The output image should show four things at the same time.</p>
+      <pre><code>green rectangle:
+  champion detector box
+
+yellow dot:
+  bottom-center point
+
+red hex:
+  selected nearest hex
+
+white text:
+  row,column</code></pre>
+
+      <h2>Step 7: Run It</h2>
+      <pre><code>cd /Users/inmac/Desktop/work-hard/tft-team-strength/vision-board-detector
+
+.venv/bin/python scripts/map_champions_to_hexes.py image_1.png</code></pre>
+
+      <h2>Step 8: Review The Output</h2>
+      <pre><code>open outputs/champion-hex-map</code></pre>
+
+      <h2>Decision</h2>
+      <pre><code>if selected hexes match champion positions:
+  run the script on more board crops
+
+if selected hexes are one row too low:
+  move point_y upward a little
+
+if selected hexes are one row too high:
+  move point_y downward a little
+
+if champion boxes are missing:
+  collect those overlap images for later training</code></pre>
+
+      <h2>Do This First</h2>
+      <p>
+        Ask Codex to write only the first version of
+        <code>scripts/map_champions_to_hexes.py</code>. The goal is a visual review image, not a
+        perfect algorithm.
+      </p>
+
+      <p class="small">
+        Primary reference:
+        <a href="https://docs.ultralytics.com/usage/python/">Ultralytics YOLO Python usage</a>.
+        Hex reference:
+        <a href="https://www.redblobgames.com/grids/hexagons/">Red Blob Games: Hexagonal Grids</a>.
+        Previous lesson:
+        <a href="./0071-after-champion-prediction-map-boxes-to-hexes.html">After Champion Prediction Map Boxes To Hexes</a>.
+        Ask Codex to implement this script when you are ready.
+      </p>
+    </main>
+  </body>
+</html>

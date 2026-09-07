@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Review Before Training Hex Occupancy</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Review Before Training Hex Occupancy</h1>
+      <p class="lede">
+        You now have enough labeled hex crops to begin model work. The next step is not training
+        immediately. First, check whether the saved examples teach the right rule.
+      </p>
+
+      <div class="callout">
+        Current dataset: <code>776 occupied</code> crops and <code>2556 empty</code> crops.
+      </div>
+
+      <h2>The Rule</h2>
+      <p>
+        A classifier learns from examples. If the <code>occupied</code> folder contains many empty
+        cells, the model learns confusion. If the <code>empty</code> folder contains many champions,
+        the model learns the wrong boundary.
+      </p>
+
+      <pre><code>good label:
+  occupied image -&gt; champion visible
+  empty image    -&gt; no champion visible
+
+bad label:
+  occupied image -&gt; empty board
+  empty image    -&gt; champion body or feet</code></pre>
+
+      <h2>Do This Next</h2>
+      <ol class="checklist">
+        <li>Create a contact sheet for <code>occupied</code> patches.</li>
+        <li>Create a contact sheet for <code>empty</code> patches.</li>
+        <li>Scan both sheets with your eyes.</li>
+        <li>Fix obvious wrong images by moving or deleting them.</li>
+        <li>Only then split the data into <code>train</code> and <code>val</code>.</li>
+      </ol>
+
+      <h2>What To Look For</h2>
+      <p>
+        In <code>occupied</code>, most crops should contain a champion body, feet, weapon, or clear
+        unit visual. In <code>empty</code>, most crops should contain only board texture.
+      </p>
+
+      <pre><code>maybe okay:
+  small champion edge
+  spell effect near champion
+  partial body but clear unit presence
+
+probably wrong:
+  pure board texture in occupied
+  champion standing in empty
+  crop mostly outside the board
+  crop mostly UI instead of hex</code></pre>
+
+      <h2>After Review</h2>
+      <p>
+        The classifier dataset should use the Ultralytics classification folder layout. Folder names
+        are labels, so <code>occupied</code> and <code>empty</code> must exist under both
+        <code>train</code> and <code>val</code>.
+      </p>
+
+      <pre><code>data/hex-occupancy/
+  train/
+    occupied/
+    empty/
+  val/
+    occupied/
+    empty/</code></pre>
+
+      <h2>Stop Rule</h2>
+      <p>Ask Codex to train only after these are true:</p>
+
+      <pre><code>contact sheets reviewed
+bad labels fixed
+train/val split created
+both classes exist in train and val</code></pre>
+
+      <h2>Recall</h2>
+      <ul class="checklist">
+        <li>Why review before training?</li>
+        <li>What does the folder name mean in a classification dataset?</li>
+        <li>Why does <code>val</code> need both <code>occupied</code> and <code>empty</code>?</li>
+      </ul>
+
+      <p class="small">
+        Primary source:
+        <a href="https://docs.ultralytics.com/datasets/classify/">Ultralytics classification dataset guide</a>.
+        Previous lesson:
+        <a href="./0054-label-the-first-hex-occupancy-batch.html">Label The First Hex Occupancy Batch</a>.
+        Ask Codex next: "create the occupancy contact sheets".
+      </p>
+    </main>
+  </body>
+</html>

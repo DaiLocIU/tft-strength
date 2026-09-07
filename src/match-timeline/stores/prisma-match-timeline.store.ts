@@ -107,10 +107,24 @@ export class PrismaMatchTimelineStore implements MatchTimelineStore {
     });
   }
 
+  private async withSavedBoard(round: RoundModel | null) {
+    if (!round) return null;
+    const boardStateDrafts = await this.prisma.$queryRaw<
+      {
+        id: number;
+        originalFilename: string;
+        boardState: unknown;
+      }[]
+    >`SELECT "id", "originalFilename", "boardState" FROM "BoardStateDraft"
+      WHERE "roundId" = ${round.id} AND "matchId" = ${round.matchId}
+      AND "status" = 'detected' ORDER BY "updatedAt" DESC LIMIT 1`;
+    return { ...round, boardStateDrafts };
+  }
+
   async findRoundById(id: number, matchId: number): Promise<RoundModel | null> {
-    return await this.prisma.round.findFirst({
-      where: { id, matchId },
-    });
+    return this.withSavedBoard(
+      await this.prisma.round.findFirst({ where: { id, matchId } }),
+    );
   }
 
   async findRoundByStageAndNumber(
@@ -118,9 +132,11 @@ export class PrismaMatchTimelineStore implements MatchTimelineStore {
     stage: number,
     roundNumber: number,
   ): Promise<RoundModel | null> {
-    return await this.prisma.round.findFirst({
-      where: { matchId, stage, roundNumber },
-    });
+    return this.withSavedBoard(
+      await this.prisma.round.findFirst({
+        where: { matchId, stage, roundNumber },
+      }),
+    );
   }
 
   async updateRound(id: number, data: UpdateRoundData): Promise<RoundModel> {

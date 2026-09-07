@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Use The Hex Classifier On One Board</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Use The Hex Classifier On One Board</h1>
+      <p class="lede">
+        The classifier smoke train worked. The next step is to connect it back to the TFT board
+        pipeline and predict occupied hexes on one board crop.
+      </p>
+
+      <div class="callout">
+        Goal: load <code>best.pt</code>, classify every hex patch on one board crop, and draw the
+        predicted occupied hexes.
+      </div>
+
+      <h2>What The Smoke Result Means</h2>
+      <p>The 1-epoch validation result was already useful:</p>
+
+      <pre><code>true empty predicted empty:       527
+true empty predicted occupied:    10
+true occupied predicted empty:    10
+true occupied predicted occupied: 125</code></pre>
+
+      <p>
+        That is <code>652 / 672 = 97.0%</code> correct on the validation split. This is good enough
+        to test the full pipeline on real board crops.
+      </p>
+
+      <h2>The New Pipeline Step</h2>
+      <p>
+        Before, you only trained the classifier. Now you need to use it. The classifier should run
+        once for each generated hex patch.
+      </p>
+
+      <pre><code>board crop
+  -&gt; create 28 hex cells
+  -&gt; crop one patch per hex
+  -&gt; classifier predicts empty / occupied
+  -&gt; draw occupied hexes on board crop</code></pre>
+
+      <h2>Model File</h2>
+      <p>The trained classifier is here:</p>
+
+      <pre><code>runs/classify/runs/classify/hex-occupancy-smoke/weights/best.pt</code></pre>
+
+      <p>
+        For the next script, copy or reference this file as the hex occupancy model. Do not replace
+        <code>models/board-detector.pt</code>; that model still detects the board rectangle.
+      </p>
+
+      <h2>Small Script Shape</h2>
+      <p>The next script should stay small:</p>
+
+      <pre><code>scripts/predict_hex_occupancy.py
+
+load classifier model
+load one board crop
+create hex cells
+crop each hex patch
+predict occupied / empty
+draw occupied hexes
+save review image</code></pre>
+
+      <h2>Expected Output</h2>
+      <p>The first version should print rows and columns, then save one visual review image.</p>
+
+      <pre><code>occupied: row=0 column=3 confidence=0.98
+occupied: row=1 column=1 confidence=0.94
+saved: outputs/hex-occupancy/image_1-predicted.png</code></pre>
+
+      <h2>Stop Rule</h2>
+      <p>
+        Stop after one board crop. If the visual overlay looks mostly right, then run it on many
+        board crops and make a prediction contact sheet. If it looks wrong, inspect the crop size,
+        labels, and confidence threshold before training longer.
+      </p>
+
+      <h2>Recall</h2>
+      <ul class="checklist">
+        <li>Why is <code>best.pt</code> not the same as <code>board-detector.pt</code>?</li>
+        <li>What does the classifier predict for each hex patch?</li>
+        <li>Why test one board crop before many?</li>
+      </ul>
+
+      <p class="small">
+        Primary source:
+        <a href="https://docs.ultralytics.com/tasks/classify/">Ultralytics classification task guide</a>.
+        Previous lesson:
+        <a href="./0057-first-hex-occupancy-classifier-smoke-train.html">First Hex Occupancy Classifier Smoke Train</a>.
+        Ask Codex next: "implement predict hex occupancy".
+      </p>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Start One-Class Champion Detector</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Start One-Class Champion Detector</h1>
+      <p class="lede">
+        The next step is to train a detector that finds champion bodies on the board. Do not train
+        champion names yet. First, train one class only: <code>champion</code>.
+      </p>
+
+      <div class="callout">
+        Goal: detect one champion body as one object, then later map its bottom-center point to the
+        nearest hex.
+      </div>
+
+      <h2>The New Question</h2>
+      <p>
+        Your hex classifier asks whether one crop looks occupied. The champion detector asks where
+        each full champion body is.
+      </p>
+
+      <pre><code>hex classifier:
+  input: one hex crop
+  output: empty / occupied
+
+champion detector:
+  input: whole board crop
+  output: boxes around champions</code></pre>
+
+      <h2>What To Label</h2>
+      <p>
+        Use board crop images, not tiny hex crop images. On each selected board crop, draw one box
+        around each champion on your side of the board.
+      </p>
+
+      <pre><code>one champion = one box
+large champion = one big box
+body covers 3 hexes = still one box
+small champion = one small box</code></pre>
+
+      <h2>What Not To Label</h2>
+      <p>
+        The detector must learn champion bodies, not every bright or moving thing on the board.
+      </p>
+
+      <pre><code>do not label:
+  little legend
+  item effect only
+  shadow only
+  empty hex
+  enemy board if you are focusing player side</code></pre>
+
+      <h2>Pick Images</h2>
+      <p>
+        Start with 30 to 50 board crops. Pick hard images, but label all champions in each selected
+        image.
+      </p>
+
+      <pre><code>good first batch:
+  Blue cases
+  Nunu cases
+  Kayle cases
+  Ivern cases
+  Elder Dragon cases
+  Maokai cases
+  normal champion cases too</code></pre>
+
+      <h2>Why Label All Champions?</h2>
+      <p>
+        If you label only the large champion, YOLO sees the normal champions as background. That
+        teaches the wrong lesson. For any image you choose, label every visible player-side champion.
+      </p>
+
+      <h2>Later Code</h2>
+      <p>
+        After detection works, code will convert each box into one standing point.
+      </p>
+
+      <pre><code>standing_x = box center x
+standing_y = box bottom y
+
+standing point
+  -> nearest hex center
+  -> occupied hex</code></pre>
+
+      <h2>Do This Now</h2>
+      <ol class="checklist">
+        <li>Create a new detection dataset called <code>champion-detector</code>.</li>
+        <li>Use board crops from <code>outputs/board-crops</code>.</li>
+        <li>Pick 30 to 50 hard board crops.</li>
+        <li>Use one label class: <code>champion</code>.</li>
+        <li>Draw one rectangle around every player-side champion body.</li>
+        <li>Do not label little legends or item effects alone.</li>
+      </ol>
+
+      <h2>Recall</h2>
+      <ul class="checklist">
+        <li>If Kayle covers three hexes, how many boxes do you draw?</li>
+        <li>Why should normal champions also be labeled in a hard image?</li>
+        <li>What point from the box will later map to the standing hex?</li>
+      </ul>
+
+      <p class="small">
+        Primary reference:
+        <a href="https://docs.ultralytics.com/tasks/detect/">Ultralytics object detection task guide</a>.
+        Previous lesson:
+        <a href="./0062-after-focused-retrain-review-the-target-images.html">After Focused Retrain, Review The Target Images</a>.
+        Ask Codex before labeling if you are unsure whether something is a champion body or an effect.
+      </p>
+    </main>
+  </body>
+</html>

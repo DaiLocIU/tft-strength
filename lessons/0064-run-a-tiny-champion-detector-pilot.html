@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Run A Tiny Champion Detector Pilot</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Run A Tiny Champion Detector Pilot</h1>
+      <p class="lede">
+        Do not label hundreds of champion boxes yet. First, run a tiny pilot to test whether champion
+        boxes actually help your hex occupancy problem.
+      </p>
+
+      <div class="callout">
+        Goal: prove or reject the champion-detector idea with 10 to 15 carefully chosen board crops.
+      </div>
+
+      <h2>The Problem</h2>
+      <p>
+        You are right to worry about hidden champions. A champion box does not perfectly tell the
+        standing hex. The detector is useful only if it helps remove obvious false occupied hexes or
+        gives better object count.
+      </p>
+
+      <pre><code>bad assumption:
+  box bottom-center always gives correct hex
+
+better assumption:
+  box gives rough object evidence
+  hex classifier still gives hex evidence
+  code combines both</code></pre>
+
+      <h2>Do This Now</h2>
+      <ol class="checklist">
+        <li>Create a Label Studio project named <code>champion-detector-pilot</code>.</li>
+        <li>Import only 10 to 15 board crop images.</li>
+        <li>Use one class: <code>champion</code>.</li>
+        <li>Choose hard images with Blue, Nunu, Kayle, Ivern, Elder Dragon, Maokai, and overlap.</li>
+        <li>For each selected image, label every clearly visible player-side champion.</li>
+        <li>Skip little legends, item effects alone, and champions mostly hidden.</li>
+      </ol>
+
+      <h2>How To Pick Images</h2>
+      <p>
+        Use images where the hex classifier made mistakes, because those are the cases this detector
+        must help.
+      </p>
+
+      <pre><code>start with examples like:
+  image_4.png
+  image_6.png
+  image_77.png
+  image_99.png
+  image_237.png
+  image_263.png
+  image_264.png
+  image_265.png
+  image_371.png
+  image_382.png
+  image_383.png</code></pre>
+
+      <h2>Label Rule</h2>
+      <p>
+        Draw one box around the visible body of each champion. The box may cross multiple hexes.
+      </p>
+
+      <pre><code>label:
+  one visible champion body = one box
+
+skip:
+  little legend
+  item effect only
+  less than half visible
+  UI portraits and health bars as much as possible</code></pre>
+
+      <h2>Stop After The Pilot</h2>
+      <p>
+        After 10 to 15 images, stop labeling and train a small detector. Then test predictions on the
+        same hard images.
+      </p>
+
+      <pre><code>continue if:
+  detector finds most champion bodies
+  detector ignores little legends/effects
+  detector gives useful object count
+
+stop if:
+  boxes are chaotic
+  hidden champions cannot be found
+  detector confuses UI/effects too much</code></pre>
+
+      <h2>The Real Decision</h2>
+      <p>
+        If the pilot works, label 50 more. If it fails, do not force it. Move to a different signal,
+        such as a standing-point/keypoint label or better hex geometry/crop evidence.
+      </p>
+
+      <p class="small">
+        Primary reference:
+        <a href="https://docs.ultralytics.com/tasks/detect/">Ultralytics object detection task guide</a>.
+        Previous lesson:
+        <a href="./0063-start-one-class-champion-detector.html">Start One-Class Champion Detector</a>.
+        Ask Codex to export and train after the pilot is labeled.
+      </p>
+    </main>
+  </body>
+</html>

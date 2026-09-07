@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Champion Identity Workflow</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Champion Identity Workflow</h1>
+      <p class="lede">
+        Reuse the current one-class champion detector to crop units, then train a classifier that
+        answers which champion is inside each crop.
+      </p>
+
+      <h2>Pipeline</h2>
+      <pre><code>board crop
+  -> champion detector finds boxes
+  -> crop each champion box
+  -> human labels crop folder name
+  -> classifier learns champion identity
+  -> mapped hex gets champion name</code></pre>
+
+      <h2>Dataset Shape</h2>
+      <pre><code>data/champion-identity/
+  train/
+    kayle/
+    nunu/
+  val/
+    kayle/
+    nunu/</code></pre>
+
+      <h2>First Rule</h2>
+      <p>
+        Start with two or three champion names only. A small clean classifier is more useful than a
+        large noisy one.
+      </p>
+
+      <h2>Do Not Start With Stars</h2>
+      <p>
+        Star level is a smaller visual signal than champion identity. Train identity first, then add
+        star level after the box-to-name path works.
+      </p>
+
+      <p class="small">
+        Primary reference:
+        <a href="https://docs.ultralytics.com/datasets/classify/">Ultralytics classification dataset</a>.
+      </p>
+    </main>
+  </body>
+</html>

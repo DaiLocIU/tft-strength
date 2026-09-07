@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0029: First Ultralytics Smoke Train</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+  <main>
+    <h1>First Ultralytics Smoke Train</h1>
+    <p class="lede">Now test whether YOLO can read your dataset and start training.</p>
+
+    <h2>Goal</h2>
+    <p>This is not the real model yet. This is a smoke test.</p>
+    <pre><code>Can Ultralytics load dataset.yaml?
+Can it find images?
+Can it find labels?
+Can it complete one tiny training run?</code></pre>
+
+    <h2>Install</h2>
+    <pre><code>.venv/bin/python -m pip install ultralytics</code></pre>
+
+    <h2>Run One Tiny Train</h2>
+    <pre><code>.venv/bin/yolo detect train model=yolo11n.pt data=data/yolo/dataset.yaml epochs=1 imgsz=640</code></pre>
+
+    <h2>What Each Part Means</h2>
+    <ul>
+      <li><code>detect train</code>: train an object detection model.</li>
+      <li><code>model=yolo11n.pt</code>: start from a small pretrained model.</li>
+      <li><code>data=data/yolo/dataset.yaml</code>: use your dataset config.</li>
+      <li><code>epochs=1</code>: train for one short pass only.</li>
+      <li><code>imgsz=640</code>: resize training images to 640px.</li>
+    </ul>
+
+    <h2>Expected Output</h2>
+    <p>If it works, Ultralytics creates a run folder under:</p>
+    <pre><code>runs/detect/train</code></pre>
+
+    <p>Inside, the most important file is usually:</p>
+    <pre><code>weights/best.pt</code></pre>
+
+    <h2>Do Not Judge Accuracy Yet</h2>
+    <p>One epoch with train and validation using the same images only proves the pipeline runs. Accuracy comes later after a real train/val split and more training.</p>
+
+    <p class="small">Primary source: <a href="https://docs.ultralytics.com/modes/train/">Ultralytics train mode documentation</a>.</p>
+  </main>
+</body>
+</html>

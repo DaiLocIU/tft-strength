@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0026: Create Matching YOLO Image Files</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+  <main>
+    <h1>Create Matching YOLO Image Files</h1>
+    <p class="lede">YOLO labels are not enough. Every label file needs a matching image file.</p>
+
+    <h2>What You Have Now</h2>
+    <pre><code>data/yolo/labels/train/image_1.txt
+data/yolo/labels/train/image_2.txt
+...</code></pre>
+
+    <h2>What YOLO Also Needs</h2>
+    <pre><code>data/yolo/images/train/image_1.png
+data/yolo/images/train/image_2.png
+...</code></pre>
+
+    <h2>The Matching Rule</h2>
+    <pre><code>images/train/image_1.png
+labels/train/image_1.txt</code></pre>
+
+    <p>The folder names are different, but the base filename must match.</p>
+
+    <h2>Next Function</h2>
+    <pre><code>def copy_yolo_image_file(
+    image_filename: str,
+    raw_dir: str,
+    images_dir: str,
+) -> None:
+    ...
+</code></pre>
+
+    <h2>Steps Inside</h2>
+    <ol>
+      <li>Convert <code>raw_dir</code> and <code>images_dir</code> to <code>Path</code>.</li>
+      <li>Create <code>images_dir</code> if missing.</li>
+      <li>Build the source path from <code>raw_dir / image_filename</code>.</li>
+      <li>Build the destination path from <code>images_dir / image_filename</code>.</li>
+      <li>Copy the file.</li>
+    </ol>
+
+    <h2>New Standard Library Tool</h2>
+    <pre><code>from shutil import copy2</code></pre>
+
+    <p><code>copy2(source, destination)</code> copies the image and keeps useful file metadata.</p>
+
+    <h2>Self Check</h2>
+    <pre><code>find data/yolo/images/train -type f | wc -l
+find data/yolo/labels/train -type f | wc -l</code></pre>
+
+    <p>For this stage, both counts should be <code>100</code>.</p>
+  </main>
+</body>
+</html>

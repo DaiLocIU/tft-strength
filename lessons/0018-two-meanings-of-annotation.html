@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0018: Two Meanings Of Annotation</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+  <main>
+    <h1>Two Meanings Of Annotation</h1>
+    <p class="lede">In this project, the word <code>annotation</code> appears in two places. They are related to clarity, but they mean different things.</p>
+
+    <h2>Label Studio Annotation</h2>
+    <p>A Label Studio annotation is data created by a human. It says where the board is in an image.</p>
+
+    <pre><code>{
+  "annotations": [
+    {
+      "result": [
+        {
+          "type": "rectanglelabels",
+          "value": {
+            "x": 24.9,
+            "y": 21.5,
+            "width": 48.6,
+            "height": 46.0,
+            "rectanglelabels": ["board"]
+          }
+        }
+      ]
+    }
+  ]
+}</code></pre>
+
+    <p>This kind of annotation trains the AI model.</p>
+
+    <h2>Python Type Annotation</h2>
+    <p>A Python type annotation is code written by a programmer. It says what type a variable, parameter, or return value should have.</p>
+
+    <pre><code>def verify_labels_match_images(
+    export_path: str,
+    raw_dir: str,
+) -> tuple:
+    ...</code></pre>
+
+    <p>This kind of annotation helps <code>mypy</code>, <code>pyright</code>, your editor, and your future self understand the code.</p>
+
+    <h2>Mental Split</h2>
+    <pre><code>Label annotation  -> describes an image
+Type annotation   -> describes code</code></pre>
+
+    <h2>In Your Script</h2>
+    <p>This is Label Studio data:</p>
+    <pre><code>task["annotations"]</code></pre>
+
+    <p>This is Python typing:</p>
+    <pre><code>task: TaskItem</code></pre>
+
+    <h2>Memory Check</h2>
+    <ol>
+      <li>Which annotation helps train the model?</li>
+      <li>Which annotation helps mypy check your code?</li>
+      <li>What does <code>task["annotations"]</code> mean?</li>
+    </ol>
+  </main>
+</body>
+</html>
+

@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0019: Do Not Change Variable Types</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+  <main>
+    <h1>Do Not Change Variable Types</h1>
+    <p class="lede">Strict Python becomes easier when one variable name keeps one type.</p>
+
+    <h2>The Problem</h2>
+    <pre><code>def verify_labels_match_images(export_path: str, raw_dir: str) -> VerifyResult:
+    export_path = Path(export_path)
+    raw_dir = Path(raw_dir)</code></pre>
+
+    <p><code>export_path</code> starts as a <code>str</code>. Then the code assigns a <code>Path</code> to the same name. Mypy rejects that.</p>
+
+    <h2>The Fix</h2>
+    <pre><code>def verify_labels_match_images(export_path: str, raw_dir: str) -> VerifyResult:
+    export_file = Path(export_path)
+    raw_path = Path(raw_dir)</code></pre>
+
+    <p>Now each name has one type:</p>
+
+    <pre><code>export_path: str
+export_file: Path
+raw_dir: str
+raw_path: Path</code></pre>
+
+    <h2>TypeScript Comparison</h2>
+    <pre><code>function verify(exportPath: string) {
+  const exportFile = new Path(exportPath)
+}</code></pre>
+
+    <p>You would not usually reuse <code>exportPath</code> for a different type in TypeScript. Use the same habit in Python.</p>
+
+    <h2>Second Problem</h2>
+    <p>If your function says it returns <code>VerifyResult</code>, return a dictionary with named fields, not a tuple.</p>
+
+    <pre><code>return {
+    "matched": matched,
+    "missing": missing,
+    "valid_labels": valid_labels,
+    "bad_labels": bad_labels,
+}</code></pre>
+
+    <h2>Memory Check</h2>
+    <ol>
+      <li>Why did <code>export_path = Path(export_path)</code> fail?</li>
+      <li>What type is <code>export_file</code>?</li>
+      <li>Why is a named result easier than a tuple?</li>
+    </ol>
+  </main>
+</body>
+</html>
+

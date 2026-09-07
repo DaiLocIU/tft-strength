@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>After Focused Retrain, Review The Target Images</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>After Focused Retrain, Review The Target Images</h1>
+      <p class="lede">
+        You just trained on 58 corrected edge-case images. The next step is not more labeling yet.
+        First, check whether the model fixed the exact mistake type you trained for.
+      </p>
+
+      <div class="callout">
+        Goal: decide if the remaining problem is more data, a threshold, or the crop/model design.
+      </div>
+
+      <h2>Do This Now</h2>
+      <ol class="checklist">
+        <li>Open the new prediction contact sheets.</li>
+        <li>Review the 58 images from the last queue first, not all 382 images.</li>
+        <li>For each still-wrong image, write the image number once.</li>
+        <li>Add a short reason beside it: linh thu, Blue, Maokai, Kayle, large champion, or low confidence.</li>
+        <li>Stop after the 58 target images and count how many are still wrong.</li>
+      </ol>
+
+      <h2>The Target List</h2>
+      <p>
+        These are the images you just relabeled. They are your test set for this specific retrain.
+      </p>
+
+      <pre><code>4, 6, 61, 62, 72, 74, 82, 84, 87, 99,
+123, 234, 236, 237, 255, 259, 263, 264, 265,
+349, 350, 351, 352, 353, 354, 355, 356, 357, 358,
+359, 360, 361, 362, 363, 364, 365, 366, 367, 368,
+369, 370, 371, 372, 373, 374, 375, 376, 377, 378,
+379, 380, 381, 382, 383, 384, 385, 386, 387</code></pre>
+
+      <h2>How To Judge</h2>
+      <p>
+        Use this rule while looking at the red occupied hexes:
+      </p>
+
+      <pre><code>correct occupied:
+  feet / shadow / standing anchor is on this hex
+
+wrong occupied:
+  head only
+  body overlap only
+  item effect only
+  linh thu only</code></pre>
+
+      <h2>Decision Rule</h2>
+      <p>
+        After reviewing the 58 target images, choose one path.
+      </p>
+
+      <pre><code>0-5 still wrong:
+  model improved enough
+  review all 382 images next
+
+6-20 still wrong, mostly high confidence:
+  make one more focused queue
+  relabel only those images
+
+many still wrong with same reason:
+  stop labeling
+  change crop/design next</code></pre>
+
+      <h2>What To Send Codex</h2>
+      <p>
+        Send the remaining wrong list in this shape:
+      </p>
+
+      <pre><code>still wrong after retrain:
+72 - linh thu
+84 - Blue
+123 - Kayle
+234 - Maokai
+
+I reviewed 58 target images.</code></pre>
+
+      <h2>Why This Step Matters</h2>
+      <p>
+        The Ultralytics classifier can show a strong validation score, but your real project needs
+        fewer wrong board hexes. The contact sheet review is the project-level test.
+      </p>
+
+      <p class="small">
+        Primary reference:
+        <a href="https://docs.ultralytics.com/tasks/classify/">Ultralytics classification task guide</a>.
+        Previous lesson:
+        <a href="./0061-what-to-do-with-high-confidence-wrong-hexes.html">What To Do With High Confidence Wrong Hexes</a>.
+        Ask Codex if any image is hard to judge.
+      </p>
+    </main>
+  </body>
+</html>

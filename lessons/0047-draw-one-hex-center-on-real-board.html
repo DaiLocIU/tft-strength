@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Draw One Hex Center On A Real Board</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Draw One Hex Center On A Real Board</h1>
+      <p class="lede">
+        You are right: geometry is easier to fix when you can see it on the image. So before
+        building all 28 hexes, draw one center point on a real cropped board.
+      </p>
+
+      <div class="callout">
+        Today’s goal: write one function that draws a red dot and label for one
+        <code>HexCell</code>.
+      </div>
+
+      <h2>Why Draw So Early?</h2>
+      <p>
+        Printed numbers like <code>center_x=100</code> do not tell you if the cell is correct on a
+        TFT board. A review image gives a fast feedback loop: run code, open image, decide what is
+        wrong.
+      </p>
+
+      <h2>Add Imports</h2>
+      <pre><code>from pathlib import Path
+
+from PIL import Image, ImageDraw</code></pre>
+
+      <h2>Create One Real-Looking Cell</h2>
+      <pre><code>def create_first_hex_cell() -&gt; HexCell:
+    return {
+        "row": 0,
+        "column": 0,
+        "center_x": 190.0,
+        "center_y": 460.0,
+        "radius": 45.0,
+    }</code></pre>
+
+      <p>
+        These numbers are not final. They are only a starting guess on
+        <code>outputs/board-crops/image_1.png</code>.
+      </p>
+
+      <h2>Draw The Center</h2>
+      <pre><code>def draw_hex_center(
+    image_path: str,
+    hex_cell: HexCell,
+    output_path: str,
+) -&gt; None:
+    image = Image.open(image_path).convert("RGB")
+    draw = ImageDraw.Draw(image)
+
+    center_x = hex_cell["center_x"]
+    center_y = hex_cell["center_y"]
+    label = f"{hex_cell['row']},{hex_cell['column']}"
+
+    dot_radius = 8
+    draw.ellipse(
+        (
+            center_x - dot_radius,
+            center_y - dot_radius,
+            center_x + dot_radius,
+            center_y + dot_radius,
+        ),
+        fill="red",
+    )
+    draw.text((center_x + 10, center_y - 8), label, fill="white")
+
+    review_path = Path(output_path)
+    review_path.parent.mkdir(parents=True, exist_ok=True)
+    image.save(review_path)</code></pre>
+
+      <h2>Run It</h2>
+      <pre><code>if __name__ == "__main__":
+    cell = create_first_hex_cell()
+    draw_hex_center(
+        "outputs/board-crops/image_1.png",
+        cell,
+        "outputs/hex-overlays/one-center.png",
+    )
+    print(cell)</code></pre>
+
+      <pre><code>cd /Users/inmac/Desktop/work-hard/tft-team-strength/vision-board-detector
+.venv/bin/python scripts/detect_hexes.py
+.venv/bin/python -m mypy scripts/detect_hexes.py
+.venv/bin/python -m ruff check scripts/detect_hexes.py</code></pre>
+
+      <h2>How To Judge It</h2>
+      <ul class="checklist">
+        <li>If the dot is too far left, increase <code>center_x</code>.</li>
+        <li>If the dot is too far right, decrease <code>center_x</code>.</li>
+        <li>If the dot is too high, increase <code>center_y</code>.</li>
+        <li>If the dot is too low, decrease <code>center_y</code>.</li>
+      </ul>
+
+      <h2>Recall</h2>
+      <ul class="checklist">
+        <li>Why is a dot easier than drawing the full hex first?</li>
+        <li>Which value moves the dot left or right?</li>
+        <li>Which value moves the dot up or down?</li>
+      </ul>
+
+      <p class="small">
+        Next lesson: draw 7 center dots for the first row.
+        Pillow reference:
+        <a href="https://pillow.readthedocs.io/en/stable/reference/ImageDraw.html">ImageDraw</a>.
+      </p>
+    </main>
+  </body>
+</html>

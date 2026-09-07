@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0017: TypedDict Like TypeScript Interface</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+  <main>
+    <h1>TypedDict Like TypeScript Interface</h1>
+    <p class="lede">For JSON data, Python's closest match to a TypeScript interface is <code>TypedDict</code>.</p>
+
+    <h2>TypeScript Shape</h2>
+    <pre><code>interface TaskItem {
+  data: {
+    image: string;
+  };
+  annotations: AnnotationItem[];
+}
+
+const tasks: TaskItem[] = JSON.parse(text);</code></pre>
+
+    <h2>Python Shape</h2>
+    <pre><code>from typing import Any, List, TypedDict, cast
+
+class TaskData(TypedDict):
+    image: str
+
+class RectangleValue(TypedDict):
+    x: float
+    y: float
+    width: float
+    height: float
+    rectanglelabels: List[str]
+
+class AnnotationResult(TypedDict):
+    type: str
+    value: RectangleValue
+
+class AnnotationItem(TypedDict):
+    result: List[AnnotationResult]
+
+class TaskItem(TypedDict):
+    data: TaskData
+    annotations: List[AnnotationItem]</code></pre>
+
+    <h2>Typing json.load</h2>
+    <p><code>json.load(file)</code> returns <code>Any</code>, because Python cannot know what is inside a JSON file. You tell the type checker what shape you expect with <code>cast</code>:</p>
+
+    <pre><code>raw_tasks = json.load(file)
+tasks = cast(List[TaskItem], raw_tasks)</code></pre>
+
+    <h2>Important Warning</h2>
+    <p><code>cast</code> does not validate data at runtime. It is a promise to the type checker. Later, when you need real runtime validation, use Pydantic or manual checks.</p>
+
+    <h2>Your Next Edit</h2>
+    <p>Add the <code>TypedDict</code> classes above near the top of <code>scripts/check_dataset.py</code>, then change your loaded tasks line to:</p>
+
+    <pre><code>tasks = cast(List[TaskItem], json.load(file))</code></pre>
+
+    <p class="small">Primary source: <a href="https://docs.python.org/3.9/library/typing.html#typing.TypedDict">Python 3.9 TypedDict documentation</a>.</p>
+  </main>
+</body>
+</html>
+

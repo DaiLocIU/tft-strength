@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>After Champion Prediction Map Boxes To Hexes</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>After Champion Prediction Map Boxes To Hexes</h1>
+      <p class="lede">
+        After champion prediction, the next step is to turn boxes into board positions. The model
+        tells you “champion is here.” The game logic needs “champion is on row 2, column 4.”
+      </p>
+
+      <div class="callout">
+        Win for this lesson: understand the first box-to-hex mapping rule before writing the script.
+      </div>
+
+      <h2>Do Not Skip The Gate</h2>
+      <p>
+        Move to hex mapping only if the champion detector is now good enough on board crops. If it
+        still misses many champions, add more labeled examples first.
+      </p>
+
+      <h2>The Pipeline</h2>
+      <pre><code>board crop
+  -> champion detector
+  -> champion boxes
+  -> one point per box
+  -> nearest hex center
+  -> occupied hex list</code></pre>
+
+      <h2>The Key Rule</h2>
+      <p>
+        Do not use the center of the champion box. Use the bottom-center point of the box, because
+        the champion's feet/base are closer to the occupied hex than the head or body center.
+      </p>
+      <pre><code>point_x = (x1 + x2) / 2
+point_y = y2</code></pre>
+
+      <h2>Why Bottom-Center</h2>
+      <pre><code>box center:
+  often lands on the champion body
+  can be too high on tall units
+
+bottom-center:
+  lands near the champion base
+  is closer to the board hex</code></pre>
+
+      <h2>Next Script</h2>
+      <p>Create this file next:</p>
+      <pre><code>scripts/map_champions_to_hexes.py</code></pre>
+
+      <h2>Script Job</h2>
+      <ol class="checklist">
+        <li>Load one image from <code>outputs/board-crops</code>.</li>
+        <li>Run <code>models/champion-detector.pt</code>.</li>
+        <li>Read each predicted champion box.</li>
+        <li>Convert each box to bottom-center point.</li>
+        <li>Get the 28 hex centers from <code>create_board_hex_cells</code>.</li>
+        <li>Assign each champion point to the nearest hex center.</li>
+        <li>Draw boxes, points, hexes, and row/column labels for review.</li>
+      </ol>
+
+      <h2>First Test Image</h2>
+      <p>Use one board crop first. Do not batch all images until the overlay looks right.</p>
+      <pre><code>image_1.png</code></pre>
+
+      <h2>Success Looks Like</h2>
+      <pre><code>green box:
+  detected champion
+
+yellow dot:
+  bottom-center of champion box
+
+red hex:
+  chosen nearest hex
+
+white text:
+  row,column result</code></pre>
+
+      <h2>Decision</h2>
+      <pre><code>if dots land near the champion bases:
+  implement nearest-hex assignment
+
+if dots are too low or high:
+  adjust the point rule
+
+if boxes are missing champions:
+  go back to labeling more data</code></pre>
+
+      <p class="small">
+        Primary reference:
+        <a href="https://docs.ultralytics.com/usage/python/">Ultralytics YOLO Python usage</a>.
+        Hex reference:
+        <a href="https://www.redblobgames.com/grids/hexagons/">Red Blob Games: Hexagonal Grids</a>.
+        Previous lesson:
+        <a href="./0070-rebuild-champion-dataset-after-labeling-94-images.html">Rebuild Champion Dataset After Labeling 94 Images</a>.
+        Ask Codex to write the first version of <code>map_champions_to_hexes.py</code> when you are ready.
+      </p>
+    </main>
+  </body>
+</html>

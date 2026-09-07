@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Train The First Champion Name Model</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Train The First Champion Name Model</h1>
+      <p class="lede">
+        You have enough champion boxes and labeled crops to move from detection to identity. The
+        next model should classify one champion crop into one champion name.
+      </p>
+
+      <div class="callout">
+        Current state: you have labeled crops, but no <code>train/</code> and <code>val/</code>
+        split yet. So the next command is the split command.
+      </div>
+
+      <h2>The Mental Model</h2>
+      <pre><code>champion-detector.pt
+  input: board crop
+  output: champion boxes
+
+champion-identity-classifier.pt
+  input: one champion crop
+  output: champion name</code></pre>
+
+      <h2>Step 1: Check Label Folders</h2>
+      <p>
+        Folder names become class names. If a folder is a typo, the model learns a typo as a real
+        champion.
+      </p>
+      <pre><code>cd /Users/inmac/Desktop/work-hard/tft-team-strength/vision-board-detector
+
+find data/champion-identity/labeled -mindepth 1 -maxdepth 1 -type d | sort</code></pre>
+      <p>
+        Fix obvious bad folders before training. Empty folders are okay, but typo folders are not.
+      </p>
+
+      <h2>Step 2: Split Labeled Crops</h2>
+      <p>
+        This creates the folder layout YOLO classification expects:
+        <code>data/champion-identity/train/name/*.png</code> and
+        <code>data/champion-identity/val/name/*.png</code>.
+      </p>
+      <pre><code>python3 scripts/split_champion_identity_dataset.py</code></pre>
+
+      <h2>Step 3: Train The Classifier</h2>
+      <p>
+        Use <code>classify train</code>, not <code>detect train</code>. You are no longer training
+        boxes here.
+      </p>
+      <pre><code>yolo classify train \
+  model=yolo11n-cls.pt \
+  data=data/champion-identity \
+  imgsz=96 \
+  epochs=50 \
+  device=mps \
+  project=runs/classify \
+  name=champion-identity</code></pre>
+
+      <h2>Step 4: Save The Best Model</h2>
+      <p>
+        After training, copy the best classifier into <code>models/</code> so your scripts can use a
+        stable path.
+      </p>
+      <pre><code>cp runs/classify/champion-identity/weights/best.pt \
+  models/champion-identity-classifier.pt</code></pre>
+
+      <h2>Step 5: Test One Crop First</h2>
+      <p>
+        Before connecting to hexes, test the classifier on one labeled crop. This checks whether the
+        model can answer the small question.
+      </p>
+      <pre><code>yolo classify predict \
+  model=models/champion-identity-classifier.pt \
+  source=data/champion-identity/val \
+  imgsz=96</code></pre>
+
+      <h2>Step 6: Then Connect Back To Hex</h2>
+      <p>
+        Only after the classifier works, update your board pipeline:
+      </p>
+      <pre><code>board crop
+  -> detect champion boxes
+  -> choose one hex per champion box
+  -> crop that box
+  -> classify champion name
+  -> output: row, column, champion</code></pre>
+
+      <h2>Retrieval Check</h2>
+      <pre><code>A. detect train on champion names
+B. classify train on champion crops
+C. classify train on full boards</code></pre>
+      <p>
+        Answer: B. Champion names are learned from individual champion crops.
+      </p>
+
+      <p class="small">
+        Reference:
+        <a href="../reference/champion-identity-workflow.html">Champion Identity Workflow</a>.
+        Previous lesson:
+        <a href="./0076-after-predicting-champion-boxes.html">After Predicting Champion Boxes</a>.
+        Primary source:
+        <a href="https://docs.ultralytics.com/datasets/classify/">Ultralytics classification dataset format</a>.
+        Ask Codex follow-up questions if any step is unclear.
+      </p>
+    </main>
+  </body>
+</html>

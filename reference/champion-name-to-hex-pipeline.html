@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Champion Name To Hex Pipeline</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Champion Name To Hex Pipeline</h1>
+      <p class="lede">
+        The final board-state row is built by joining three signals: detected champion box, chosen
+        board hex, and classified champion name.
+      </p>
+
+      <h2>Data Flow</h2>
+      <pre><code>board crop image
+  -> champion detector
+  -> champion boxes
+  -> choose one hex for each box
+  -> crop each champion box
+  -> identity classifier
+  -> row, column, champion, confidence</code></pre>
+
+      <h2>Detector Output</h2>
+      <pre><code>{
+  "x1": 120.0,
+  "y1": 80.0,
+  "x2": 220.0,
+  "y2": 260.0,
+  "confidence": 0.82
+}</code></pre>
+
+      <h2>Classifier Output</h2>
+      <pre><code>{
+  "champion_name": "warwick",
+  "identity_confidence": 0.91
+}</code></pre>
+
+      <h2>Joined Output</h2>
+      <pre><code>{
+  "row": 3,
+  "column": 4,
+  "occupied": true,
+  "champion_name": "warwick",
+  "champion_confidence": 0.82,
+  "identity_confidence": 0.91
+}</code></pre>
+
+      <h2>Important Rule</h2>
+      <p>
+        Classify the same box that was mapped to the hex. Do not classify the whole board crop.
+      </p>
+
+      <p class="small">
+        Sources:
+        <a href="https://docs.ultralytics.com/tasks/detect/">Ultralytics detection task</a>
+        and
+        <a href="https://docs.ultralytics.com/tasks/classify/">Ultralytics classification task</a>.
+      </p>
+    </main>
+  </body>
+</html>

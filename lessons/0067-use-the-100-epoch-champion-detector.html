@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Use The 100 Epoch Champion Detector</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Use The 100 Epoch Champion Detector</h1>
+      <p class="lede">
+        After training, the next step is not to trust the model. The next step is to test the
+        checkpoint on images and read the boxes with your eyes.
+      </p>
+
+      <div class="callout">
+        Win for this lesson: run the new model, inspect the saved images, then choose the next move
+        from the result.
+      </div>
+
+      <h2>Mental Model</h2>
+      <p>
+        Training creates weights. Prediction uses those weights on images. Confidence is only the
+        model's score for a box; it is not proof that the box is correct.
+      </p>
+
+      <h2>Step 1: Predict On Raw Images</h2>
+      <pre><code>cd /Users/inmac/Desktop/work-hard/tft-team-strength/vision-board-detector
+
+.venv/bin/yolo detect predict \
+  model=models/champion-detector.pt \
+  source=data/raw \
+  imgsz=640 \
+  conf=0.25 \
+  save=True \
+  project=outputs/champion-detector \
+  name=clean-100-raw-conf025</code></pre>
+
+      <h2>Step 2: Open The Output</h2>
+      <pre><code>open /Users/inmac/Desktop/work-hard/tft-team-strength/vision-board-detector/outputs/champion-detector/clean-100-raw-conf025</code></pre>
+
+      <h2>Step 3: Read The Result</h2>
+      <pre><code>good result:
+  boxes cover real champion bodies
+  few boxes on non-champions
+  confidence often above 0.50
+
+bad result:
+  boxes cover UI, board, items, or effects
+  many real champions are missed
+  confidence is mostly below 0.25</code></pre>
+
+      <h2>Step 4: Try A Higher Threshold</h2>
+      <p>If <code>conf=0.25</code> gives too many wrong boxes, try stricter prediction.</p>
+      <pre><code>.venv/bin/yolo detect predict \
+  model=models/champion-detector.pt \
+  source=data/raw \
+  imgsz=640 \
+  conf=0.50 \
+  save=True \
+  project=outputs/champion-detector \
+  name=clean-100-raw-conf050</code></pre>
+
+      <h2>Decision Rule</h2>
+      <pre><code>if conf=0.50 still finds most champions:
+  use this model in the next pipeline step
+
+if conf=0.50 removes many real champions:
+  use conf=0.25 and label more hard examples
+
+if conf=0.25 is still messy:
+  inspect labels before training again</code></pre>
+
+      <h2>Your Task</h2>
+      <ol class="checklist">
+        <li>Run the <code>conf=0.25</code> command.</li>
+        <li>Open the output folder.</li>
+        <li>Pick 5 images: 2 good, 2 bad, 1 confusing.</li>
+        <li>Ask Codex to inspect those examples with you.</li>
+      </ol>
+
+      <p class="small">
+        Primary reference:
+        <a href="https://docs.ultralytics.com/modes/predict/">Ultralytics predict mode guide</a>.
+        Previous lesson:
+        <a href="./0066-diagnose-weak-champion-detector.html">Diagnose A Weak Champion Detector</a>.
+        Ask Codex follow-up questions when a box looks correct but has low confidence.
+      </p>
+    </main>
+  </body>
+</html>

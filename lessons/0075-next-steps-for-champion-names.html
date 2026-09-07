@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Next Steps For Champion Names</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Next Steps For Champion Names</h1>
+      <p class="lede">
+        Your champion detector is good enough to reuse. The next skill is turning each detected box
+        into a labeled champion-name crop.
+      </p>
+
+      <div class="callout">
+        Win for this lesson: know the exact next workflow before writing the classifier code.
+      </div>
+
+      <h2>The Decision</h2>
+      <p>
+        Do not retrain the detector with every champion name yet. Keep the detector as
+        <code>champion</code>. Add a second model: a classifier that receives one cropped champion
+        image and returns <code>kayle</code>, <code>nunu</code>, or another name.
+      </p>
+
+      <h2>Step 1: Produce Champion Crops</h2>
+      <pre><code>board crop image
+  -> current champion detector
+  -> boxes
+  -> crop each box
+  -> save each crop for labeling</code></pre>
+
+      <h2>Step 2: Label Names By Folder</h2>
+      <p>
+        For classification, the folder name is the label. This is different from YOLO detection
+        labels, where a text file stores box coordinates.
+      </p>
+      <pre><code>data/champion-identity/labeled/
+  kayle/
+    crop_001.png
+    crop_002.png
+  nunu/
+    crop_003.png
+    crop_004.png
+  unknown/
+    crop_005.png</code></pre>
+
+      <h2>Step 3: Start Tiny</h2>
+      <p>
+        Pick only two champion names first, for example <code>kayle</code> and <code>nunu</code>.
+        Add <code>unknown</code> for bad crops or champions you are not training yet.
+      </p>
+
+      <h2>Step 4: Split Train And Val</h2>
+      <pre><code>data/champion-identity/
+  train/
+    kayle/
+    nunu/
+    unknown/
+  val/
+    kayle/
+    nunu/
+    unknown/</code></pre>
+
+      <h2>Step 5: Train Classifier</h2>
+      <pre><code>cd /Users/inmac/Desktop/work-hard/tft-team-strength/vision-board-detector
+
+yolo classify train \
+  model=yolo11n-cls.pt \
+  data=data/champion-identity \
+  imgsz=96 \
+  epochs=50</code></pre>
+
+      <h2>Step 6: Connect Back To Hex</h2>
+      <pre><code>champion box
+  -> chosen hex from combine rule
+  -> crop box
+  -> classifier predicts name
+  -> output: row=3 column=4 champion=nunu</code></pre>
+
+      <h2>Step 7: Stars Come Later</h2>
+      <p>
+        Star level should be a separate step after champion name works. First solve:
+        <code>which champion is on this hex?</code>. Later solve:
+        <code>how many stars?</code>.
+      </p>
+
+      <h2>Retrieval Check</h2>
+      <pre><code>A. Train one detector with kayle/nunu boxes immediately.
+B. Reuse champion detector, crop boxes, train name classifier.
+C. Detect star level before champion identity.</code></pre>
+      <p>
+        Answer: B. It reuses your good detector and gives the shortest path to champion names.
+      </p>
+
+      <p class="small">
+        Reference:
+        <a href="../reference/champion-identity-workflow.html">Champion Identity Workflow</a>.
+        Previous lesson:
+        <a href="./0074-choose-champion-hex-with-occupancy.html">Choose Champion Hex With Occupancy</a>.
+        Primary reference:
+        <a href="https://docs.ultralytics.com/datasets/classify/">Ultralytics classification dataset</a>.
+        Ask Codex follow-up questions if any step is unclear.
+      </p>
+    </main>
+  </body>
+</html>

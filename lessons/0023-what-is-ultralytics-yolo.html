@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0023: What Is Ultralytics YOLO?</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+  <main>
+    <h1>What Is Ultralytics YOLO?</h1>
+    <p class="lede">Ultralytics YOLO is the tool we will use to train and run your TFT board detector.</p>
+
+    <h2>The Short Version</h2>
+    <p><strong>YOLO</strong> means <em>You Only Look Once</em>. It is a computer vision model style for finding objects in images.</p>
+    <p><strong>Ultralytics</strong> is the Python package and command-line tool that makes YOLO practical to use.</p>
+
+    <h2>For Your Project</h2>
+    <pre><code>Input:  TFT screenshot
+
+Model:  Ultralytics YOLO detector
+
+Output: one board box
+        class = board
+        confidence = how sure the model is
+        x/y/w/h = where the board is</code></pre>
+
+    <h2>What Ultralytics Gives You</h2>
+    <ul>
+      <li><strong>Train:</strong> learn from your labeled board images.</li>
+      <li><strong>Predict:</strong> find the board in a new screenshot.</li>
+      <li><strong>Val:</strong> measure if the model works on images it did not train on.</li>
+      <li><strong>Export:</strong> convert the trained model for later app use.</li>
+    </ul>
+
+    <h2>Important Mental Model</h2>
+    <pre><code>You do not write the neural network from scratch.
+
+You prepare the data correctly.
+You call the trainer.
+You inspect the result.
+You improve the data.</code></pre>
+
+    <h2>Why We Use It Now</h2>
+    <p>Your first learning goal is not to invent a detector algorithm. Your first goal is to understand the full computer vision loop:</p>
+    <pre><code>images -> labels -> YOLO dataset -> train -> predict -> inspect mistakes</code></pre>
+
+    <h2>Next Exercise</h2>
+    <p>Before installing Ultralytics, write down the five files/folders YOLO needs from your project:</p>
+    <pre><code>images/train/
+images/val/
+labels/train/
+labels/val/
+dataset.yaml</code></pre>
+
+    <p class="small">Primary source: <a href="https://docs.ultralytics.com/usage/python/">Ultralytics YOLO Python usage</a> and <a href="https://docs.ultralytics.com/tasks/detect/">Ultralytics object detection docs</a>.</p>
+  </main>
+</body>
+</html>

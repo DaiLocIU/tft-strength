@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>What To Do With High Confidence Wrong Hexes</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>What To Do With High Confidence Wrong Hexes</h1>
+      <p class="lede">
+        When you see a wrong red hex with high confidence, do not stop and retrain immediately.
+        Record it first. Relabel after you collect a small focused batch.
+      </p>
+
+      <div class="callout">
+        Goal: turn high-confidence mistakes into a clean mistake queue, then relabel that queue.
+      </div>
+
+      <h2>The Rule</h2>
+      <p>
+        High confidence means the model strongly believes the wrong thing. A threshold will not fix
+        that. The model needs corrected examples of the same mistake type.
+      </p>
+
+      <pre><code>low confidence wrong:
+  maybe threshold can fix
+
+high confidence wrong:
+  record image, relabel, retrain</code></pre>
+
+      <h2>What To Do Right Now</h2>
+      <ol class="checklist">
+        <li>Open the prediction review sheet.</li>
+        <li>When you see a wrong red hex with high confidence, write down the image number.</li>
+        <li>Keep reviewing until you collect about 20 to 50 wrong images.</li>
+        <li>Create a new mistake queue from those image numbers.</li>
+        <li>Open the queue in the labeler and relabel those images.</li>
+        <li>Rebuild the split, train again, and predict all again.</li>
+      </ol>
+
+      <h2>Do Not Relabel One At A Time</h2>
+      <p>
+        Relabeling one image and retraining immediately is too slow. The model learns better from a
+        small batch of similar mistakes.
+      </p>
+
+      <pre><code>bad:
+  find 1 wrong image
+  relabel 1 image
+  train
+
+good:
+  find 20-50 wrong images
+  relabel the queue
+  train once</code></pre>
+
+      <h2>What To Record</h2>
+      <p>For now, record only the image number. That is enough because the labeler reloads the whole board.</p>
+
+      <pre><code>example:
+  1, 3, 4, 22, 48, 101</code></pre>
+
+      <p>
+        If the same image has many wrong red hexes, write the image number once. When you relabel,
+        correct all hexes on that board.
+      </p>
+
+      <h2>Relabel Rule</h2>
+      <p>When relabeling large champion mistakes, use the standing hex rule.</p>
+
+      <pre><code>click occupied:
+  feet / shadow / anchor hex
+
+do not click occupied:
+  head only
+  body overlap only
+  item effect only</code></pre>
+
+      <h2>Stop Rule</h2>
+      <p>
+        If the same high-confidence mistake survives two focused relabel-and-train rounds, stop
+        labeling more. That means the crop design probably needs to change.
+      </p>
+
+      <pre><code>after two failed focused rounds:
+  try smaller/lower crop
+  or add champion detector anchor signal</code></pre>
+
+      <h2>Recall</h2>
+      <ul class="checklist">
+        <li>What do you do first when a high-confidence wrong hex appears?</li>
+        <li>Why collect a batch before retraining?</li>
+        <li>What rule decides the true occupied hex?</li>
+      </ul>
+
+      <p class="small">
+        Previous lesson:
+        <a href="./0060-decide-after-large-champion-round-1.html">Decide After Large Champion Round 1</a>.
+        Ask Codex with your next list of image numbers and say: "create the next mistake queue".
+      </p>
+    </main>
+  </body>
+</html>

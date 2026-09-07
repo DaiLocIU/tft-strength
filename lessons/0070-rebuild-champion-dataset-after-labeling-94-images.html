@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Rebuild Champion Dataset After Labeling 94 Images</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Rebuild Champion Dataset After Labeling 94 Images</h1>
+      <p class="lede">
+        You labeled 94 champion images. The next step is to turn that Label Studio export into the
+        YOLO dataset folder that training actually reads.
+      </p>
+
+      <div class="callout">
+        Win for this lesson: rebuild <code>data/champion-detector</code>, confirm the train/val
+        split, then start the next training run.
+      </div>
+
+      <h2>The Important Idea</h2>
+      <p>
+        Label Studio is where you create labels. YOLO does not train from the Label Studio project
+        directly. YOLO trains from a dataset folder with <code>images/train</code>,
+        <code>images/val</code>, <code>labels/train</code>, <code>labels/val</code>, and
+        <code>data.yaml</code>.
+      </p>
+
+      <h2>Step 1: Use The New Export</h2>
+      <p>Your new export is <code>champion-94.zip</code>. Use it explicitly.</p>
+      <pre><code>cd /Users/inmac/Desktop/work-hard/tft-team-strength/vision-board-detector
+
+.venv/bin/python scripts/prepare_champion_detector_dataset.py \
+  --export exports/label-studio/champion-94.zip</code></pre>
+
+      <h2>Expected Output</h2>
+      <pre><code>train images: about 75
+val images:   about 19
+data yaml:    data/champion-detector/data.yaml</code></pre>
+
+      <h2>Step 2: Sanity Check The Dataset</h2>
+      <p>Confirm that YOLO has image files and matching label files.</p>
+      <pre><code>find data/champion-detector/images/train -type f | wc -l
+find data/champion-detector/images/val -type f | wc -l
+find data/champion-detector/labels/train -type f | wc -l
+find data/champion-detector/labels/val -type f | wc -l</code></pre>
+
+      <h2>Step 3: Train Again</h2>
+      <p>
+        Start from the current champion detector because it already learned something. This is
+        fine-tuning on the larger, better labeled batch.
+      </p>
+      <pre><code>.venv/bin/yolo detect train \
+  model=models/champion-detector.pt \
+  data=data/champion-detector/data.yaml \
+  imgsz=640 \
+  epochs=100 \
+  name=champion-detector-94</code></pre>
+
+      <h2>Step 4: Install The New Best Weight</h2>
+      <p>After training finishes, copy the new <code>best.pt</code> into your app model path.</p>
+      <pre><code>cp runs/detect/champion-detector-94/weights/best.pt \
+  models/champion-detector.pt</code></pre>
+
+      <h2>Step 5: Test On Board Crops</h2>
+      <pre><code>.venv/bin/yolo detect predict \
+  model=models/champion-detector.pt \
+  source=outputs/board-crops \
+  imgsz=640 \
+  conf=0.5 \
+  save=True \
+  project=outputs/champion-detector \
+  name=champion-94-board-crops-conf050</code></pre>
+
+      <h2>Decision</h2>
+      <pre><code>if most champions are detected:
+  move to box-to-hex mapping
+
+if many champions are still missed:
+  collect another failure-focused batch
+
+if wrong boxes appear often:
+  inspect labels before adding more images</code></pre>
+
+      <p class="small">
+        Primary reference:
+        <a href="https://docs.ultralytics.com/tasks/detect/">Ultralytics object detection task guide</a>.
+        Previous lesson:
+        <a href="./0069-build-a-missed-champion-labeling-batch.html">Build A Missed Champion Labeling Batch</a>.
+        Ask Codex to read the training result image after this run finishes.
+      </p>
+    </main>
+  </body>
+</html>

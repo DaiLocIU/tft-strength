@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0002: What The Python Scaffold Teaches</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+  <main>
+    <h1>What The Python Scaffold Teaches</h1>
+    <p class="lede">The generated code is not the lesson by itself. It is a small machine you can take apart.</p>
+
+    <div class="callout">
+      <strong>Mission link:</strong> every file supports one question: how does a labeled screenshot become a model that can find the TFT board?
+    </div>
+
+    <h2>The Whole Loop</h2>
+    <pre><code>raw screenshot
+  -> Label Studio rectangle
+  -> Label Studio JSON export
+  -> YOLO label text file
+  -> YOLO training
+  -> board prediction</code></pre>
+
+    <h2>What Each File Teaches</h2>
+    <p><code>label_studio/board_label_config.xml</code> teaches annotation design. You learn how to define the UI that a human uses to create ground truth.</p>
+
+    <p><code>board_detection/label_studio.py</code> teaches how to read external tool data. Label Studio exports JSON, and this file extracts only the rectangles labeled <code>board</code>.</p>
+
+    <p><code>board_detection/yolo.py</code> teaches coordinate conversion. This is the most important beginner concept here: Label Studio uses percentages from the top-left corner, while YOLO uses normalized center coordinates.</p>
+
+    <p><code>scripts/convert_label_studio_to_yolo.py</code> teaches dataset preparation. Model training usually fails because the dataset is shaped wrong, not because the model is mysterious.</p>
+
+    <p><code>scripts/train_board_detector.py</code> teaches transfer learning. You start from pretrained YOLO weights and fine-tune them on your one class: <code>board</code>. See the <a href="https://docs.ultralytics.com/usage/python/">Ultralytics Python guide</a>.</p>
+
+    <p><code>scripts/predict_board.py</code> teaches inference. After training, you give the model an image and read back boxes, confidence scores, and coordinates.</p>
+
+    <h2>The First Concept To Understand</h2>
+    <p>Focus on this function first:</p>
+    <pre><code>def label_studio_rect_to_yolo(rect):
+    x = rect["x"] / 100
+    y = rect["y"] / 100
+    w = rect["width"] / 100
+    h = rect["height"] / 100
+    cx = x + w / 2
+    cy = y + h / 2
+    return cx, cy, w, h</code></pre>
+
+    <p>If a board rectangle starts at <code>x=10%</code>, <code>y=20%</code>, and has <code>width=50%</code>, <code>height=40%</code>, then YOLO wants:</p>
+    <pre><code>center_x = 10% + 50% / 2 = 35%
+center_y = 20% + 40% / 2 = 40%
+width    = 50%
+height   = 40%</code></pre>
+
+    <h2>Your Exercise</h2>
+    <p>Open <code>vision-board-detector/board_detection/yolo.py</code>. Add a temporary print or run this in your head:</p>
+    <pre><code>{"x": 25, "y": 30, "width": 20, "height": 10}</code></pre>
+    <p>Before running anything, predict the YOLO output. The answer should be:</p>
+    <pre><code>center_x = 0.35
+center_y = 0.35
+width    = 0.20
+height   = 0.10</code></pre>
+
+    <h2>What You Are Learning</h2>
+    <ul>
+      <li>How annotation tools describe image regions.</li>
+      <li>How object detectors expect training labels.</li>
+      <li>Why coordinate systems matter in computer vision.</li>
+      <li>How a dataset pipeline connects human labels to model training.</li>
+    </ul>
+
+    <h2>Next Step</h2>
+    <p>Do not train yet. First, label 3 screenshots and export JSON from Label Studio. Then inspect the JSON so you can recognize the fields: <code>x</code>, <code>y</code>, <code>width</code>, <code>height</code>, and <code>rectanglelabels</code>.</p>
+
+    <p class="small">Ask the agent to quiz you on coordinate conversion before moving to training. That will build storage strength, not just fluency.</p>
+  </main>
+</body>
+</html>
+

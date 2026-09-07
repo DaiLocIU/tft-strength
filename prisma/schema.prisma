@@ -18,6 +18,7 @@ model User {
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
   matches            Match[]
+  boardStateDrafts   BoardStateDraft[]
 }
 
 model Match {
@@ -27,8 +28,9 @@ model Match {
   playedAt  DateTime @default(now()) // date/time of the match
   comp      String? // optional label for team comp (e.g., "Reroll Kayle")
   version   String? // game patch version (e.g., "18.1", "18.2")
-  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  rounds    Round[] // Relation: Match has many Rounds
+  user             User?             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rounds           Round[] // Relation: Match has many Rounds
+  boardStateDrafts BoardStateDraft[]
 }
 
 model Round {
@@ -41,7 +43,30 @@ model Round {
   level       Int // board level
   streak      Int // win/loss streak count
   // Relation: Round belongs to Match
-  match       Match @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  match            Match             @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  boardStateDrafts BoardStateDraft[]
   // Uncomment when you create the RoundChampion model:
   // roundChampions RoundChampion[]
+}
+
+model BoardStateDraft {
+  id                 Int      @id @default(autoincrement())
+  userId             Int
+  matchId            Int?
+  roundId            Int?
+  screenshotFilename String
+  originalFilename   String
+  storagePath        String
+  status             String   @default("uploaded")
+  boardState         Json?
+  errorMessage       String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  match              Match?   @relation(fields: [matchId], references: [id], onDelete: SetNull)
+  round              Round?   @relation(fields: [roundId], references: [id], onDelete: SetNull)
+
+  @@index([userId, createdAt])
+  @@index([matchId])
+  @@index([roundId])
 }

@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>After Predicting Champion Boxes</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>After Predicting Champion Boxes</h1>
+      <p class="lede">
+        After the champion detector predicts boxes on board crops, your next job is not to train
+        names from the board image. Your next job is to turn each good box into one labeled
+        champion crop.
+      </p>
+
+      <div class="callout">
+        Win for this lesson: know the exact order from predicted boxes to champion-name model.
+      </div>
+
+      <h2>One Rule</h2>
+      <p>
+        A detector answers <code>where is a champion?</code>. A classifier answers
+        <code>which champion is this crop?</code>. Keep those as two separate models.
+      </p>
+
+      <h2>Step 1: Review The Prediction Images</h2>
+      <p>
+        Open the predicted images and quickly check whether the boxes are good enough. Your latest
+        review output is:
+      </p>
+      <pre><code>/Users/inmac/Desktop/work-hard/tft-team-strength/runs/detect/outputs/review/champion-detector-current-all-2</code></pre>
+      <p>
+        If boxes are mostly correct, continue. If many champions are missed, label more detector
+        boxes first and retrain <code>models/champion-detector.pt</code>.
+      </p>
+
+      <h2>Step 2: Label New Champion Names</h2>
+      <p>
+        Use the identity labeler on the YOLO export that contains your champion boxes. For your new
+        images, use the image range you added:
+      </p>
+      <pre><code>cd /Users/inmac/Desktop/work-hard/tft-team-strength/vision-board-detector
+
+python3 scripts/label_champion_identity.py \
+  --export exports/label-studio/champion-111.zip \
+  --start-image-index 388 \
+  --end-image-index 404</code></pre>
+      <p>
+        In the browser, click each box and choose the champion name. The tool saves one crop into:
+      </p>
+      <pre><code>data/champion-identity/labeled/&lt;champion_name&gt;/</code></pre>
+
+      <h2>Step 3: Fix Obvious Folder Mistakes</h2>
+      <p>
+        Before splitting, folder names are labels. A typo becomes a new wrong class. Check for names
+        like <code>orn</code>, <code>tristina</code>, <code>pe</code>, or empty folders.
+      </p>
+      <pre><code>find data/champion-identity/labeled -mindepth 1 -maxdepth 1 -type d | sort</code></pre>
+
+      <h2>Step 4: Split Train And Val</h2>
+      <p>
+        This creates the Ultralytics classification layout: <code>train/name/*.png</code> and
+        <code>val/name/*.png</code>. Ultralytics documents this folder-per-class structure for
+        classification datasets.
+      </p>
+      <pre><code>python3 scripts/split_champion_identity_dataset.py</code></pre>
+
+      <h2>Step 5: Train Champion Identity</h2>
+      <p>
+        Start with a small classifier image size because each input is only a champion crop.
+      </p>
+      <pre><code>yolo classify train \
+  model=yolo11n-cls.pt \
+  data=data/champion-identity \
+  imgsz=96 \
+  epochs=50 \
+  device=mps</code></pre>
+
+      <h2>Step 6: Test On One Board</h2>
+      <p>
+        After training, the code path should become:
+      </p>
+      <pre><code>board crop
+  -> champion box detector
+  -> choose one hex for each box
+  -> crop the champion box
+  -> champion-name classifier
+  -> result: hex + champion name</code></pre>
+
+      <h2>Retrieval Check</h2>
+      <pre><code>A. Train champion names from full board crops.
+B. Label each detected champion crop, then train a classifier.
+C. Detect star level before champion name.</code></pre>
+      <p>
+        Answer: B. The name model needs one cropped champion image as input, not the whole board.
+      </p>
+
+      <p class="small">
+        Reference:
+        <a href="../reference/champion-identity-workflow.html">Champion Identity Workflow</a>.
+        Previous lesson:
+        <a href="./0075-next-steps-for-champion-names.html">Next Steps For Champion Names</a>.
+        Primary source:
+        <a href="https://docs.ultralytics.com/datasets/classify/">Ultralytics classification dataset format</a>.
+        Ask Codex follow-up questions if any command is unclear.
+      </p>
+    </main>
+  </body>
+</html>

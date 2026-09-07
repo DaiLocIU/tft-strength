@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0024: Format One YOLO Label Line</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+  <main>
+    <h1>Format One YOLO Label Line</h1>
+    <p class="lede">The next job is turning your typed YOLO dictionary into the exact text YOLO expects.</p>
+
+    <h2>Current Shape</h2>
+    <pre><code>{
+  "class_id": 0,
+  "center_x": 0.4938133010209623,
+  "center_y": 0.4486803519061584,
+  "width": 0.4890742098403389,
+  "height": 0.46041055718475077
+}</code></pre>
+
+    <h2>YOLO File Shape</h2>
+    <pre><code>0 0.493813 0.448680 0.489074 0.460411</code></pre>
+
+    <h2>The Function Boundary</h2>
+    <p>This function should not know about Label Studio. It only knows how to turn one <code>YoloRectangle</code> into one string.</p>
+    <pre><code>YoloRectangle -> str</code></pre>
+
+    <h2>Function To Write</h2>
+    <pre><code>def yolo_rectangle_to_line(rectangle: YoloRectangle) -> str:
+    ...
+</code></pre>
+
+    <h2>Rules</h2>
+    <ul>
+      <li>The values must be separated by spaces.</li>
+      <li>The class id should be first.</li>
+      <li>The four numbers should use a stable number of decimals.</li>
+      <li>The return value should be a string, not a printed value.</li>
+    </ul>
+
+    <h2>Self Check</h2>
+    <pre><code>line = yolo_rectangle_to_line(yolo_rectangle)
+print(line)</code></pre>
+    <p>If it prints one row like the YOLO file shape above, the function is doing its job.</p>
+
+    <p class="small">Primary source: <a href="https://docs.ultralytics.com/datasets/detect/">Ultralytics detection dataset format</a>.</p>
+  </main>
+</body>
+</html>

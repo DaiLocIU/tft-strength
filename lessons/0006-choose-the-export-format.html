@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0006: Choose The Export Format</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+  <main>
+    <h1>Choose The Export Format</h1>
+    <p class="lede">Label Studio can export many formats. For learning, choose the format that teaches the pipeline, not just the fastest shortcut.</p>
+
+    <h2>Use JSON First</h2>
+    <p>Export <strong>JSON</strong> first. This is Label Studio's common raw format, so you can inspect how your human labels are represented before training a model.</p>
+
+    <p>You should learn to recognize this shape:</p>
+    <pre><code>"value": {
+  "x": 10.5,
+  "y": 23.0,
+  "width": 46.2,
+  "height": 31.4,
+  "rectanglelabels": ["board"]
+}</code></pre>
+
+    <h2>Use YOLO Later</h2>
+    <p>Export <strong>YOLO</strong> when you want Label Studio to create training labels directly. YOLO is convenient, but it hides the conversion step you are trying to learn.</p>
+
+    <h2>Do Not Use These Yet</h2>
+    <ul>
+      <li><strong>JSON-MIN:</strong> useful later, but too stripped down for learning the full structure.</li>
+      <li><strong>CSV/TSV:</strong> better for spreadsheet inspection, not first object detection training.</li>
+      <li><strong>COCO:</strong> important in professional datasets, but heavier than needed for one class.</li>
+      <li><strong>Pascal VOC XML:</strong> valid object detection format, but not the path we are taking.</li>
+    </ul>
+
+    <h2>Your Choice</h2>
+    <p>For this project, choose:</p>
+    <pre><code>JSON</code></pre>
+
+    <p>Save it as:</p>
+    <pre><code>vision-board-detector/exports/label-studio/board-100.json</code></pre>
+
+    <h2>Next Skill</h2>
+    <p>After the export exists, you will write the first Python script yourself. It will only load the JSON and print how many tasks are inside.</p>
+
+    <p class="small">Primary source: <a href="https://labelstud.io/guide/export.html">Label Studio export documentation</a>. Label Studio's RectangleLabels docs show rectangle fields as <code>x</code>, <code>y</code>, <code>width</code>, and <code>height</code> values from 0 to 100.</p>
+  </main>
+</body>
+</html>
+

@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0008: Verify Labels Match Images</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+  <main>
+    <h1>Verify Labels Match Images</h1>
+    <p class="lede">Before converting labels, prove that every Label Studio task can find its image on disk.</p>
+
+    <div class="callout">
+      Your current check passed: <strong>100 labeled tasks</strong>, <strong>100 matched images</strong>, <strong>0 missing images</strong>.
+    </div>
+
+    <h2>The Problem</h2>
+    <p>Label Studio stores image paths like this:</p>
+    <pre><code>/data/upload/1/0992a392-image_2.png</code></pre>
+
+    <p>Your local folder stores the original file:</p>
+    <pre><code>vision-board-detector/data/raw/image_2.png</code></pre>
+
+    <h2>The Skill</h2>
+    <p>You need to strip the Label Studio prefix and recover the original image name:</p>
+    <pre><code>0992a392-image_2.png -> image_2.png</code></pre>
+
+    <h2>Your First Python File</h2>
+    <p>Create this file yourself:</p>
+    <pre><code>vision-board-detector/scripts/check_dataset.py</code></pre>
+
+    <p>Write it in four tiny steps:</p>
+    <ol>
+      <li>Import <code>json</code>, <code>re</code>, and <code>Path</code>.</li>
+      <li>Open <code>exports/label-studio/board-100.json</code>.</li>
+      <li>For each task, read <code>task["data"]["image"]</code>.</li>
+      <li>Print the internal filename and recovered original filename.</li>
+    </ol>
+
+    <h2>Do Not Solve Everything</h2>
+    <p>This first script should not convert to YOLO. It should only answer one question:</p>
+    <pre><code>Can every label find its image?</code></pre>
+
+    <h2>Expected Output Shape</h2>
+    <pre><code>0992a392-image_2.png -> image_2.png
+e17fad87-image_1.png -> image_1.png
+...
+matched: 100
+missing: 0</code></pre>
+
+    <h2>Retrieval Check</h2>
+    <ol>
+      <li>Which JSON field contains the Label Studio image path?</li>
+      <li>Why do we strip the 8-character hash?</li>
+      <li>Why verify image matching before YOLO conversion?</li>
+    </ol>
+
+    <p class="small">After you write <code>check_dataset.py</code>, ask the agent to review it. The goal is to learn the file matching step, not to rush to training.</p>
+  </main>
+</body>
+</html>
+

@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Decide After Large Champion Round 1</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Decide After Large Champion Round 1</h1>
+      <p class="lede">
+        You trained and predicted again after fixing large-champion mistakes. The next step is to
+        decide whether the remaining errors need more labels or a confidence rule.
+      </p>
+
+      <div class="callout">
+        Current labels: <code>1279 occupied</code> and <code>3817 empty</code>.
+      </div>
+
+      <h2>What The Matrix Says</h2>
+      <p>The latest validation result shows:</p>
+
+      <pre><code>true empty predicted empty:       1133
+true empty predicted occupied:    25
+true occupied predicted empty:    14
+true occupied predicted occupied: 396</code></pre>
+
+      <p>
+        The model is mostly correct. But it still predicts <code>occupied</code> on some true empty
+        hexes. Those are the red false positives you care about.
+      </p>
+
+      <h2>Do This Next</h2>
+      <ol class="checklist">
+        <li>Review the latest prediction contact sheets.</li>
+        <li>Write down only the images where red hexes are still clearly wrong.</li>
+        <li>Check whether wrong red hexes have low confidence, such as <code>0.50</code> to <code>0.75</code>.</li>
+        <li>If most wrong red hexes are low confidence, add a higher occupied threshold.</li>
+        <li>If wrong red hexes are high confidence, make another focused mistake queue.</li>
+      </ol>
+
+      <h2>Why Threshold Now?</h2>
+      <p>
+        Your current code accepts <code>occupied</code> at <code>0.50</code>. That is permissive. For
+        a board overlay, a false red hex is very visible, so you may prefer fewer false positives.
+      </p>
+
+      <pre><code>current:
+  occupied if confidence &gt;= 0.50
+
+possible next test:
+  occupied if confidence &gt;= 0.75</code></pre>
+
+      <h2>The Tradeoff</h2>
+      <p>
+        A higher threshold can remove wrong red hexes, but it may also miss real champions that the
+        model sees with lower confidence.
+      </p>
+
+      <pre><code>higher threshold:
+  fewer false occupied hexes
+  more possible missed champions</code></pre>
+
+      <h2>Stop Rule</h2>
+      <p>
+        Do not train again until you know whether the wrong red hexes are low-confidence or
+        high-confidence. That tells you which fix to use.
+      </p>
+
+      <pre><code>low confidence wrong red hexes:
+  change threshold first
+
+high confidence wrong red hexes:
+  label more edge cases</code></pre>
+
+      <h2>Recall</h2>
+      <ul class="checklist">
+        <li>Which error creates wrong red hexes?</li>
+        <li>Why might <code>0.50</code> be too low?</li>
+        <li>When should you label more instead of changing threshold?</li>
+      </ul>
+
+      <p class="small">
+        Previous lesson:
+        <a href="./0059-what-to-do-when-hex-predictions-still-fail.html">What To Do When Hex Predictions Still Fail</a>.
+        Ask Codex next: "test occupied threshold 0.75".
+      </p>
+    </main>
+  </body>
+</html>

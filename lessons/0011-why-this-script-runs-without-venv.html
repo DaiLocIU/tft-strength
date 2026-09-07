@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0011: Why This Script Runs Without Venv</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+  <main>
+    <h1>Why This Script Runs Without Venv</h1>
+    <p class="lede">A Python script can run without a virtual environment if it only uses modules that come with Python.</p>
+
+    <h2>Your Current Imports</h2>
+    <pre><code>import json
+import re
+from pathlib import Path</code></pre>
+
+    <p>These are standard-library modules. That means Python already includes them. You do not need to install anything for this first dataset check.</p>
+
+    <h2>When Venv Becomes Necessary</h2>
+    <p>You need a virtual environment when your script imports third-party packages:</p>
+    <pre><code>import cv2
+from ultralytics import YOLO
+from PIL import Image</code></pre>
+
+    <p>Those packages do not come with Python. A venv gives this project its own installed dependencies without mixing them into your whole machine.</p>
+
+    <h2>Rule For This Project</h2>
+    <ul>
+      <li><code>check_dataset.py</code>: no venv required.</li>
+      <li>YOLO training script: venv required.</li>
+      <li>OpenCV image script: venv required.</li>
+    </ul>
+
+    <h2>Run The Current Script</h2>
+    <pre><code>cd vision-board-detector
+python3 scripts/check_dataset.py</code></pre>
+
+    <p>If the file has an entry point, it should print:</p>
+    <pre><code>matched: 100
+missing: 0</code></pre>
+
+    <h2>Retrieval Check</h2>
+    <ol>
+      <li>Which current imports are standard library?</li>
+      <li>Which future imports will require installation?</li>
+      <li>Why do we delay venv until we need packages?</li>
+    </ol>
+  </main>
+</body>
+</html>
+

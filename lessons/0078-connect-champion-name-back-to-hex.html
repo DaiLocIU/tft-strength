@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Connect Champion Name Back To Hex</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Connect Champion Name Back To Hex</h1>
+      <p class="lede">
+        Step 6 is the join step. You already have <code>champion box -> chosen hex</code>. Now add
+        <code>champion box -> champion name</code>, then print both together.
+      </p>
+
+      <div class="callout">
+        Win for this lesson: know exactly what code to add before touching the pipeline.
+      </div>
+
+      <h2>Current Code</h2>
+      <p>
+        In <code>scripts/combine_hex_signals.py</code>, the function
+        <code>get_champion_hex_evidence</code> already creates this evidence:
+      </p>
+      <pre><code>champion box
+  -> bottom-center point
+  -> chosen hex
+  -> candidate occupied hexes under box</code></pre>
+
+      <h2>New Code To Add</h2>
+      <p>
+        Add one classifier model and one helper function:
+      </p>
+      <pre><code>CHAMPION_IDENTITY_MODEL_PATH = Path("models/champion-identity-classifier.pt")
+
+def crop_champion_box(board_image, box):
+    # crop only the detected champion box
+
+def classify_champion_crop(crop, identity_model):
+    # return champion_name and confidence</code></pre>
+
+      <h2>Step 1: Load Two Models</h2>
+      <p>
+        Keep the detector and classifier separate:
+      </p>
+      <pre><code>champion_model = YOLO(CHAMPION_MODEL_PATH)
+identity_model = YOLO(CHAMPION_IDENTITY_MODEL_PATH)</code></pre>
+
+      <h2>Step 2: Crop The Mapped Box</h2>
+      <p>
+        For every champion box, crop from the board image using <code>x1, y1, x2, y2</code>.
+      </p>
+      <pre><code>crop = board_image.crop((box["x1"], box["y1"], box["x2"], box["y2"]))</code></pre>
+      <p>
+        This crop is the classifier input. The hex choice still comes from your existing
+        bottom-center and occupancy logic.
+      </p>
+
+      <h2>Step 3: Classify The Crop</h2>
+      <p>
+        The classifier result uses <code>result.probs.top1</code> for the class id and
+        <code>result.probs.top1conf</code> for confidence.
+      </p>
+      <pre><code>results = identity_model(crop, imgsz=160, verbose=False)
+result = results[0]
+class_id = int(result.probs.top1)
+champion_name = result.names[class_id]
+identity_confidence = float(result.probs.top1conf)</code></pre>
+
+      <h2>Step 4: Store Name In Evidence</h2>
+      <p>
+        Extend your champion evidence with two fields:
+      </p>
+      <pre><code>{
+  "box": box,
+  "chosen_key": key,
+  "champion_name": champion_name,
+  "identity_confidence": identity_confidence
+}</code></pre>
+
+      <h2>Step 5: Print The Final Result</h2>
+      <p>
+        The first useful output should be plain text, one line per occupied hex:
+      </p>
+      <pre><code>occupied: row=3 column=4 champion=warwick conf=0.91</code></pre>
+      <p>
+        After this works, update the review image labels to show the champion name on the selected
+        hex.
+      </p>
+
+      <h2>Do Not Add Stars Yet</h2>
+      <p>
+        Star level is a fourth signal. Finish this join first:
+        <code>hex + champion name</code>.
+      </p>
+
+      <h2>Retrieval Check</h2>
+      <pre><code>A. classify the full board crop
+B. classify the detected champion box crop
+C. classify the hex polygon crop</code></pre>
+      <p>
+        Answer: B. The identity classifier was trained on champion box crops.
+      </p>
+
+      <p class="small">
+        Reference:
+        <a href="../reference/champion-name-to-hex-pipeline.html">Champion Name To Hex Pipeline</a>.
+        Previous lesson:
+        <a href="./0077-train-the-first-champion-name-model.html">Train The First Champion Name Model</a>.
+        Sources:
+        <a href="https://docs.ultralytics.com/tasks/detect/">Ultralytics detection</a>
+        and
+        <a href="https://docs.ultralytics.com/tasks/classify/">Ultralytics classification</a>.
+        Ask Codex follow-up questions if any step is unclear.
+      </p>
+    </main>
+  </body>
+</html>

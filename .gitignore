@@ -57,3 +57,38 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 /generated/prisma
 /Share To learn
+
+# Python / CV learning project
+vision-board-detector/.venv/
+vision-board-detector/.mypy_cache/
+vision-board-detector/.ruff_cache/
+vision-board-detector/**/__pycache__/
+
+# Label Studio local state and exported annotation data
+vision-board-detector/label_studio/
+vision-board-detector/exports/
+
+
+# Local screenshots and generated YOLO dataset artifacts
+vision-board-detector/data/raw/
+vision-board-detector/data/champion-detector/
+vision-board-detector/data/champion-identity/
+vision-board-detector/data/hex-occupancy/
+vision-board-detector/data/review/
+vision-board-detector/data/champion-star/
+vision-board-detector/data/champion-star-dataset/
+vision-board-detector/data/yolo/images/
+vision-board-detector/data/yolo/labels/
+vision-board-detector/data/yolo/**/*.cache
+
+# Model weights and training/prediction outputs
+vision-board-detector/runs/
+vision-board-detector/*.pt
+vision-board-detector/outputs/
+runs/
+.agents/skills/brand
+.agents/skills/design
+.agents/skills/design-system
+.agents/skills/slides
+.agents/skills/ui-styling
+.agents/skills/ui-ux-pro-max

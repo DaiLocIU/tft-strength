@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0030: Understand First YOLO Train Output</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+  <main>
+    <h1>Understand First YOLO Train Output</h1>
+    <p class="lede">Your first YOLO run succeeded. Now read the output as a pipeline check, not as model quality.</p>
+
+    <h2>The Most Important Result</h2>
+    <pre><code>runs/detect/train/weights/best.pt</code></pre>
+    <p>This is the trained model file. It is what you use for prediction.</p>
+
+    <h2>The Validation Line</h2>
+    <pre><code>Class  Images  Instances  Box(P)  R  mAP50  mAP50-95
+all    100     100        ...     ... ...    ...</code></pre>
+
+    <ul>
+      <li><code>Images</code>: how many validation images YOLO checked.</li>
+      <li><code>Instances</code>: how many labeled objects it saw. You have 100 boards.</li>
+      <li><code>Box(P)</code>: precision. When YOLO predicts boxes, how often are they right?</li>
+      <li><code>R</code>: recall. How many real boards did YOLO find?</li>
+      <li><code>mAP50</code>: detection score using a looser box-overlap rule.</li>
+      <li><code>mAP50-95</code>: stricter detection score across many overlap levels.</li>
+    </ul>
+
+    <h2>Do Not Trust The Metrics Yet</h2>
+    <p>You trained for one epoch and temporarily used the same folder for train and validation. That is useful only to prove the files are readable.</p>
+
+    <h2>Useful Files</h2>
+    <ul>
+      <li><code>weights/best.pt</code>: best saved model.</li>
+      <li><code>weights/last.pt</code>: model at the final epoch.</li>
+      <li><code>args.yaml</code>: exact training settings used.</li>
+      <li><code>results.csv</code>: metrics as numbers.</li>
+      <li><code>results.png</code>: metrics as charts.</li>
+      <li><code>train_batch*.jpg</code>: images plus training labels.</li>
+      <li><code>val_batch*_pred.jpg</code>: validation images plus predictions.</li>
+    </ul>
+
+    <h2>Next Step</h2>
+    <p>Use <code>best.pt</code> to predict one screenshot and inspect the drawn rectangle.</p>
+
+    <p class="small">Primary source: <a href="https://docs.ultralytics.com/modes/train/">Ultralytics train mode documentation</a>.</p>
+  </main>
+</body>
+</html>

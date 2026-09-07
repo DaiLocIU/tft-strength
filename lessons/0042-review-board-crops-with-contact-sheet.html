@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Review Board Crops With A Contact Sheet</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Review Board Crops With A Contact Sheet</h1>
+      <p class="lede">
+        After cropping boards, do not jump straight to champion detection. First, inspect the crops
+        quickly so bad board crops do not poison the next dataset.
+      </p>
+
+      <div class="callout">
+        Goal: create one review image that shows many board crops in a grid, with each crop's
+        filename printed under it.
+      </div>
+
+      <h2>Why This Step Exists</h2>
+      <p>
+        Your detector produced 343 board crops and 5 failures. That is good, but “cropped” only
+        means the model found a box. It does not prove the box is perfectly useful.
+      </p>
+      <p>
+        Before detecting champions, you want to answer one question:
+        are most board crops clean enough that a second model can learn from them?
+      </p>
+
+      <h2>What A Contact Sheet Is</h2>
+      <p>
+        A contact sheet is one big image containing many small images. For your project, it is a
+        fast visual QA tool.
+      </p>
+
+      <pre><code>outputs/board-crops/
+  image_1.png
+  image_2.png
+  image_3.png
+
+outputs/review/
+  board-crops-contact-sheet.png</code></pre>
+
+      <h2>The Next Function</h2>
+      <pre><code>def create_contact_sheet(
+    crops_dir: str,
+    output_path: str,
+    columns: int = 5,
+    thumb_width: int = 240,
+) -&gt; None:
+    ...</code></pre>
+
+      <p>
+        Use Pillow again. Pillow's <code>Image.new</code> creates the blank sheet, and
+        <code>paste</code> places each thumbnail onto it.
+        <a href="https://pillow.readthedocs.io/en/stable/reference/Image.html">Pillow Image docs</a>
+      </p>
+
+      <h2>Think In Small Pieces</h2>
+      <ul class="checklist">
+        <li>Read crop files from <code>outputs/board-crops/*.png</code>.</li>
+        <li>Resize each crop into a thumbnail.</li>
+        <li>Create a blank white image large enough for the grid.</li>
+        <li>Paste each thumbnail into its cell.</li>
+        <li>Draw the filename below the thumbnail.</li>
+      </ul>
+
+      <h2>Why Filename Text Matters</h2>
+      <p>
+        If one crop is wrong, the filename tells you exactly which raw screenshot to inspect, label,
+        or retrain with later.
+      </p>
+
+      <h2>Recall</h2>
+      <ul class="checklist">
+        <li>Why is a crop count not enough?</li>
+        <li>Why should the filename be visible in the review image?</li>
+        <li>Why review crops before training champion detection?</li>
+      </ul>
+
+      <p class="small">
+        Related: <a href="./0041-write-crop-all-boards-function.html">Write crop_all_boards</a>.
+        Ask Codex to help implement the contact sheet when you are ready.
+      </p>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TFT Board Detection Workflow</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+  <main>
+    <h1>TFT Board Detection Workflow</h1>
+    <p class="lede">A compact reference for the first computer vision loop: screenshot, label, convert, train, predict.</p>
+
+    <h2>One-Class Detector</h2>
+    <p>The first model should detect exactly one object class: <code>board</code>. Do not label champions, bench units, items, UI buttons, or hexes yet.</p>
+
+    <h2>Folder Flow</h2>
+    <pre><code>vision-board-detector/
+  data/raw/                  full screenshots
+  exports/label-studio/      Label Studio JSON exports
+  datasets/tft-board-yolo/   generated YOLO dataset
+  runs/                      training output
+  board_detection/           Python package
+  scripts/                   command-line scripts</code></pre>
+
+    <h2>YOLO Box Format</h2>
+    <p>Each label file has one line per object:</p>
+    <pre><code>class_id center_x center_y width height</code></pre>
+    <p>For this project, <code>class_id</code> is always <code>0</code>, because <code>board</code> is the only class. Coordinates are normalized from <code>0.0</code> to <code>1.0</code>.</p>
+
+    <h2>Good First Dataset</h2>
+    <ul class="checklist">
+      <li>Start with 30 screenshots.</li>
+      <li>Use different rounds and board skins if possible.</li>
+      <li>Draw one rectangle around the playable board region.</li>
+      <li>Keep labels consistent. Consistency beats precision early.</li>
+      <li>Reserve about 20% of images for validation.</li>
+    </ul>
+  </main>
+</body>
+</html>
+

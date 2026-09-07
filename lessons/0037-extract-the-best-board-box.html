@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0037: Extract The Best Board Box</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+  <main>
+    <h1>Extract The Best Board Box</h1>
+    <p class="lede">Raw YOLO output is for inspection. App code needs one clean board detection.</p>
+
+    <h2>Current Code</h2>
+    <pre><code>print(results[0].boxes)</code></pre>
+
+    <p>This is useful while learning, but it is not the final interface.</p>
+
+    <h2>Next Shape</h2>
+    <pre><code>class BoardDetection(TypedDict):
+    x1: float
+    y1: float
+    x2: float
+    y2: float
+    confidence: float</code></pre>
+
+    <h2>Meaning</h2>
+    <ul>
+      <li><code>x1</code>: left edge of the board box in pixels.</li>
+      <li><code>y1</code>: top edge of the board box in pixels.</li>
+      <li><code>x2</code>: right edge of the board box in pixels.</li>
+      <li><code>y2</code>: bottom edge of the board box in pixels.</li>
+      <li><code>confidence</code>: how sure YOLO is.</li>
+    </ul>
+
+    <h2>Function Goal</h2>
+    <pre><code>def detect_board(image_path: str) -> BoardDetection | None:
+    ...</code></pre>
+
+    <p>Return <code>None</code> when no board is detected.</p>
+
+    <h2>Small Steps</h2>
+    <ol>
+      <li>Get the first result: <code>result = results[0]</code>.</li>
+      <li>Get boxes: <code>boxes = result.boxes</code>.</li>
+      <li>If there are no boxes, return <code>None</code>.</li>
+      <li>Read the first box coordinates from <code>boxes.xyxy</code>.</li>
+      <li>Read confidence from <code>boxes.conf</code>.</li>
+    </ol>
+
+    <h2>Why First Box?</h2>
+    <p>Your board detector should usually return one high-confidence board box. For the first version, choosing the first box is enough. Later we can explicitly choose the highest-confidence box.</p>
+
+    <p class="small">Primary source: <a href="https://docs.ultralytics.com/modes/predict/">Ultralytics predict mode documentation</a>.</p>
+  </main>
+</body>
+</html>

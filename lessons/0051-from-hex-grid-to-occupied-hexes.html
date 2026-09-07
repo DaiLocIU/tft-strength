@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>From Hex Grid To Occupied Hexes</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>From Hex Grid To Occupied Hexes</h1>
+      <p class="lede">
+        You can now draw the 28 board hexes. The next target is not champion identity. The next
+        target is occupancy: which hex has a unit on it?
+      </p>
+
+      <div class="callout">
+        Goal: turn one board crop into a list like <code>row=2 column=4 occupied=True</code>.
+      </div>
+
+      <h2>The Pipeline</h2>
+      <p>
+        Use two separate ideas. First, detect generic <code>unit</code> boxes on the board crop.
+        Second, assign each detected unit to one hex.
+      </p>
+
+      <pre><code>board crop
+  -&gt; 28 hex polygons
+  -&gt; generic unit boxes
+  -&gt; unit bottom-center points
+  -&gt; occupied hex ids</code></pre>
+
+      <h2>Why Bottom Center?</h2>
+      <p>
+        A unit's bounding box includes body, weapon, effects, and maybe health bar. The center of
+        the full box may float above the board. The bottom-center point is closer to the unit's feet,
+        so it is a better first guess for the hex the unit stands on.
+      </p>
+
+      <pre><code>unit_x = (box_x1 + box_x2) / 2
+unit_y = box_y2</code></pre>
+
+      <h2>First Data Shape</h2>
+      <p>Add this shape later when you start coding occupancy:</p>
+
+      <pre><code>class HexOccupancy(TypedDict):
+    row: int
+    column: int
+    occupied: bool</code></pre>
+
+      <p>
+        Keep it boring. Do not store champion name, star level, item, or team yet. Those are later
+        problems.
+      </p>
+
+      <h2>The Next Coding Step</h2>
+      <p>
+        Before training a unit detector, write one tiny geometry function: ask whether a point is
+        inside one hex polygon. That function will become the bridge between a detected unit and a
+        board position.
+      </p>
+
+      <pre><code>def point_is_inside_polygon(
+    point_x: float,
+    point_y: float,
+    polygon: list[tuple[float, float]],
+) -&gt; bool:
+    ...</code></pre>
+
+      <h2>Stop Condition</h2>
+      <p>
+        Stop when you can manually choose one fake point, run the function against all 28 hexes, and
+        print the one matching <code>row,column</code>. That is enough for the next lesson.
+      </p>
+
+      <h2>Recall</h2>
+      <ul class="checklist">
+        <li>What is the difference between unit detection and champion identity?</li>
+        <li>Why use the bottom-center point of a unit box?</li>
+        <li>What should <code>HexOccupancy</code> store for now?</li>
+      </ul>
+
+      <p class="small">
+        Primary sources:
+        <a href="https://www.redblobgames.com/grids/hexagons/">Red Blob Games: Hexagonal Grids</a>
+        and
+        <a href="https://docs.ultralytics.com/tasks/detect/">Ultralytics object detection guide</a>.
+        Previous lesson:
+        <a href="./0050-create-the-second-hex-row.html">Create The Second Hex Row</a>. Ask Codex
+        when you are ready to implement the point-in-polygon function.
+      </p>
+    </main>
+  </body>
+</html>

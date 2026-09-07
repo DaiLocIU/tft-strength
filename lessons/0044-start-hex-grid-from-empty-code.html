@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Start Hex Grid From Empty Code</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Start Hex Grid From Empty Code</h1>
+      <p class="lede">
+        We removed the generated hex script. Now you will rebuild it step by step, starting with
+        the smallest useful object: one hex cell center.
+      </p>
+
+      <div class="callout">
+        Today’s goal is not to draw perfect hexes. Today’s goal is to create a typed data shape for
+        one board cell.
+      </div>
+
+      <h2>The Mental Model</h2>
+      <p>
+        The TFT board has 28 playable cells. That is <code>4 rows x 7 columns</code>. Before
+        drawing polygons, detecting units, or doing geometry, your code needs a way to describe one
+        cell.
+      </p>
+
+      <pre><code>one hex cell =
+  row number
+  column number
+  center x position
+  center y position</code></pre>
+
+      <h2>Create The Empty File</h2>
+      <p>Create this file:</p>
+      <pre><code>vision-board-detector/scripts/detect_hexes.py</code></pre>
+
+      <h2>Write Only This First</h2>
+      <pre><code>from typing import TypedDict
+
+
+class HexCell(TypedDict):
+    row: int
+    column: int
+    center_x: float
+    center_y: float</code></pre>
+
+      <h2>Why This Shape?</h2>
+      <p>
+        <code>row</code> and <code>column</code> tell you which TFT slot this is. Later, that lets
+        you say things like “there is a unit at row 2, column 5.”
+      </p>
+      <p>
+        <code>center_x</code> and <code>center_y</code> tell you where that cell lives inside the
+        cropped board image.
+      </p>
+
+      <h2>Test The File</h2>
+      <p>Run:</p>
+      <pre><code>cd /Users/inmac/Desktop/work-hard/tft-team-strength/vision-board-detector
+.venv/bin/python -m mypy scripts/detect_hexes.py
+.venv/bin/python -m ruff check scripts/detect_hexes.py</code></pre>
+
+      <h2>Recall</h2>
+      <ul class="checklist">
+        <li>Why do we store <code>row</code> and <code>column</code>?</li>
+        <li>Why do we store <code>center_x</code> and <code>center_y</code>?</li>
+        <li>Why not draw hex polygons yet?</li>
+      </ul>
+
+      <p class="small">
+        Next lesson: write a function that returns only the first row of 7 centers. Ask Codex after
+        this file passes mypy and ruff.
+      </p>
+    </main>
+  </body>
+</html>

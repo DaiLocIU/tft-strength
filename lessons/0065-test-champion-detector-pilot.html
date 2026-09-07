@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Test The Champion Detector Pilot</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Test The Champion Detector Pilot</h1>
+      <p class="lede">
+        After training, do not label more yet. First, look at prediction images and decide whether
+        the champion detector is useful enough to combine with hex occupancy.
+      </p>
+
+      <div class="callout">
+        Goal: check whether <code>models/champion-detector.pt</code> detects real champions and
+        ignores little legends, health bars, item effects, and background noise.
+      </div>
+
+      <h2>Do This Now</h2>
+      <ol class="checklist">
+        <li>Run prediction on the validation images.</li>
+        <li>Open the saved prediction images.</li>
+        <li>Count only the important mistakes.</li>
+        <li>Decide whether the detector is ready for box-to-hex mapping.</li>
+      </ol>
+
+      <h2>Command</h2>
+      <p>Run this from the vision project folder:</p>
+      <pre><code>cd /Users/inmac/Desktop/work-hard/tft-team-strength/vision-board-detector
+
+.venv/bin/yolo detect predict \
+  model=models/champion-detector.pt \
+  source=data/champion-detector/images/val \
+  imgsz=640 \
+  conf=0.25 \
+  save=True \
+  project=outputs/champion-detector \
+  name=pilot-val</code></pre>
+
+      <h2>Where To Look</h2>
+      <pre><code>/Users/inmac/Desktop/work-hard/tft-team-strength/vision-board-detector/outputs/champion-detector/pilot-val</code></pre>
+
+      <h2>What To Check</h2>
+      <p>For each saved prediction image, write a short note like this:</p>
+      <pre><code>image_371:
+  missed Kayle body
+  false box on little legend
+
+image_383:
+  found Blue
+  missed Ivern
+  no false little legend box</code></pre>
+
+      <h2>Decision Rule</h2>
+      <pre><code>good enough:
+  most champion bodies are detected
+  little legends are usually ignored
+  boxes are near the champion body
+
+not ready:
+  many champions are missed
+  little legends are detected as champions
+  boxes mostly hit health bars or item icons</code></pre>
+
+      <h2>Why This Step Matters</h2>
+      <p>
+        The champion detector does not need to solve the final hex position yet. This test only asks:
+        is there useful champion evidence in the image? If yes, the next coding step is to draw
+        champion boxes and hex centers together, then test simple mapping rules.
+      </p>
+
+      <p class="small">
+        Primary reference:
+        <a href="https://docs.ultralytics.com/modes/predict/">Ultralytics predict mode guide</a>.
+        Previous lesson:
+        <a href="./0064-run-a-tiny-champion-detector-pilot.html">Run A Tiny Champion Detector Pilot</a>.
+        Ask Codex to help read the output folder if the predictions are confusing.
+      </p>
+    </main>
+  </body>
+</html>
