@@ -193,6 +193,66 @@ def infer(
         return state
 
 
+class RequestBodyRejected(ValueError):
+    """A request body that is empty or exceeds the endpoint's size limit."""
+
+
+def read_request_body(handler: BaseHTTPRequestHandler, limit: int) -> bytes:
+    """Read a length-delimited or chunked request body without exceeding ``limit``."""
+    content_length = handler.headers.get("Content-Length")
+
+    if content_length is not None:
+        try:
+            length = int(content_length)
+        except ValueError:
+            raise ValueError("Invalid Content-Length") from None
+
+        if not 0 < length <= limit:
+            raise RequestBodyRejected("Request body is too large or empty")
+
+        data = handler.rfile.read(length)
+        if len(data) != length:
+            raise ValueError("Incomplete request body")
+        return data
+
+    transfer_encoding = handler.headers.get("Transfer-Encoding", "").lower()
+    if "chunked" not in transfer_encoding:
+        raise RequestBodyRejected("Request body is empty")
+
+    result = bytearray()
+    while True:
+        line = handler.rfile.readline(128)
+        if not line:
+            raise ValueError("Incomplete chunked request")
+        try:
+            chunk_size = int(line.split(b";", 1)[0].strip(), 16)
+        except ValueError:
+            raise ValueError("Invalid chunked request") from None
+
+        if chunk_size == 0:
+            # Consume optional trailer headers.
+            while True:
+                trailer = handler.rfile.readline(8_192)
+                if trailer in (b"\r\n", b"\n", b""):
+                    break
+            break
+
+        if len(result) + chunk_size > limit:
+            raise RequestBodyRejected("Request body is too large")
+
+        chunk = handler.rfile.read(chunk_size)
+        if len(chunk) != chunk_size:
+            raise ValueError("Incomplete chunked request")
+        result.extend(chunk)
+
+        if handler.rfile.read(2) != b"\r\n":
+            raise ValueError("Invalid chunked request")
+
+    if not result:
+        raise RequestBodyRejected("Request body is empty")
+    return bytes(result)
+
+
 class InferenceHandler(BaseHTTPRequestHandler):
     def send_json(self, status: int, payload: dict):
         body = json.dumps(payload).encode()
@@ -218,12 +278,8 @@ class InferenceHandler(BaseHTTPRequestHandler):
             self.send_json(401, {"error": "Invalid service key"})
             return
         try:
-            length = int(self.headers.get("Content-Length", "0"))
             is_url = parsed.path == "/board-state"
             limit = MAX_JSON_BYTES if is_url else 4_000_000
-            if not 0 < length <= limit:
-                self.send_json(413, {"error": "Request body is too large or empty"})
-                return
             if is_url and self.headers.get("Content-Type", "").split(";")[0] != "application/json":
                 self.send_json(415, {"error": "Send application/json with imageUrl"})
                 return
@@ -242,9 +298,7 @@ class InferenceHandler(BaseHTTPRequestHandler):
                 self.send_json(503, {"error": "Detector busy. Please retry shortly."})
                 return
             try:
-                data = self.rfile.read(length)
-                if len(data) != length:
-                    raise ValueError("Incomplete image upload")
+                data = read_request_body(self, limit)
                 if is_url:
                     try:
                         payload = json.loads(data)
@@ -259,6 +313,8 @@ class InferenceHandler(BaseHTTPRequestHandler):
             finally:
                 INFERENCE_LOCK.release()
             self.send_json(200, result)
+        except RequestBodyRejected as error:
+            self.send_json(413, {"error": str(error)})
         except (ValueError, UnidentifiedImageError, Image.DecompressionBombError) as error:
             self.send_json(422, {"error": str(error)})
         except Exception:

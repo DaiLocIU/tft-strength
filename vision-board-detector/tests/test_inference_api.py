@@ -87,6 +87,31 @@ class UrlInferenceTest(unittest.TestCase):
         infer.assert_called_once_with(self.URL, 0.65, 0.08, 0.75)
         self.assertEqual(handler.reply[0], 200)
 
+    @patch.dict(
+        os.environ,
+        {"VISION_SERVICE_KEY": "test-key", "VISION_IMAGE_ORIGINS": "https://project.supabase.co"},
+    )
+    @patch.object(api, "infer_url", return_value={"units": []})
+    def test_url_json_contract_accepts_chunked_body_without_content_length(self, infer):
+        import json
+
+        data = json.dumps({"imageUrl": self.URL}).encode()
+        handler = Handler()
+        handler.path = "/board-state"
+        handler.headers = {
+            "X-Vision-Key": "test-key",
+            "Content-Type": "application/json",
+            "Transfer-Encoding": "chunked",
+        }
+        handler.rfile = io.BytesIO(
+            f"{len(data):X}\r\n".encode() + data + b"\r\n0\r\n\r\n"
+        )
+
+        handler.do_POST()
+
+        infer.assert_called_once_with(self.URL, 0.65, 0.08, 0.75)
+        self.assertEqual(handler.reply, (200, {"units": []}))
+
     @patch.dict(os.environ, {"VISION_IMAGE_ORIGINS": "https://project.supabase.co"})
     def test_rejects_untrusted_urls(self):
         for url in [
