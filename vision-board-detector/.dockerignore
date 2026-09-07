@@ -1,0 +1,12 @@
+**
+!Dockerfile.vercel
+!models/
+!models/*.pt
+!src/
+!src/**
+!scripts/
+!scripts/_bootstrap.py
+!scripts/predict_hex_occupancy.py
+!scripts/inference_api.py
+**/__pycache__/
+**/*.pyc

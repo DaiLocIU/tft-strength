@@ -3,6 +3,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import {
   BoardState,
   BoardStateDraft,
+  BoardStateDraftStatus,
   CreateBoardStateDraftData,
   UpdateBoardStateDraftData,
 } from '../board-state-intake.types';
@@ -24,9 +25,10 @@ export class PrismaBoardStateDraftStore implements BoardStateDraftStore {
         "screenshotFilename",
         "originalFilename",
         "storagePath",
+        "status",
         "updatedAt"
       )
-      VALUES ($1, $2, $3, $4, $5, $6, NOW())
+      VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
       RETURNING *
       `,
       data.userId,
@@ -35,6 +37,7 @@ export class PrismaBoardStateDraftStore implements BoardStateDraftStore {
       data.screenshotFilename,
       data.originalFilename,
       data.storagePath,
+      data.status ?? 'uploaded',
     );
 
     return this.toDraft(rows[0]);
@@ -72,6 +75,7 @@ export class PrismaBoardStateDraftStore implements BoardStateDraftStore {
       `
       UPDATE "BoardStateDraft"
       SET
+        "storagePath" = $5,
         "status" = $2,
         "boardState" = $3::jsonb,
         "errorMessage" = $4,
@@ -87,9 +91,22 @@ export class PrismaBoardStateDraftStore implements BoardStateDraftStore {
       data.errorMessage === undefined
         ? current.errorMessage
         : data.errorMessage,
+      data.storagePath ?? current.storagePath,
     );
 
     return this.toDraft(rows[0]);
+  }
+
+  async transition(id: number, userId: number, from: BoardStateDraftStatus[], data: UpdateBoardStateDraftData, before?: Date): Promise<BoardStateDraft | null> {
+    const rows = await this.prisma.$queryRawUnsafe<any[]>(`
+      UPDATE "BoardStateDraft" SET "status" = $4,
+        "boardState" = CASE WHEN $5::boolean THEN $6::jsonb ELSE "boardState" END,
+        "errorMessage" = $7, "updatedAt" = NOW()
+      WHERE "id" = $1 AND "userId" = $2 AND "status" = ANY($3::text[])
+        AND "roundId" IS NULL AND ($8::timestamp IS NULL OR "updatedAt" <= $8::timestamp)
+      RETURNING *`, id, userId, from, data.status, data.boardState !== undefined,
+      this.toJsonParam(data.boardState ?? null), data.errorMessage ?? null, before ?? null);
+    return rows[0] ? this.toDraft(rows[0]) : null;
   }
 
   private toDraft(record: any): BoardStateDraft {

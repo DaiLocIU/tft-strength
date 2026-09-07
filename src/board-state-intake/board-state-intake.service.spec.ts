@@ -1,3 +1,4 @@
+import { ScreenshotStorageService } from './screenshot-storage.service';
 import { NotFoundException } from '@nestjs/common';
 import { BoardStateIntakeService } from './board-state-intake.service';
 import { BoardState } from './board-state-intake.types';
@@ -34,7 +35,9 @@ describe('BoardStateIntakeService', () => {
   beforeEach(() => {
     store = new MemoryBoardStateDraftStore();
     visionModelAdapter = new FakeVisionModelAdapter();
-    service = new BoardStateIntakeService(store, visionModelAdapter);
+    service = new BoardStateIntakeService(store, visionModelAdapter, {
+      read: jest.fn().mockResolvedValue(Buffer.from('image')),
+    } as unknown as ScreenshotStorageService);
   });
 
   it('creates an uploaded Board State draft before detection runs', async () => {

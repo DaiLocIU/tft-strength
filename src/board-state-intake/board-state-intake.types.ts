@@ -1,9 +1,10 @@
-export type BoardStateDraftStatus = 'uploaded' | 'detected' | 'failed';
+export type BoardStateDraftStatus = 'draft' | 'uploading' | 'uploaded' | 'processing' | 'completed' | 'detected' | 'failed';
 
 export interface UploadedImageFile {
   originalname: string;
-  filename: string;
-  path: string;
+  filename?: string;
+  path?: string;
+  buffer?: Buffer;
   size: number;
   mimetype: string;
 }
@@ -55,6 +56,7 @@ export interface BoardStateDraft {
 }
 
 export interface CreateBoardStateDraftData {
+  status?: BoardStateDraftStatus;
   userId: number;
   matchId?: number;
   roundId?: number;
@@ -64,6 +66,7 @@ export interface CreateBoardStateDraftData {
 }
 
 export interface UpdateBoardStateDraftData {
+  storagePath?: string;
   status?: BoardStateDraftStatus;
   boardState?: BoardState | null;
   errorMessage?: string | null;

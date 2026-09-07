@@ -1,5 +1,6 @@
 import argparse
 import json
+import os
 import subprocess
 import sys
 from datetime import datetime
@@ -450,8 +451,15 @@ def main() -> None:
     parser.add_argument("--port", type=int, default=DEFAULT_PORT)
     args = parser.parse_args()
 
-    server = ThreadingHTTPServer(("127.0.0.1", args.port), BoardStateApiHandler)
-    print(f"Board state API: http://127.0.0.1:{args.port}")
+    port = int(os.environ.get("PORT", args.port))
+
+    server = ThreadingHTTPServer(
+        ("0.0.0.0", port),
+        BoardStateApiHandler,
+    )
+
+    print(f"Board State API running on port {port}")
+
     server.serve_forever()
 
 

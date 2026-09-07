@@ -103,7 +103,7 @@ export interface BoardStateDraft {
   screenshotFilename: string;
   originalFilename: string;
   storagePath: string;
-  status: 'uploaded' | 'detected' | 'failed';
+  status: 'draft' | 'uploading' | 'uploaded' | 'processing' | 'completed' | 'detected' | 'failed';
   boardState: BoardState | null;
   errorMessage: string | null;
   createdAt: string;

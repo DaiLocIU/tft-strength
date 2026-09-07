@@ -1,3 +1,6 @@
+import { UploadsController } from './uploads.controller';
+import { DirectUploadsService } from './uploads.service';
+import { ScreenshotStorageService } from './screenshot-storage.service';
 import { SaveBoardRoundService } from './save-board-round.service';
 import { Module } from '@nestjs/common';
 import { PrismaModule } from '../prisma/prisma.module';
@@ -10,8 +13,10 @@ import { VISION_MODEL_ADAPTER } from './vision-model-adapter.interface';
 
 @Module({
   imports: [PrismaModule],
-  controllers: [BoardStateIntakeController],
+  controllers: [BoardStateIntakeController, UploadsController],
   providers: [
+    ScreenshotStorageService,
+    DirectUploadsService,
     SaveBoardRoundService,
     BoardStateIntakeService,
     {
@@ -23,6 +28,10 @@ import { VISION_MODEL_ADAPTER } from './vision-model-adapter.interface';
       useClass: PythonBoardStateAdapter,
     },
   ],
-  exports: [BoardStateIntakeService, BOARD_STATE_DRAFT_STORE, VISION_MODEL_ADAPTER],
+  exports: [
+    BoardStateIntakeService,
+    BOARD_STATE_DRAFT_STORE,
+    VISION_MODEL_ADAPTER,
+  ],
 })
 export class BoardStateIntakeModule {}

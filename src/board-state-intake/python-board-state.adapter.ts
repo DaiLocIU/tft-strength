@@ -11,8 +11,10 @@ export class PythonBoardStateAdapter implements VisionModelAdapter {
     process.env.VISION_BOARD_STATE_URL ?? 'http://127.0.0.1:8095';
 
   async detectBoardState(input: DetectBoardStateInput): Promise<BoardState> {
-    const url = new URL('/board-state', this.baseUrl);
-    url.searchParams.set('image', input.imageName);
+    const url = new URL(
+      input.imageUrl ? '/board-state' : '/board-state-bytes',
+      this.baseUrl,
+    );
 
     if (input.championConfidence !== undefined) {
       url.searchParams.set('champion_conf', String(input.championConfidence));
@@ -26,15 +28,36 @@ export class PythonBoardStateAdapter implements VisionModelAdapter {
       url.searchParams.set('identity_conf', String(input.identityConfidence));
     }
 
-    const response = await fetch(url);
+    const headers: Record<string, string> = {
+      'Content-Type': input.imageUrl
+        ? 'application/json'
+        : 'application/octet-stream',
+    };
+    if (process.env.VISION_SERVICE_KEY)
+      headers['X-Vision-Key'] = process.env.VISION_SERVICE_KEY;
+    if (process.env.VISION_VERCEL_BYPASS_TOKEN)
+      headers['x-vercel-protection-bypass'] =
+        process.env.VISION_VERCEL_BYPASS_TOKEN;
+    if (!input.imageUrl && !input.imageBytes)
+      throw new Error('Missing image source');
+    const response = await fetch(url, {
+      method: 'POST',
+      headers,
+      body: input.imageUrl
+        ? JSON.stringify({ imageUrl: input.imageUrl })
+        : new Uint8Array(input.imageBytes!),
+      signal: AbortSignal.timeout(240000),
+    });
 
     if (!response.ok) {
-      const body = await response.text();
       throw new Error(
-        `Python Board State API failed with ${response.status}: ${body}`,
+        `Python Board State API failed with ${response.status}; retry detection`,
       );
     }
 
-    return (await response.json()) as BoardState;
+    const result = (await response.json()) as BoardState;
+    if (!Array.isArray(result.units))
+      throw new Error('Vision returned an invalid board');
+    return { ...result, image_name: input.imageName };
   }
 }

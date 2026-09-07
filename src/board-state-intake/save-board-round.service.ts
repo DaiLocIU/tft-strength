@@ -35,7 +35,7 @@ export class SaveBoardRoundService {
         throw new ConflictException(
           'This board has already been added to a game.',
         );
-      if (draft.status !== 'detected' || !draft.boardState)
+      if (!['detected', 'completed'].includes(draft.status) || !draft.boardState)
         throw new BadRequestException(
           'Detect the board before saving a round.',
         );

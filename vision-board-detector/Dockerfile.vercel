@@ -1,0 +1,24 @@
+FROM python:3.11-slim
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    HOST=0.0.0.0 \
+    PORT=80 \
+    YOLO_CONFIG_DIR=/tmp/ultralytics \
+    MPLCONFIGDIR=/tmp/matplotlib \
+    OMP_NUM_THREADS=1
+
+WORKDIR /app
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    tesseract-ocr tesseract-ocr-eng libglib2.0-0 libgl1 \
+    && rm -rf /var/lib/apt/lists/*
+# CPU wheels avoid bundling CUDA libraries into the deployment.
+RUN pip install --no-cache-dir torch==2.8.0 torchvision==0.23.0 \
+    --index-url https://download.pytorch.org/whl/cpu
+RUN pip install --no-cache-dir ultralytics==8.4.129 pillow==11.3.0
+
+COPY models/ ./models/
+COPY src/ ./src/
+COPY scripts/_bootstrap.py scripts/predict_hex_occupancy.py scripts/inference_api.py ./scripts/
+EXPOSE 80
+CMD ["python", "scripts/inference_api.py"]

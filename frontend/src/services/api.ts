@@ -1,5 +1,6 @@
 /// <reference types="vite/client" />
 import type { RoundSnapshot } from '../types';
+import { Upload } from 'tus-js-client';
 import championImages from './champion-images.json';
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import {
@@ -182,12 +183,15 @@ export const api = {
     (await apiClient.get(`/matches/${id}/rounds`)).data,
   getRound: async (id: number, roundId: number): Promise<RoundSnapshot> =>
     (await apiClient.get(`/matches/${id}/rounds/${roundId}`)).data,
-  getScreenshot: async (draftId: number): Promise<Blob> =>
-    (
-      await apiClient.get(`/board-state-intake/drafts/${draftId}/image`, {
-        responseType: 'blob',
-      })
-    ).data,
+  getScreenshot: async (draftId: number): Promise<Blob> => {
+    const { data } = await apiClient.get<{ url: string | null }>(`/board-state-intake/drafts/${draftId}/image-url`);
+    if (data.url) {
+      const response = await fetch(data.url);
+      if (!response.ok) throw new Error('Screenshot download failed. Reopen this round to retry.');
+      return response.blob();
+    }
+    return (await apiClient.get(`/board-state-intake/drafts/${draftId}/image`, { responseType: 'blob' })).data;
+  },
   getMatches: async (): Promise<Match[]> => {
     const res = await apiClient.get<Match[]>('/matches');
     return res.data;
@@ -257,36 +261,34 @@ export const api = {
     };
   },
 
-  uploadBoardStateImage: async (file: File): Promise<BoardStateDraft> => {
-    const formData = new FormData();
-    formData.append('file', file);
-
-    const res = await apiClient.post<BoardStateDraft>(
-      '/board-state-intake/drafts/upload',
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-        timeout: 60000,
-      },
-    );
-    return res.data;
+  uploadBoardStateImage: async (file: File, onProgress?: (percent: number) => void, signal?: AbortSignal): Promise<BoardStateDraft> => {
+    const { data } = await apiClient.post<{ draft: BoardStateDraft; upload: { token: string; bucketName: string; objectName: string; endpoint: string } }>('/uploads/init', {
+      filename: file.name, contentType: file.type, size: file.size,
+    }, { signal });
+    await new Promise<void>((resolve, reject) => {
+      const upload = new Upload(file, {
+        endpoint: data.upload.endpoint,
+        headers: { 'x-signature': data.upload.token, 'x-upsert': 'false' },
+        metadata: { bucketName: data.upload.bucketName, objectName: data.upload.objectName, contentType: file.type, cacheControl: '3600' },
+        chunkSize: 6 * 1024 * 1024,
+        retryDelays: [0, 1000, 3000, 5000, 10000],
+        uploadDataDuringCreation: true,
+        removeFingerprintOnSuccess: true,
+        storeFingerprintForResuming: false,
+        onProgress: (sent, total) => onProgress?.(Math.round(sent / total * 100)),
+        onError: () => { cleanup(); reject(new Error('Upload interrupted. Please choose the screenshot again to retry.')); },
+        onSuccess: () => { cleanup(); resolve(); },
+      });
+      const abort = () => { void upload.abort(); cleanup(); reject(new Error('Upload cancelled')); };
+      const cleanup = () => signal?.removeEventListener('abort', abort);
+      signal?.addEventListener('abort', abort, { once: true });
+      if (signal?.aborted) abort(); else upload.start();
+    });
+    return (await apiClient.post<BoardStateDraft>(`/uploads/${data.draft.id}/complete`, {}, { signal })).data;
   },
 
   detectBoardStateDraft: async (draftId: number): Promise<BoardStateDraft> => {
-    const res = await apiClient.post<BoardStateDraft>(
-      `/board-state-intake/drafts/${draftId}/detect`,
-      {
-        championConfidence: 0.65,
-        identityPadding: 0.08,
-        identityConfidence: 0.75,
-      },
-      {
-        timeout: 120000,
-      },
-    );
-    return res.data;
+    return (await apiClient.post<BoardStateDraft>(`/uploads/${draftId}/analyze`, {}, { timeout: 290000 })).data;
   },
 
   analyzeBoard: async (

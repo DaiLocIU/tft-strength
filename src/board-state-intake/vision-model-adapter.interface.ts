@@ -4,6 +4,8 @@ export const VISION_MODEL_ADAPTER = Symbol('VISION_MODEL_ADAPTER');
 
 export interface DetectBoardStateInput {
   imageName: string;
+  imageBytes?: Buffer;
+  imageUrl?: string;
   championConfidence?: number;
   identityPadding?: number;
   identityConfidence?: number;

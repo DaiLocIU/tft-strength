@@ -117,7 +117,7 @@ export class PrismaMatchTimelineStore implements MatchTimelineStore {
       }[]
     >`SELECT "id", "originalFilename", "boardState" FROM "BoardStateDraft"
       WHERE "roundId" = ${round.id} AND "matchId" = ${round.matchId}
-      AND "status" = 'detected' ORDER BY "updatedAt" DESC LIMIT 1`;
+      AND "status" IN ('detected', 'completed') ORDER BY "updatedAt" DESC LIMIT 1`;
     return { ...round, boardStateDrafts };
   }
 

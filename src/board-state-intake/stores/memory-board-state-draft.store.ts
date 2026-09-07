@@ -1,5 +1,6 @@
 import {
   BoardStateDraft,
+  BoardStateDraftStatus,
   CreateBoardStateDraftData,
   UpdateBoardStateDraftData,
 } from '../board-state-intake.types';
@@ -19,7 +20,7 @@ export class MemoryBoardStateDraftStore implements BoardStateDraftStore {
       screenshotFilename: data.screenshotFilename,
       originalFilename: data.originalFilename,
       storagePath: data.storagePath,
-      status: 'uploaded',
+      status: data.status ?? 'uploaded',
       boardState: null,
       errorMessage: null,
       createdAt: now,
@@ -54,6 +55,7 @@ export class MemoryBoardStateDraftStore implements BoardStateDraftStore {
     const current = this.drafts[index];
     const updated: BoardStateDraft = {
       ...current,
+      storagePath: data.storagePath ?? current.storagePath,
       status: data.status ?? current.status,
       boardState:
         data.boardState !== undefined ? data.boardState : current.boardState,
@@ -66,6 +68,12 @@ export class MemoryBoardStateDraftStore implements BoardStateDraftStore {
 
     this.drafts[index] = updated;
     return { ...updated };
+  }
+
+  async transition(id: number, userId: number, from: BoardStateDraftStatus[], data: UpdateBoardStateDraftData, before?: Date) {
+    const current = this.drafts.find(d => d.id === id && d.userId === userId);
+    if (!current || current.roundId || !from.includes(current.status) || (before && current.updatedAt > before)) return null;
+    return this.updateDraft(id, data);
   }
 
   reset() {

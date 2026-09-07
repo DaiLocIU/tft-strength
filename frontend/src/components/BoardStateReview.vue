@@ -291,6 +291,8 @@ const uploadedPreviewName = ref<string | null>(null);
 const champions = ref<TftChampionAsset[]>([]);
 const loadingChampions = ref(false);
 const uploading = ref(false);
+const uploadPercent = ref(0);
+let uploadAbort: AbortController | null = null;
 const detecting = ref(false);
 const error = ref<string | null>(null);
 watch(
@@ -343,7 +345,7 @@ const missingHexCount = computed(
 );
 
 const uploadStatus = computed(() => {
-  if (uploading.value) return 'Uploading';
+  if (uploading.value) return uploadPercent.value === 100 ? 'Verifying upload…' : `Uploading ${uploadPercent.value}%`;
   if (draft.value) return 'Uploaded';
   return 'Waiting';
 });
@@ -411,8 +413,11 @@ async function handleUpload(event: Event) {
   const target = event.target as HTMLInputElement;
   const file = target.files?.[0];
   if (!file) return;
-  if (!file.type.startsWith('image/') || file.size > 25 * 1024 * 1024) {
-    error.value = 'Choose an image smaller than 25 MB.';
+  if (
+    !['image/png', 'image/jpeg', 'image/webp'].includes(file.type) ||
+    file.size > 10_000_000
+  ) {
+    error.value = 'Choose a PNG, JPEG, or WebP screenshot up to 10 MB.';
     target.value = '';
     return;
   }
@@ -428,6 +433,8 @@ async function handleUpload(event: Event) {
   uploadedPreviewUrl.value = URL.createObjectURL(file);
   uploadedPreviewName.value = file.name;
   uploading.value = true;
+  uploadPercent.value = 0;
+  uploadAbort = new AbortController();
   detecting.value = false;
   error.value = null;
   boardState.value = null;
@@ -441,12 +448,38 @@ async function handleUpload(event: Event) {
   guideError.value = '';
 
   try {
-    draft.value = await api.uploadBoardStateImage(file);
+    draft.value = await api.uploadBoardStateImage(file, value => { uploadPercent.value = value; }, uploadAbort.signal);
+    uploading.value = false;
+    await detectDraft();
   } catch (err: any) {
     error.value = err.response?.data?.message || err.message || 'Upload failed';
   } finally {
     uploading.value = false;
     target.value = '';
+  }
+}
+
+function applyDetectedBoard() {
+  if (!draft.value) return;
+  boardState.value = draft.value.boardState;
+  const hud = boardState.value?.hud;
+  const roundMatch = String(hud?.round?.value ?? '').match(/^([1-9])-([1-7])$/);
+  round.stage = roundMatch ? Number(roundMatch[1]) : '';
+  round.roundNumber = roundMatch ? Number(roundMatch[2]) : '';
+  for (const field of ['level', 'gold', 'hp', 'streak'] as const) {
+    const value = hud?.[field]?.value;
+    round[field] = typeof value === 'number' ? value : '';
+  }
+  for (const unit of boardState.value?.units ?? []) {
+    const asset = championByName.value.get(
+      normalizeName(unit.raw_champion || unit.champion),
+    );
+    if (asset && unit.champion !== 'unknown') {
+      unit.champion = asset.name;
+      unit.raw_champion = null;
+    }
+    const stars = starCount(unit);
+    unit.star = stars ? `${stars}_star` : null;
   }
 }
 
@@ -461,28 +494,8 @@ async function detectDraft() {
 
   try {
     draft.value = await api.detectBoardStateDraft(draft.value.id);
-    boardState.value = draft.value.boardState;
-    const hud = boardState.value?.hud;
-    const roundMatch = String(hud?.round?.value ?? '').match(
-      /^([1-9])-([1-7])$/,
-    );
-    round.stage = roundMatch ? Number(roundMatch[1]) : '';
-    round.roundNumber = roundMatch ? Number(roundMatch[2]) : '';
-    for (const field of ['level', 'gold', 'hp', 'streak'] as const) {
-      const value = hud?.[field]?.value;
-      round[field] = typeof value === 'number' ? value : '';
-    }
-    for (const unit of boardState.value?.units ?? []) {
-      const asset = championByName.value.get(
-        normalizeName(unit.raw_champion || unit.champion),
-      );
-      if (asset && unit.champion !== 'unknown') {
-        unit.champion = asset.name;
-        unit.raw_champion = null;
-      }
-      const stars = starCount(unit);
-      unit.star = stars ? `${stars}_star` : null;
-    }
+    applyDetectedBoard();
+    if (draft.value.status === 'failed') error.value = draft.value.errorMessage || 'Detection failed. Retry with Detect again.';
   } catch (err: any) {
     error.value =
       err.response?.data?.message || err.message || 'Board detection failed';
@@ -492,6 +505,7 @@ async function detectDraft() {
 }
 
 onBeforeUnmount(() => {
+  uploadAbort?.abort();
   if (uploadedPreviewUrl.value) {
     URL.revokeObjectURL(uploadedPreviewUrl.value);
   }
@@ -683,10 +697,11 @@ onActivated(loadGames);
             <template v-else
               ><ImageUp :size="30" aria-hidden="true" /><strong
                 >Upload a screenshot</strong
-              ><span>Image files · up to 25 MB</span></template
+              ><span>PNG, JPEG, WebP · up to 10 MB</span></template
             >
           </button>
           <div class="screenshot-actions">
+            <p v-if="uploading" role="status" aria-live="polite">{{ uploadPercent === 100 ? "Verifying upload…" : `Uploading original · ${uploadPercent}%` }}</p>
             <p v-if="uploadedPreviewName" class="filename">
               {{ uploadedPreviewName }}
             </p>
@@ -697,7 +712,7 @@ onActivated(loadGames);
             >
               <ImageUp :size="16" aria-hidden="true" />{{
                 uploading
-                  ? 'Uploading…'
+                  ? `Uploading ${uploadPercent}%`
                   : uploadedPreviewUrl
                     ? 'Replace screenshot'
                     : 'Choose image'
@@ -705,7 +720,7 @@ onActivated(loadGames);
             </button>
             <button
               class="review-btn accent full"
-              :disabled="!draft || uploading || detecting || saving || saved"
+              :disabled="!draft || uploading || detecting || saving || saved || draft.status === 'completed'"
               @click="detectDraft"
             >
               <Loader2
@@ -716,6 +731,8 @@ onActivated(loadGames);
               /><Sparkles v-else :size="16" aria-hidden="true" />{{
                 detecting
                   ? 'Detecting board…'
+                  : draft?.status === 'completed'
+                    ? 'Detection complete'
                   : boardState
                     ? 'Detect again'
                     : 'Detect board'
