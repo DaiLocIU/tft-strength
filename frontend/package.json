@@ -13,7 +13,6 @@
     "axios": "^1.7.9",
     "canvas-confetti": "^1.9.4",
     "lucide-vue-next": "^0.468.0",
-    "tus-js-client": "^4.3.1",
     "vue": "^3.5.13"
   },
   "devDependencies": {

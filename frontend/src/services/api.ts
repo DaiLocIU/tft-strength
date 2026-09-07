@@ -1,6 +1,5 @@
 /// <reference types="vite/client" />
 import type { RoundSnapshot } from '../types';
-import { Upload } from 'tus-js-client';
 import championImages from './champion-images.json';
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import {
@@ -262,28 +261,23 @@ export const api = {
   },
 
   uploadBoardStateImage: async (file: File, onProgress?: (percent: number) => void, signal?: AbortSignal): Promise<BoardStateDraft> => {
-    const { data } = await apiClient.post<{ draft: BoardStateDraft; upload: { token: string; bucketName: string; objectName: string; endpoint: string } }>('/uploads/init', {
+    const { data } = await apiClient.post<{ draft: BoardStateDraft; upload: { signedUrl: string } }>('/uploads/init', {
       filename: file.name, contentType: file.type, size: file.size,
     }, { signal });
-    await new Promise<void>((resolve, reject) => {
-      const upload = new Upload(file, {
-        endpoint: data.upload.endpoint,
-        headers: { 'x-signature': data.upload.token, 'x-upsert': 'false' },
-        metadata: { bucketName: data.upload.bucketName, objectName: data.upload.objectName, contentType: file.type, cacheControl: '3600' },
-        chunkSize: 6 * 1024 * 1024,
-        retryDelays: [0, 1000, 3000, 5000, 10000],
-        uploadDataDuringCreation: true,
-        removeFingerprintOnSuccess: true,
-        storeFingerprintForResuming: false,
-        onProgress: (sent, total) => onProgress?.(Math.round(sent / total * 100)),
-        onError: () => { cleanup(); reject(new Error('Upload interrupted. Please choose the screenshot again to retry.')); },
-        onSuccess: () => { cleanup(); resolve(); },
-      });
-      const abort = () => { void upload.abort(); cleanup(); reject(new Error('Upload cancelled')); };
-      const cleanup = () => signal?.removeEventListener('abort', abort);
-      signal?.addEventListener('abort', abort, { once: true });
-      if (signal?.aborted) abort(); else upload.start();
+    const form = new FormData();
+    form.append('cacheControl', '3600');
+    form.append('', file);
+
+    const uploadResponse = await fetch(data.upload.signedUrl, {
+      method: 'PUT',
+      body: form,
+      signal,
     });
+
+    if (!uploadResponse.ok)
+      throw new Error(`Storage upload failed (${uploadResponse.status})`);
+
+    onProgress?.(100);
     return (await apiClient.post<BoardStateDraft>(`/uploads/${data.draft.id}/complete`, {}, { signal })).data;
   },
 

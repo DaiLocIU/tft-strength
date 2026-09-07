@@ -19,7 +19,6 @@ export class ScreenshotStorageService {
         ...init,
         headers: {
           apikey: this.key,
-          Authorization: `Bearer ${this.key}`,
           ...init.headers,
         },
         signal: AbortSignal.timeout(30000),
@@ -56,33 +55,72 @@ export class ScreenshotStorageService {
   }
 
   objectPath(userId: number, draftId: number, extension: string): string {
-    if (!this.url || !this.key) throw new Error('Supabase Storage is not configured');
+    if (!this.url || !this.key)
+      throw new Error('Supabase Storage is not configured');
     return `supabase://${this.bucket}/${userId}/${draftId}/original${extension}`;
   }
 
   async signedUpload(path: string) {
     const objectPath = path.slice('supabase://'.length);
     const response = await this.request(`upload/sign/${objectPath}`, {
-      method: 'POST', headers: { 'Content-Type': 'application/json', 'x-upsert': 'false' }, body: '{}',
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-upsert': 'false' },
+      body: '{}',
     });
-    const data = await response.json() as { url?: string };
-    const token = data.url && new URL(data.url, this.url).searchParams.get('token');
+    const data = (await response.json()) as { url?: string };
+    if (!data.url)
+      throw new Error('Storage did not return a signed upload URL');
+
+    const signedUrl = new URL(
+      data.url.startsWith('http')
+        ? data.url
+        : `${this.url!.replace(/\/$/, '')}/storage/v1${data.url}`,
+    ).href;
+    const token = new URL(data.url, this.url).searchParams.get('token');
+
     if (!token) throw new Error('Storage did not return an upload token');
-    const base = new URL(this.url!);
-    if (base.hostname.endsWith('.supabase.co') && !base.hostname.endsWith('.storage.supabase.co')) {
-      base.hostname = base.hostname.replace('.supabase.co', '.storage.supabase.co');
-    }
-    return { token, bucketName: this.bucket, objectName: objectPath.slice(this.bucket.length + 1),
-      endpoint: `${base.origin}/storage/v1/upload/resumable` };
+
+    return {
+      signedUrl,
+      token,
+      bucketName: this.bucket,
+      objectName: objectPath.slice(this.bucket.length + 1),
+    };
   }
 
   async verifyImage(path: string): Promise<void> {
-    const response = await this.request(`info/${path.slice('supabase://'.length)}`);
-    const data = await response.json() as { metadata?: { size?: number; mimetype?: string } };
-    const { size, mimetype } = data.metadata ?? {};
-    if (!Number.isInteger(size) || size! <= 0 || size! > 10_000_000 ||
-      !['image/png', 'image/jpeg', 'image/webp'].includes(mimetype ?? '')) {
-      throw new Error('Stored screenshot must be PNG, JPEG, or WebP up to 10 MB');
+    const response = await this.request(
+      `info/${path.slice('supabase://'.length)}`,
+    );
+
+    const data = (await response.json()) as {
+      size?: number;
+      content_type?: string;
+      contentType?: string;
+      metadata?: {
+        size?: number;
+        mimetype?: string;
+        contentType?: string;
+      };
+    };
+
+    const size = data.size ?? data.metadata?.size;
+
+    const mimetype =
+      data.content_type ??
+      data.contentType ??
+      data.metadata?.mimetype ??
+      data.metadata?.contentType;
+
+    if (
+      !Number.isInteger(size) ||
+      size! <= 0 ||
+      size! > 10_000_000 ||
+      !['image/png', 'image/jpeg', 'image/webp'].includes(mimetype ?? '')
+    ) {
+      throw new Error(
+        'Stored screenshot must be PNG, JPEG, or WebP up to 10 MB',
+      );
     }
   }
 
