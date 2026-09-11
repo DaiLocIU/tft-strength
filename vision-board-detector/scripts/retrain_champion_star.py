@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Any
 
 import _bootstrap  # noqa: F401
-from split_champion_star_dataset import split_dataset
+from datasets.champion_star.split import split_dataset
 from ultralytics import YOLO  # type: ignore[attr-defined]
 
 DEFAULT_LABELED_DIR = Path("data/champion-star/labeled")

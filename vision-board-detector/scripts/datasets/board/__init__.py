@@ -1,0 +1,1 @@
+"""Board-detection dataset workflow."""

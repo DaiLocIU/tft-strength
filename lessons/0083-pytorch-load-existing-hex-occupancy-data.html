@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PyTorch: Load Your Hex Occupancy Data</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>PyTorch: Load Your Hex Occupancy Data</h1>
+      <p class="lede">You are not starting a new vision system. You are swapping the final hex-crop classifier while keeping your board detector and hex geometry.</p>
+
+      <div class="callout"><strong>Tangible win:</strong> make PyTorch read your existing <code>empty</code>/<code>occupied</code> folders and prove which class index means which label.</div>
+
+      <h2>One Question Per Crop</h2>
+      <pre><code>known hex crop → classifier → empty or occupied</code></pre>
+      <p>YOLO currently performs this classification for you. In PyTorch, you will explicitly own the data loader, model, loss, and prediction threshold. The input question stays exactly the same.</p>
+
+      <h2>Your First PyTorch Contract</h2>
+      <pre><code>input:  batch of hex images, shape [batch, channels, height, width]
+label:  one integer per image
+output: two scores per image: [empty_score, occupied_score]</code></pre>
+      <p>Do not use a whole screenshot as input yet. A known hex crop makes the first PyTorch task small enough to understand and debug.</p>
+
+      <h2>Practice: Predict Before You Run</h2>
+      <p>Your folders are named <code>empty</code> and <code>occupied</code>. Before opening the answer, write down which class index you think TorchVision assigns to <code>occupied</code>.</p>
+      <details>
+        <summary>Check your answer</summary>
+        <p><code>ImageFolder</code> sorts folder names alphabetically, so <code>empty</code> is index <code>0</code> and <code>occupied</code> is index <code>1</code>. Confirm it in code—never hard-code the assumption blindly.</p>
+      </details>
+
+      <h2>Run This Inspection, Not Training</h2>
+      <pre><code>from torchvision import datasets, transforms
+from torch.utils.data import DataLoader
+
+transform = transforms.Compose([
+    transforms.Resize((160, 160)),
+    transforms.ToTensor(),
+])
+
+dataset = datasets.ImageFolder("data/hex-occupancy/train", transform=transform)
+loader = DataLoader(dataset, batch_size=4, shuffle=True)
+
+images, labels = next(iter(loader))
+print(dataset.classes)
+print(images.shape)
+print(labels.tolist())</code></pre>
+      <p>Success means: two class names, four images in the batch, and four integer labels. If that works, your dataset crosses the boundary from “folders on disk” to “training-ready tensors.”</p>
+
+      <h2>Stop Here</h2>
+      <p>Do not choose a model or train yet. First reply with the three printed values. Then we will pick a small pretrained model and write one train/validation epoch together.</p>
+
+      <p class="small">Primary source: <a href="https://docs.pytorch.org/tutorials/beginner/basics/data_tutorial.html">PyTorch: Datasets &amp; DataLoaders</a>. Keep <a href="../reference/pytorch-hex-occupancy.html">the PyTorch hex occupancy reference</a> nearby. Previous related lesson: <a href="./0053-what-is-a-hex-occupancy-classifier.html">What Is A Hex Occupancy Classifier?</a>. Ask Codex about any output that looks surprising.</p>
+    </main>
+  </body>
+</html>

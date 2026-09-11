@@ -38,6 +38,24 @@
   Official format for YOLO pose/keypoint datasets, including `kpt_shape` and normalized keypoint
   label rows.
 
+## PyTorch / TorchVision
+
+- [PyTorch: Datasets & DataLoaders](https://docs.pytorch.org/tutorials/beginner/basics/data_tutorial.html)
+  Official introduction to separating image data from the training loop. Use for: understanding
+  `Dataset`, `DataLoader`, batches, and train/validation iteration.
+
+- [TorchVision `ImageFolder`](https://docs.pytorch.org/vision/stable/generated/torchvision.datasets.ImageFolder.html)
+  Official reference for the folder-per-class dataset format. Use for: loading the existing
+  `occupied` and `empty` hex-crop folders without a new annotation format.
+
+- [PyTorch transfer-learning tutorial](https://docs.pytorch.org/tutorials/beginner/transfer_learning_tutorial.html)
+  Official example of adapting a pretrained vision model to a small image-classification task. Use
+  for: choosing a practical first PyTorch model after the data pipeline is understood.
+
+- [PyTorch: Build the Neural Network](https://docs.pytorch.org/tutorials/beginner/basics/buildmodel_tutorial.html)
+  Official explanation of `nn.Module`, `forward`, and composing layers. Use for: understanding the
+  first hex-occupancy model before training it.
+
 ## Hex Geometry
 
 - [Red Blob Games: Hexagonal Grids](https://www.redblobgames.com/grids/hexagons/)

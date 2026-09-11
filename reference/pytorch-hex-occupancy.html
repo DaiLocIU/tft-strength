@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PyTorch Hex Occupancy Reference</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>PyTorch Hex Occupancy Reference</h1>
+      <p class="lede">Use PyTorch only for the question each known hex crop asks: <em>occupied or empty?</em></p>
+
+      <h2>Keep This Pipeline</h2>
+      <pre><code>screenshot → board detector → board crop → known hex centers
+→ one hex crop → PyTorch classifier → occupied / empty</code></pre>
+      <p>The detector and hex geometry find <em>where</em> to look. The classifier decides <em>what state</em> the crop shows.</p>
+
+      <h2>Folder Labels</h2>
+      <pre><code>data/hex-occupancy/
+  train/
+    empty/
+    occupied/
+  val/
+    empty/
+    occupied/</code></pre>
+      <p><code>torchvision.datasets.ImageFolder</code> derives labels from these folder names. Keep the same class folders in train and validation.</p>
+
+      <h2>Core Objects</h2>
+      <table>
+        <thead><tr><th>Object</th><th>Job in this project</th></tr></thead>
+        <tbody>
+          <tr><td><code>ImageFolder</code></td><td>Maps each crop file to the folder label.</td></tr>
+          <tr><td><code>DataLoader</code></td><td>Feeds batches of crops and labels into training.</td></tr>
+          <tr><td>model logits</td><td>Produces two unnormalised scores: one per class.</td></tr>
+          <tr><td><code>CrossEntropyLoss</code></td><td>Compares those scores with the correct integer label.</td></tr>
+          <tr><td>validation split</td><td>Checks whether the model generalises to unseen screenshots.</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Minimal Data Load</h2>
+      <pre><code>from torchvision import datasets, transforms
+from torch.utils.data import DataLoader
+
+transform = transforms.Compose([
+    transforms.Resize((160, 160)),
+    transforms.ToTensor(),
+])
+
+train_set = datasets.ImageFolder("data/hex-occupancy/train", transform=transform)
+train_loader = DataLoader(train_set, batch_size=32, shuffle=True)
+
+print(train_set.classes)  # e.g. ['empty', 'occupied']</code></pre>
+      <p>Always inspect <code>train_set.classes</code>. The numerical labels follow alphabetical folder order, not your intuition.</p>
+
+      <p class="small">Primary sources: <a href="https://docs.pytorch.org/tutorials/beginner/basics/data_tutorial.html">PyTorch Datasets &amp; DataLoaders</a> and <a href="https://docs.pytorch.org/vision/stable/generated/torchvision.datasets.ImageFolder.html">TorchVision ImageFolder</a>.</p>
+    </main>
+  </body>
+</html>

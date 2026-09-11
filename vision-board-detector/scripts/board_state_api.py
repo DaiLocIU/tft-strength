@@ -180,7 +180,7 @@ def retrain_commands() -> dict[str, list[str]]:
             "data/hex-occupancy/labeled/occupied when they are correct",
             "copy reviewed data/corrections/hex-occupancy/empty crops into "
             "data/hex-occupancy/labeled/empty when they are correct",
-            ".venv/bin/python scripts/split_hex_occupancy_dataset.py",
+            ".venv/bin/python scripts/datasets/hex_occupancy/split.py",
             "yolo classify train model=models/hex-occupancy-classifier.pt "
             "data=data/hex-occupancy imgsz=96 epochs=50 device=mps "
             "project=../runs/classify name=hex-occupancy-after-api-review",
@@ -191,7 +191,7 @@ def retrain_commands() -> dict[str, list[str]]:
             "use data/corrections/champion-detector/missing-boxes.jsonl as the "
             "todo list for missing boxes",
             "label those missing champion boxes in Label Studio and export YOLO format",
-            ".venv/bin/python scripts/prepare_champion_detector_dataset.py "
+            ".venv/bin/python scripts/datasets/champion_detector/prepare.py "
             "--export exports/label-studio/<new-export>.zip",
             "yolo detect train model=models/champion-detector.pt "
             "data=data/champion-detector/data.yaml imgsz=640 epochs=100 "
@@ -202,7 +202,7 @@ def retrain_commands() -> dict[str, list[str]]:
         "champion_identity": [
             "corrected board clicks already save crops into "
             "data/champion-identity/labeled/<champion>",
-            ".venv/bin/python scripts/split_champion_identity_dataset.py",
+            ".venv/bin/python scripts/datasets/champion_identity/split.py",
             "yolo classify train model=models/champion-identity-classifier.pt "
             "data=data/champion-identity imgsz=160 epochs=100 device=mps "
             "project=../runs/classify name=champion-identity-after-api-review",

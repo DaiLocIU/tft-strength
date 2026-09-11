@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Your First PyTorch Hex Model</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Your First PyTorch Hex Model</h1>
+      <p class="lede">This lesson proves the smallest neural-network contract for your hex crops. It does not train a model.</p>
+
+      <div class="callout"><strong>Goal:</strong> <code>[4, 3, 160, 160] → model → [4, 2]</code>.</div>
+
+      <h2>Run It</h2>
+      <pre><code>cd vision-board-detector
+.venv/bin/python scripts/test_hex_model.py</code></pre>
+      <p>The script is <a href="../vision-board-detector/scripts/test_hex_model.py">test_hex_model.py</a>. It loads four labelled hex crops, creates a model, and passes the batch through it once.</p>
+
+      <h2>Read the Shapes</h2>
+      <pre><code>input:  [4, 3, 160, 160]
+output: [4, 2]</code></pre>
+      <ul class="checklist">
+        <li><code>4</code> means four crop images in this batch.</li>
+        <li><code>3</code> means the RGB colour channels.</li>
+        <li><code>160 × 160</code> is the resized crop size.</li>
+        <li><code>2</code> means one score for <code>empty</code> and one for <code>occupied</code>.</li>
+      </ul>
+
+      <h2>The Model Class</h2>
+      <pre><code>class HexOccupancyModel(nn.Module):
+    ...
+
+def forward(self, x):
+    return self.model(x)</code></pre>
+      <p><code>nn.Module</code> says “this object is a PyTorch neural network.” <code>forward</code> defines how data moves through it. Calling <code>model(images)</code> calls <code>model.forward(images)</code>.</p>
+
+      <h2>Flatten Then Score</h2>
+      <pre><code>nn.Flatten()
+nn.Linear(3 * 160 * 160, 2)</code></pre>
+      <p>One image starts as <code>[3, 160, 160]</code>. Flatten converts it to <code>[76800]</code>, because <code>3 × 160 × 160 = 76800</code>. The linear layer turns those 76,800 values into two class scores.</p>
+      <pre><code>[-0.3, 0.8]
+ ↑      ↑
+empty  occupied</code></pre>
+      <p>The larger score would select <code>occupied</code>—but it is not a real prediction yet. The model’s weights are random until training changes them.</p>
+
+      <h2>Recall Check</h2>
+      <p>Before opening the answer: why does the output retain the first dimension <code>4</code>?</p>
+      <details>
+        <summary>Check your answer</summary>
+        <p>Each of the four images needs its own pair of class scores. The model changes an individual image from <code>[3, 160, 160]</code> to <code>[2]</code>, while the batch dimension stays in front.</p>
+      </details>
+
+      <h2>Bring Back the Evidence</h2>
+      <p>Reply with the printed input shape, output shape, and output tensor. Next, we will inspect what <code>nn.Linear</code> does with weights and bias.</p>
+
+      <p class="small">Primary source: <a href="https://docs.pytorch.org/tutorials/beginner/basics/buildmodel_tutorial.html">PyTorch: Build the Neural Network</a>. Previous lesson: <a href="./0083-pytorch-load-existing-hex-occupancy-data.html">Load Your Hex Occupancy Data</a>. Keep <a href="../reference/pytorch-hex-occupancy.html">the reference</a> nearby and ask Codex about any output that surprises you.</p>
+    </main>
+  </body>
+</html>

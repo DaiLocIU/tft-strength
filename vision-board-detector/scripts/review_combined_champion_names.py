@@ -17,7 +17,7 @@ from combine_hex_signals import (
     CHAMPION_STAR_MODEL_PATH,
     CROPS_DIR,
 )
-from label_champion_identity import CHAMPION_NAMES, normalize_champion_name
+from datasets.champion_identity.label import CHAMPION_NAMES, normalize_champion_name
 from PIL import Image
 from predict_hex_occupancy import MODEL_PATH as HEX_OCCUPANCY_MODEL_PATH
 from predict_hex_occupancy import predict_board_hex_occupancy
