@@ -16,6 +16,10 @@ _Avoid_: GameRound, Turn, RoundState
 The inferred set of occupied hexes and champion identities on a player's TFT board at one moment, including uncertain or missing detections that need user review.
 _Avoid_: BoardResult, DetectionOutput, VisionPayload
 
+**Board State Inference**:
+The workflow that detects a board, evaluates hex occupancy and champion evidence, and combines them into a Board State.
+_Avoid_: InferenceScripts, VisionOrchestration, PredictionFlow
+
 **Board State Intake**:
 The workflow that accepts a raw screenshot, creates a reviewable Board State draft, runs vision inference, records user corrections, and applies the reviewed result to a Round Snapshot.
 _Avoid_: VisionUpload, ScreenshotService, DetectionController

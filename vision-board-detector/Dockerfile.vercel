@@ -19,6 +19,7 @@ RUN pip install --no-cache-dir ultralytics==8.4.129 pillow==11.3.0
 
 COPY models/ ./models/
 COPY src/ ./src/
-COPY scripts/_bootstrap.py scripts/predict_hex_occupancy.py scripts/inference_api.py ./scripts/
+COPY scripts/_bootstrap.py ./scripts/
+COPY scripts/inference/ ./scripts/inference/
 EXPOSE 80
-CMD ["python", "scripts/inference_api.py"]
+CMD ["python", "scripts/inference/api.py"]

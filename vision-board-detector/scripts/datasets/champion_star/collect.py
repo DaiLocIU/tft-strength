@@ -10,7 +10,7 @@ if str(scripts_dir) not in sys.path:
     sys.path.insert(0, str(scripts_dir))
 
 import _bootstrap  # noqa: F401
-from combine_hex_signals import CHAMPION_CONFIDENCE, CHAMPION_MODEL_PATH, CROPS_DIR
+from board_detector.board_inference import CHAMPION_CONFIDENCE, CHAMPION_MODEL_PATH, CROPS_DIR
 from PIL import Image
 from ultralytics import YOLO  # type: ignore[attr-defined]
 

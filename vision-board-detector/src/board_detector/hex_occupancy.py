@@ -2,7 +2,6 @@ import sys
 from pathlib import Path
 from typing import Optional, TypedDict, Union
 
-import _bootstrap  # noqa: F401
 from PIL import Image, ImageDraw, ImageFont
 from ultralytics import YOLO  # type: ignore[attr-defined]
 

@@ -6,7 +6,7 @@
 !src/**
 !scripts/
 !scripts/_bootstrap.py
-!scripts/predict_hex_occupancy.py
-!scripts/inference_api.py
+!scripts/inference/
+!scripts/inference/**
 **/__pycache__/
 **/*.pyc

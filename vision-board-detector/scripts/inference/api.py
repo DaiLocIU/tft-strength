@@ -20,12 +20,14 @@ from urllib.request import HTTPRedirectHandler, ProxyHandler, Request, build_ope
 
 from PIL import Image, UnidentifiedImageError
 
+import _bootstrap  # noqa: F401
+
 MAX_IMAGE_BYTES = 10_000_000
 MAX_JSON_BYTES = 16_384
 DOWNLOAD_TIMEOUT = 30
 MAX_IMAGE_PIXELS = 20_000_000
 INFERENCE_LOCK = threading.Lock()
-MODEL_DIR = Path(__file__).resolve().parents[1] / "models"
+MODEL_DIR = Path(__file__).resolve().parents[2] / "models"
 # Ultralytics patches Image.open to install HEIF support on decoding failures.
 # Retain Pillow's decoder: this API only accepts PNG/JPEG/WebP and must never
 # try to install packages while handling an invalid upload.
@@ -133,8 +135,7 @@ def infer(
     identity_padding: float = 0.08,
     identity_conf: float = 0.75,
 ) -> dict:
-    import _bootstrap  # noqa: F401
-    from predict_hex_occupancy import predict_board_hex_occupancy
+    from board_detector.hex_occupancy import predict_board_hex_occupancy
 
     from board_detector.board_geometry import create_board_hex_cells, make_tuning_for_image
     from board_detector.board_state_pipeline import combine_predictions, create_board_state

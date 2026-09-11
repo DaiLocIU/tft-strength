@@ -3,12 +3,11 @@ import json
 from pathlib import Path
 from typing import Union
 
-import _bootstrap  # noqa: F401
 from PIL import Image, ImageDraw, ImageFont
-from predict_hex_occupancy import (
+from board_detector.hex_occupancy import (
     MODEL_PATH as HEX_OCCUPANCY_MODEL_PATH,
 )
-from predict_hex_occupancy import predict_board_hex_occupancy
+from board_detector.hex_occupancy import predict_board_hex_occupancy
 from ultralytics import YOLO  # type: ignore[attr-defined]
 
 from board_detector.board_geometry import (

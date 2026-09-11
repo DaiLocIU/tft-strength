@@ -14,7 +14,7 @@ if str(scripts_dir) not in sys.path:
     sys.path.insert(0, str(scripts_dir))
 
 import _bootstrap  # noqa: F401
-from combine_hex_signals import (
+from board_detector.board_inference import (
     CHAMPION_CONFIDENCE,
     CHAMPION_IDENTITY_MODEL_PATH,
     CHAMPION_IDENTITY_PADDING_RATIO,
@@ -24,8 +24,8 @@ from combine_hex_signals import (
 )
 from review.label_champion_identity import CHAMPION_NAMES, normalize_champion_name
 from PIL import Image
-from predict_hex_occupancy import MODEL_PATH as HEX_OCCUPANCY_MODEL_PATH
-from predict_hex_occupancy import predict_board_hex_occupancy
+from board_detector.hex_occupancy import MODEL_PATH as HEX_OCCUPANCY_MODEL_PATH
+from board_detector.hex_occupancy import predict_board_hex_occupancy
 from ultralytics import YOLO  # type: ignore[attr-defined]
 
 from board_detector.board_geometry import create_board_hex_cells, make_tuning_for_image
