@@ -29,8 +29,12 @@ The thin boundary that turns raw YOLO detection or classification results into p
 _Avoid_: YoloUtils, ModelHelpers, PredictionParsing
 
 **Dataset Workflow**:
-The complete, target-specific lifecycle that prepares annotated TFT screenshots for a vision model, from validation or labeling through splitting and review.
+The complete, target-specific lifecycle that prepares reviewed TFT screenshots for a vision model, from validation and collection through splitting and inspection.
 _Avoid_: DataScripts, TrainingPrep, DatasetHelpers
+
+**Human Review**:
+The manual labeling and correction of uncertain visual evidence before it is used to improve a Board State or a Dataset Workflow.
+_Avoid_: AnnotationUI, ReviewService, LabelTools
 
 **Champion-to-Hex Evidence**:
 The inferred relationship between a detected champion box and the single board hex it occupies, including the champion foot point, occupied hex candidates under large boxes, identity prediction, and suppressed extra occupancy signals.

@@ -1,12 +1,17 @@
 import argparse
 import base64
 import json
+import sys
 from html import escape
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from io import BytesIO
 from pathlib import Path
 from typing import Any, Optional, TypedDict
 from urllib.parse import parse_qs, urlparse
+
+scripts_dir = Path(__file__).resolve().parents[1]
+if str(scripts_dir) not in sys.path:
+    sys.path.insert(0, str(scripts_dir))
 
 import _bootstrap  # noqa: F401
 from combine_hex_signals import (
@@ -17,7 +22,7 @@ from combine_hex_signals import (
     CHAMPION_STAR_MODEL_PATH,
     CROPS_DIR,
 )
-from datasets.champion_identity.label import CHAMPION_NAMES, normalize_champion_name
+from review.label_champion_identity import CHAMPION_NAMES, normalize_champion_name
 from PIL import Image
 from predict_hex_occupancy import MODEL_PATH as HEX_OCCUPANCY_MODEL_PATH
 from predict_hex_occupancy import predict_board_hex_occupancy

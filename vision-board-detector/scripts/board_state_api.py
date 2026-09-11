@@ -25,7 +25,7 @@ from combine_hex_signals import (
 from board_detector.hud_ocr import detect_hud
 from PIL import Image
 from predict_board import crop_board, detect_board
-from review_combined_champion_names import save_corrected_name
+from review.review_combined_champion_names import save_corrected_name
 from ultralytics import YOLO  # type: ignore[attr-defined]
 
 from board_detector.board_geometry import (

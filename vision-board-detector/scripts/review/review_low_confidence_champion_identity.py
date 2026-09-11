@@ -10,11 +10,11 @@ from pathlib import Path
 from typing import Any, Optional, TypedDict
 from urllib.parse import parse_qs, unquote, urlparse
 
-scripts_dir = Path(__file__).resolve().parents[2]
+scripts_dir = Path(__file__).resolve().parents[1]
 if str(scripts_dir) not in sys.path:
     sys.path.insert(0, str(scripts_dir))
 
-from datasets.champion_identity.label import CHAMPION_NAMES, normalize_champion_name
+from review.label_champion_identity import CHAMPION_NAMES, normalize_champion_name
 from PIL import Image
 
 
